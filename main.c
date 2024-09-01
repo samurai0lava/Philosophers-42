@@ -20,7 +20,9 @@ int main(int ac, char **av)
 {
     t_philo philo;
 
-    init_struct(&philo);
-
+    if(ac < 5 || ac > 6)
+    {
+        init_struct(&philo);
+    }
     return (0);
 }
