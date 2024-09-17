@@ -9,25 +9,12 @@ int usleep_pr(__U64_TYPE usec)
 	//PRECISE USLEEP
 	//ALGO
 	//T-T
-	
+
+
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-__U64_TYPE	get_time(void)
+ __U64_TYPE	get_time(void)
 {
 	struct timeval	tv;
 	__U64_TYPE		start;
