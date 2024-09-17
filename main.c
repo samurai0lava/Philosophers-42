@@ -35,20 +35,19 @@ int main()
     thread2 = (pthread_t *)malloc(sizeof(pthread_t));
     if (thread2 == NULL)
     {
-        printf("Error allocating memory\n");
+        perror("malloc");
         return (1);
     }
     thread1 = (pthread_t *)malloc(sizeof(pthread_t));
     if (thread1 == NULL)
     {
-        printf("Error allocating memory\n");
+		perror("malloc");
         return (1);
     }
     if (pthread_create(thread1, NULL, &philo_routine, NULL) != 0)
         return 1;
     if (pthread_create(thread2, NULL, &philo_routine1, NULL) != 0)
-        return 1;
-
+        return (1);
     pthread_join(*thread1, NULL);
     pthread_join(*thread2, NULL);
     free(thread1);
