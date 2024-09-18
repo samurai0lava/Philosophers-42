@@ -1,9 +1,7 @@
 #ifndef PHILO_H
 #define PHILO_H
 
-
 //includes
-
 # include <pthread.h>
 # include "libft/libft.h"
 # include <unistd.h>
@@ -11,7 +9,6 @@
 # include <stdlib.h>
 # include <sys/time.h>
 #include <errno.h>
-
 
 //PHILO MESSAGES
 #define PHILO_EAT "is eating\n"
@@ -27,10 +24,10 @@
 #define YELLOW "\033[0;33m"
 #define BLUE "\033[0;34m"
 #define MAGENTA "\033[0;35m"
+#define ORANGE "\033[0;36m"
 #define RESET "\033[0m"
 
 //struct for the philosophers
-
 typedef struct s_philo
 {
     int id;
@@ -47,9 +44,7 @@ typedef struct s_philo
     pthread_mutex_t *eat;
 }               t_philo;
 
-
 //Functions prototypes
-
 int parse_input(int ac, char **av, t_philo *philo);
 
 #endif
