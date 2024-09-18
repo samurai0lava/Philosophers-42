@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <errno.h>
+#include "philo.h"
+
 // make a good version of usleep
 // setup a function for time
 __U64_TYPE get_elapsed_time_microseconds(struct timeval start, struct timeval end)
@@ -56,14 +54,14 @@ int precise_usleep(long usec)
 	return (end - start);
 }
 
-int	main(void)
-{
-	__U64_TYPE time;
+// int	main(void)
+// {
+// 	__U64_TYPE time;
 
-	time = get_time();
-	if(time == -1)
-		return (1);
-	else
-		printf("tv_usec: %ld\n", time);
-	return (0);
-}
+// 	time = get_time();
+// 	if(time == -1)
+// 		return (1);
+// 	else
+// 		printf("tv_usec: %ld\n", time);
+// 	return (0);
+// }
