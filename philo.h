@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/18 18:17:34 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/18 18:45:27 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ typedef struct s_philo
     int is_sleeping;
     int is_thinking;
     int is_dead;
+	int time_to_die;
+	int time_to_eat;
+	int time_to_sleep;
+	int number_of_eats;
+	int number_of_philosophers;
     pthread_mutex_t *forks;
     pthread_mutex_t *print;
     pthread_mutex_t *eat;
