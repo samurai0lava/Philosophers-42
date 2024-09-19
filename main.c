@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/18 18:50:45 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/19 08:58:13 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,24 @@ static void init_struct(t_philo *philo)
 //     printf("wesh abatal\n");
 //     return (NULL);
 // }
+static void  print_struct(t_philo *philo)
+{
+    printf("id: %d\n", philo->id);
+    printf("left_fork: %d\n", philo->left_fork);
+    printf("right_fork: %d\n", philo->right_fork);
+    printf("eat_count: %d\n", philo->eat_count);
+    printf("last_eat: %d\n", philo->last_eat);
+    printf("is_eating: %d\n", philo->is_eating);
+    printf("is_sleeping: %d\n", philo->is_sleeping);
+    printf("is_thinking: %d\n", philo->is_thinking);
+    printf("is_dead: %d\n", philo->is_dead);
+    printf("time_to_die: %d\n", philo->time_to_die);
+    printf("time_to_eat: %d\n", philo->time_to_eat);
+    printf("time_to_sleep: %d\n", philo->time_to_sleep);
+    printf("number_of_eats: %d\n", philo->number_of_eats);
+    printf("number_of_philosophers: %d\n", philo->number_of_philosophers);
+
+}
 
 int main(int ac , char **av)
 {
@@ -67,5 +85,6 @@ int main(int ac , char **av)
 	
 	init_struct(&philo);
 	parse_input(ac, av, &philo);
+    print_struct(&philo);
     return (0);
 }
