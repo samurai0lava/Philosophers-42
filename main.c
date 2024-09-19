@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/19 08:58:13 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/09/19 11:09:36 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ int main(int ac , char **av)
     // pthread_join(*thread2, NULL);
     // free(thread1);
     // free(thread2);
-	
 	init_struct(&philo);
 	parse_input(ac, av, &philo);
     print_struct(&philo);

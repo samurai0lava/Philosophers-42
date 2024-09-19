@@ -30,6 +30,7 @@ int precise_usleep(long usec)
 			}
 		}
 	}
+	return (0);
 }
 
 __U64_TYPE get_time(void)

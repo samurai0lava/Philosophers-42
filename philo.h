@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/18 18:45:27 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/19 10:49:22 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 #define PHILO_THINK "is thinking\n"
 #define PHILO_FORK "has taken a fork\n"
 #define PHILO_DEAD "died\n"
-#define ARG_FAILS "Usage : number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n"
+#define ARG_FAILS "Philosophers Usage : number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n"
 
 //colors
 #define RED "\033[0;31m"
@@ -62,6 +62,7 @@ typedef struct s_philo
 }               t_philo;
 
 //Functions prototypes
-int parse_input(int ac, char **av, t_philo *philo);
+int			parse_input(int ac, char **av, t_philo *philo);
+__U64_TYPE	get_time(void);
 
 #endif
