@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/19 10:49:22 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/20 21:46:29 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
-#include <errno.h>
+# include <errno.h>
 
 //PHILO MESSAGES
 #define PHILO_EAT "is eating\n"
@@ -56,13 +56,12 @@ typedef struct s_philo
 	int time_to_sleep;
 	int number_of_eats;
 	int number_of_philosophers;
-    pthread_mutex_t *forks;
-    pthread_mutex_t *print;
-    pthread_mutex_t *eat;
+	pthread_mutex_t mutex;
 }               t_philo;
 
 //Functions prototypes
 int			parse_input(int ac, char **av, t_philo *philo);
 __U64_TYPE	get_time(void);
+void		init_struct(t_philo *philo);
 
 #endif

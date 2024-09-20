@@ -6,13 +6,13 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/19 11:09:36 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/20 21:45:29 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void init_struct(t_philo *philo)
+void init_struct(t_philo *philo)
 {
     philo->id = 0;
     philo->left_fork = 0;
@@ -23,9 +23,6 @@ static void init_struct(t_philo *philo)
     philo->is_sleeping = 0;
     philo->is_thinking = 0;
     philo->is_dead = 0;
-    philo->forks = NULL;
-    philo->print = NULL;
-    philo->eat = NULL;
 }
 // void *philo_routine()
 // {
