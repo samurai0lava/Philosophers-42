@@ -1,37 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/21 12:10:48 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/21 12:12:30 by ilyass           ###   ########.fr       */
+/*   Created: 2023/11/21 13:37:41 by iouhssei          #+#    #+#             */
+/*   Updated: 2024/09/23 09:57:51 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int ft_atoi(char *str)
+int	ft_atoi(const char *str)
 {
-	int i;
-	int sign;
-	int res;
+	int			sign;
+	long int	return_value;
 
-	if(!str)
-		return (0);
-	while(str[i] && str[i] > 9 && str[i] < 13)
-		i++;
-	if(str[i] == '-' || str[i] == '+')
+	sign = 1;
+	return_value = 0;
+	while (*str && (*str == ' ' || (*str >= '\t' && *str <= '\r')))
+		str++;
+	if (*str == '-' || *str == '+')
 	{
-		if(str[i] == '-')
-			sign = -1;
-		i++;
+		if (*str == '-')
+			sign *= -1;
+		str++;
 	}
-	while(str[i] && str[i] >= '0' && str[i] <= '9')
+	while (*str >= '0' && *str <= '9')
 	{
-		res = res * 10 + str[i] - '0';
-		i++;
+		return_value = return_value * 10 + (*str - 48) * sign;
+		str++;
 	}
-	return (res * sign);
+	return (return_value);
+}
+
+void free_threads(pthread_t *philo)
+{
+	if(philo != NULL)
+		free(philo);
 }

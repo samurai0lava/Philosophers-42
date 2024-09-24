@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/21 12:16:04 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/22 19:13:07 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
-// int	main(void)
+// int	main(void) 
 // {
 // 	t_philo *philo;
 // 	pthread_t thread[5];

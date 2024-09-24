@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/21 12:15:09 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/23 11:05:45 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void				init_struct(t_philo *philo);
 void				is_eating(t_philo *philo);
 void				is_sleeping(t_philo *philo);
 void				is_thinking(t_philo *philo);
-int					ft_atoi(char *str);
 int					precise_usleep(long usec);
-
+int 				ft_atoi(const char *str);
+void				free_threads(pthread_t *philo);
 #endif
