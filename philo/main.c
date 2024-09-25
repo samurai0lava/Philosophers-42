@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/23 11:08:29 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/24 18:02:57 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,32 @@ static pthread_t	*create_threads(t_philo *philo)
 	return (philos);
 }
 
+static int join_threads(pthread_t *threads, int number_of_philosophers)
+{
+	int	i;
+
+	i = 0;
+	while (i < number_of_philosophers)
+	{
+		if (pthread_join(threads[i], NULL) != 0)
+		{
+			write(2, "pthread_join error\n", 20);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+
+
 static int	start_simulation(t_philo *philo, pthread_t *threads)
 {
-		
-
+	threads = create_threads(philo);
+	if (threads == NULL)
+		return (1);
+	if (join_threads(threads, philo->number_of_philosophers) != 0)
+		return (1);
 	return (0);
 }
 
