@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/27 17:15:08 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/27 17:20:13 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,27 +104,11 @@ pthread_t	*create_threads(t_philo *philo)
 	}
 	return (philos);
 }
-int join_threads(pthread_t *threads, int nof)
-{
-	int	i;
-	i = 0;
-	while (i < nof)
-	{
-		if (pthread_join(threads[i], NULL) != 0)
-		{
-			write(2, "pthread_join error\n", 20);
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}
+
 int	start_simulation(t_philo *philo, pthread_t *threads)
 {
 	threads = create_threads(philo);
 	if (threads == NULL)
-		return (1);
-	if (join_threads(threads, philo->number_of_philosophers) != 0)
 		return (1);
 	return (0);
 }
@@ -132,6 +116,7 @@ int	main(int ac, char **av)
 {
 	t_philo		philo;
 	pthread_t	*threads;
+
 	init_struct(&philo);
 	parse_input(ac, av, &philo);
 	threads = create_threads(&philo);
@@ -139,8 +124,7 @@ int	main(int ac, char **av)
 		return (1);
 	if (start_simulation(&philo, threads) != 0)
 		return (1);
-	if (join_threads(threads, philo.number_of_philosophers) != 0)
-		return (1);
 	print_struct(&philo);
+	free_all(&philo, threads);
 	return (0);
 }

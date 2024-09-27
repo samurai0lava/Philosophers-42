@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 13:37:41 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/09/27 17:16:30 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/27 17:19:30 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,23 @@ int	ft_atoi(const char *str)
 	}
 	return (return_value);
 }
+
+int join_threads(pthread_t *threads, int nof)
+{
+	int	i;
+	i = 0;
+	while (i < nof)
+	{
+		if (pthread_join(threads[i], NULL) != 0)
+		{
+			write(2, "pthread_join error\n", 20);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 void free_all(t_philo *philo, pthread_t *threads)
 {
 	
