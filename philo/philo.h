@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/24 18:03:10 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/27 09:55:02 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,15 @@ void				is_thinking(t_philo *philo);
 int					precise_usleep(long usec);
 int 				ft_atoi(const char *str);
 void				free_threads(pthread_t *philo);
+int					init_mutex(t_philo *philo);
+void				take_fork(t_philo *philo);
+void				eat(t_philo *philo);
+void				sleep_and_think(t_philo *philo);
+void				*routine(void *arg);
+pthread_t			*create_threads(t_philo *philo);
+int					join_threads(pthread_t *threads, int nof);
+int					start_simulation(t_philo *philo, pthread_t *threads);
+
+
+
 #endif

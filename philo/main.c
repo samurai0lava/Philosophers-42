@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/24 18:02:57 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/27 09:54:48 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,50 @@ static void	print_struct(t_philo *philo)
 	printf("number_of_eats: %d\n", philo->number_of_eats);
 	printf("number_of_philosophers: %d\n", philo->number_of_philosophers);
 }
+int init_mutex(t_philo *philo)
+{
+	int i;
 
-static pthread_t	*create_threads(t_philo *philo)
+	i = 0;
+	while (i < philo->number_of_forks)
+	{
+		if (pthread_mutex_init(&philo->mutex, NULL) != 0)
+		{
+			write(2, "pthread_mutex_init error\n", 26);
+			return (1);
+		}
+		i++;
+	}
+
+}
+
+void take_fork(t_philo *philo)
+{
+
+}
+void eat(t_philo *philo)
+{
+
+}
+void sleep_and_think(t_philo *philo)
+{
+
+}
+
+void *routine(void *arg)
+{
+
+	while(1)
+	{
+		take_fork(arg);
+		eat(arg);
+		sleep_and_think(arg);
+	}
+	
+	
+}
+
+pthread_t	*create_threads(t_philo *philo)
 {
 	int			i;
 	pthread_t	*philos;
@@ -74,12 +116,12 @@ static pthread_t	*create_threads(t_philo *philo)
 	return (philos);
 }
 
-static int join_threads(pthread_t *threads, int number_of_philosophers)
+int join_threads(pthread_t *threads, int nof)
 {
 	int	i;
 
 	i = 0;
-	while (i < number_of_philosophers)
+	while (i < nof)
 	{
 		if (pthread_join(threads[i], NULL) != 0)
 		{
@@ -91,9 +133,7 @@ static int join_threads(pthread_t *threads, int number_of_philosophers)
 	return (0);
 }
 
-
-
-static int	start_simulation(t_philo *philo, pthread_t *threads)
+int	start_simulation(t_philo *philo, pthread_t *threads)
 {
 	threads = create_threads(philo);
 	if (threads == NULL)
@@ -114,6 +154,8 @@ int	main(int ac, char **av)
 	if (threads == NULL)
 		return (1);
 	if (start_simulation(&philo, threads) != 0)
+		return (1);
+	if (join_threads(threads, philo.number_of_philosophers) != 0)
 		return (1);
 	print_struct(&philo);
 	return (0);
