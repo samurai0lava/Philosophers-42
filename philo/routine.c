@@ -6,7 +6,7 @@
 /*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/27 17:27:29 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/27 18:58:58 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int check_is_death(t_philo *philo)
 		return (1); //<-- the operation has ended
 	}	
 }
-
 
 void *monitor_routine(void *arg)
 {
