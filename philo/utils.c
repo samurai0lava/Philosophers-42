@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 13:37:41 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/09/27 17:19:30 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/29 17:29:05 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,14 @@ int join_threads(pthread_t *threads, int nof)
 
 void free_all(t_philo *philo, pthread_t *threads)
 {
-	
+    int i;
+
+    i = 0;
+    while (i < philo->number_of_philosophers)
+    {
+        pthread_mutex_destroy(&philo[i].mutex);
+        i++;
+    }
+    free(philo);
+    free(threads);
 }

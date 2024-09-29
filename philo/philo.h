@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/27 17:32:03 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/29 20:09:31 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct s_philo
 	int				number_of_eats;
 	int				number_of_philosophers;
 	int				number_of_forks;
+    unsigned long long	start_time;
 	pthread_mutex_t mutex;
 }               t_philo;
 
@@ -74,5 +75,12 @@ void				*routine(void *arg);
 pthread_t			*create_threads(t_philo *philo);
 int					join_threads(pthread_t *threads, int nof);
 int					start_simulation(t_philo *philo, pthread_t *threads);
+int                 check_is_death(t_philo *philo);
+void                *monitor_routine(void *arg);
+void                *routine(void *arg);
+void                sleep_and_think(t_philo *philo);
+void                eat(t_philo *philo);
+void                take_fork(t_philo *philo);
+void                free_all(t_philo *philo, pthread_t *threads);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/28 21:32:40 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/09/29 20:09:08 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,31 +29,46 @@ void	init_struct(t_philo *philo)
 	philo->number_of_eats = 0;
 	philo->number_of_philosophers = 0;
 	philo->number_of_forks = 0;
+	philo->start_time = 0;
 }
-static void	print_struct(t_philo *philo)
-{
-	printf("id: %d\n", philo->id);
-	printf("left_fork: %d\n", philo->left_fork);
-	printf("right_fork: %d\n", philo->right_fork);
-	printf("eat_count: %d\n", philo->eat_count);
-	printf("last_eat: %d\n", philo->last_eat);
-	printf("is_eating: %d\n", philo->is_eating);
-	printf("is_sleeping: %d\n", philo->is_sleeping);
-	printf("is_thinking: %d\n", philo->is_thinking);
-	printf("is_dead: %d\n", philo->is_dead);
-	printf("time_to_die: %d\n", philo->time_to_die);
-	printf("time_to_eat: %d\n", philo->time_to_eat);
-	printf("time_to_sleep: %d\n", philo->time_to_sleep);
-	printf("number_of_eats: %d\n", philo->number_of_eats);
-	printf("number_of_philosophers: %d\n", philo->number_of_philosophers);
-}
+// static void	print_struct(t_philo *philo)
+// {
+// 	printf("id: %d\n", philo->id);
+// 	printf("left_fork: %d\n", philo->left_fork);
+// 	printf("right_fork: %d\n", philo->right_fork);
+// 	printf("eat_count: %d\n", philo->eat_count);
+// 	printf("last_eat: %d\n", philo->last_eat);
+// 	printf("is_eating: %d\n", philo->is_eating);
+// 	printf("is_sleeping: %d\n", philo->is_sleeping);
+// 	printf("is_thinking: %d\n", philo->is_thinking);
+// 	printf("is_dead: %d\n", philo->is_dead);
+// 	printf("time_to_die: %d\n", philo->time_to_die);
+// 	printf("time_to_eat: %d\n", philo->time_to_eat);
+// 	printf("time_to_sleep: %d\n", philo->time_to_sleep);
+// 	printf("number_of_eats: %d\n", philo->number_of_eats);
+// 	printf("number_of_philosophers: %d\n", philo->number_of_philosophers);
+// }
 
 int create_philos(t_philo *philo)
 {
-	int i;
+    int i;
+    t_philo *philos;
 
-	i = 0;
-	
+    philos = malloc(sizeof(t_philo) * philo->number_of_philosophers);
+    if (!philos)
+        return (1);
+    i = 0;
+    while (i < philo->number_of_philosophers)
+    {
+        philos[i] = *philo;
+        philos[i].id = i + 1;
+        philos[i].left_fork = i;
+        philos[i].right_fork = (i + 1) % philo->number_of_philosophers;
+        philos[i].last_eat = get_time();
+        i++;
+    }
+    philo = philos;
+    return (0);
 }
 int init_mutex(t_philo *philo)
 {
@@ -68,25 +83,9 @@ int init_mutex(t_philo *philo)
 		}
 		i++;
 	}
+	return (0);
 }
-void take_fork(t_philo *philo)
-{
-}
-void eat(t_philo *philo)
-{
-}
-void sleep_and_think(t_philo *philo)
-{
-}
-void *routine(void *arg)
-{
-	while(1)
-	{
-		take_fork(arg);
-		eat(arg);
-		sleep_and_think(arg);
-	}
-}
+
 pthread_t	*create_threads(t_philo *philo)
 {
 	int			i;
@@ -111,15 +110,6 @@ pthread_t	*create_threads(t_philo *philo)
 	return (philos);
 }
 
-int	start_simulation(t_philo *philo, pthread_t *threads)
-{
-	threads = create_threads(philo);
-	if (threads == NULL)
-		return (1);
-	return (0);
-}
-
-
 
 int handle_one_philo(t_philo *philo)
 {
@@ -137,24 +127,53 @@ int handle_one_philo(t_philo *philo)
 		write(2, "pthread_join error\n", 20);
 		return (1);
 	}
-}
-int	main(int ac, char **av)
-{
-	t_philo		philo;
-	pthread_t	*threads;
-
-	init_struct(&philo);
-	parse_input(ac, av, &philo);
-	if(philo.number_of_philosophers == 1)
-	{
-		handle_one_philo(&philo);
-	}
-	threads = create_threads(&philo);
-	if (threads == NULL)
-		return (1);
-	if (start_simulation(&philo, threads) != 0)
-		return (1);
-	print_struct(&philo);
-	free_all(&philo, threads);
 	return (0);
+}
+int main(int ac, char **av)
+{
+    t_philo     *philos;
+    pthread_t   *threads;
+    int         i;
+    int         all_alive;
+
+	i = 0;
+	all_alive = 0;
+	philos = NULL;
+	
+	init_struct(philos);
+    if (parse_input(ac, av, philos) != 0)
+        return (1);
+    threads = create_threads(philos);
+    if (threads == NULL)
+        return (1);
+    philos->start_time = get_time();
+    all_alive = 1;
+    while (all_alive)
+    {
+        for (i = 0; i < philos->number_of_philosophers; i++)
+        {
+            pthread_mutex_lock(&philos[i].mutex);
+            if (check_is_death(&philos[i]))
+            {
+                all_alive = 0;
+                pthread_mutex_unlock(&philos[i].mutex);
+                break;
+            }
+            if (philos[i].eat_count >= philos[i].number_of_eats && philos[i].number_of_eats != -1)
+            {
+                all_alive = 0;
+                pthread_mutex_unlock(&philos[i].mutex);
+                break;
+            }
+            pthread_mutex_unlock(&philos[i].mutex);
+        }
+        usleep(1000);  // Sleep for 1ms to reduce CPU usage
+    }
+
+    // Wait for all threads to finish
+    for (i = 0; i < philos->number_of_philosophers; i++)
+        pthread_join(threads[i], NULL);
+
+    free_all(philos, threads);
+    return (0);
 }
