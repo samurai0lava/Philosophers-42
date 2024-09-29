@@ -1,0 +1,7 @@
+algo its self
+1) Parsing era (done)
+2) if one philo handle it
+3) create all philos and threads
+4) create the monitor (main thread)
+5) start simulation (synchronisation)
+6) join everything

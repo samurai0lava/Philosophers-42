@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/27 17:20:13 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/28 21:32:40 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,14 @@ static void	print_struct(t_philo *philo)
 	printf("number_of_eats: %d\n", philo->number_of_eats);
 	printf("number_of_philosophers: %d\n", philo->number_of_philosophers);
 }
+
+int create_philos(t_philo *philo)
+{
+	int i;
+
+	i = 0;
+	
+}
 int init_mutex(t_philo *philo)
 {
 	int i;
@@ -78,8 +86,6 @@ void *routine(void *arg)
 		eat(arg);
 		sleep_and_think(arg);
 	}
-	
-	
 }
 pthread_t	*create_threads(t_philo *philo)
 {
@@ -112,6 +118,26 @@ int	start_simulation(t_philo *philo, pthread_t *threads)
 		return (1);
 	return (0);
 }
+
+
+
+int handle_one_philo(t_philo *philo)
+{
+	pthread_t	*thread;
+	thread = create_threads(philo);
+	if (thread == NULL)
+		return (1);
+	if (pthread_create(thread, NULL, &routine, philo) != 0)
+	{
+		write(2, "pthread_create error\n", 22);
+		return (1);
+	}
+	if (pthread_join(*thread, NULL) != 0)
+	{
+		write(2, "pthread_join error\n", 20);
+		return (1);
+	}
+}
 int	main(int ac, char **av)
 {
 	t_philo		philo;
@@ -119,6 +145,10 @@ int	main(int ac, char **av)
 
 	init_struct(&philo);
 	parse_input(ac, av, &philo);
+	if(philo.number_of_philosophers == 1)
+	{
+		handle_one_philo(&philo);
+	}
 	threads = create_threads(&philo);
 	if (threads == NULL)
 		return (1);
