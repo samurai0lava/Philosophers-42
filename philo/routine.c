@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/29 20:10:40 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/09/30 11:15:49 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ void eat(t_philo *philo)
     philo->last_eat = get_time();
     printf("%llu %d %s", get_time() - philo->start_time, philo->id, PHILO_EAT);
     pthread_mutex_unlock(&philo->mutex);
-    
+
     precise_usleep(philo->time_to_eat * 1000);
-    
+
     pthread_mutex_lock(&philo->mutex);
     philo->is_eating = 0;
     philo->eat_count++;
@@ -41,9 +41,9 @@ void sleep_and_think(t_philo *philo)
     philo->is_sleeping = 1;
     printf("%llu %d %s", get_time() - philo->start_time, philo->id, PHILO_SLEEP);
     pthread_mutex_unlock(&philo->mutex);
-    
+
     precise_usleep(philo->time_to_sleep * 1000);
-    
+
     pthread_mutex_lock(&philo->mutex);
     philo->is_sleeping = 0;
     philo->is_thinking = 1;
@@ -52,22 +52,22 @@ void sleep_and_think(t_philo *philo)
 }
 int check_is_death(t_philo *philo)
 {
-	__U64_TYPE current_time;
+    __U64_TYPE current_time;
 
-	current_time = get_time();
-	if ((current_time - (unsigned long long)(philo->last_eat)) > (unsigned long long)philo->time_to_die)
-	{
-		philo->is_dead = 1;
-		printf("%d %s", philo->id, PHILO_DEAD);
-		return (1); //<-- the operation has ended
-	}	
-	return (0);
+    current_time = get_time();
+    if ((current_time - (unsigned long long)(philo->last_eat)) > (unsigned long long)philo->time_to_die)
+    {
+        philo->is_dead = 1;
+        printf("%d %s", philo->id, PHILO_DEAD);
+        return (1); //<-- the operation has ended
+    }
+    return (0);
 }
 
 void *monitor_routine(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
-    
+
     while (1)
     {
         pthread_mutex_lock(&philo->mutex);
@@ -82,7 +82,7 @@ void *monitor_routine(void *arg)
             return NULL;
         }
         pthread_mutex_unlock(&philo->mutex);
-        usleep(1000);  // Sleep for 1ms to reduce CPU usage
+        usleep(1000); // Sleep for 1ms to reduce CPU usage
     }
     return NULL;
 }
@@ -92,13 +92,13 @@ void *routine(void *arg)
     t_philo *philo;
 
     philo = (t_philo *)arg;
-    while(1)
+    while (1)
     {
         take_fork(philo);
         eat(philo);
         sleep_and_think(philo);
         pthread_mutex_lock(&philo->mutex);
-        if(philo->is_dead || (philo->eat_count >= philo->number_of_eats && philo->number_of_eats != -1))
+        if (philo->is_dead || (philo->eat_count >= philo->number_of_eats && philo->number_of_eats != -1))
         {
             pthread_mutex_unlock(&philo->mutex);
             break;

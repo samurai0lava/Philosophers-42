@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/29 20:42:28 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/09/30 15:16:08 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,8 +138,9 @@ int main(int ac, char **av)
 
 	i = 0;
 	all_alive = 0;
-	philos = NULL;
-	
+	philos = malloc(sizeof(t_philo));
+	if (!philos)
+		return (1);
 	init_struct(philos);
     if (parse_input(ac, av, philos) != 0)
         return (1);
@@ -169,11 +170,8 @@ int main(int ac, char **av)
         }
         usleep(1000);  // Sleep for 1ms to reduce CPU usage
     }
-
-    // Wait for all threads to finish
     for (i = 0; i < philos->number_of_philosophers; i++)
         pthread_join(threads[i], NULL);
-
     free_all(philos, threads);
     return (0);
 }
