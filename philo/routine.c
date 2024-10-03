@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/30 11:15:49 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/03 17:27:31 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,39 +64,31 @@ int check_is_death(t_philo *philo)
     return (0);
 }
 
-void *monitor_routine(void *arg)
+void *routine(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
 
     while (1)
     {
-        pthread_mutex_lock(&philo->mutex);
-        if (check_is_death(philo))
+        // Odd philosophers take left fork first, even take right fork first
+        if (philo->id % 2 == 0)
         {
-            pthread_mutex_unlock(&philo->mutex);
-            return NULL;
+            pthread_mutex_lock(&philo->forks[philo->right_fork]);
+            pthread_mutex_lock(&philo->forks[philo->left_fork]);
         }
-        if (philo->eat_count >= philo->number_of_eats && philo->number_of_eats != -1)
+        else
         {
-            pthread_mutex_unlock(&philo->mutex);
-            return NULL;
+            pthread_mutex_lock(&philo->forks[philo->left_fork]);
+            pthread_mutex_lock(&philo->forks[philo->right_fork]);
         }
-        pthread_mutex_unlock(&philo->mutex);
-        usleep(1000); // Sleep for 1ms to reduce CPU usage
-    }
-    return NULL;
-}
 
-void *routine(void *arg)
-{
-    t_philo *philo;
-
-    philo = (t_philo *)arg;
-    while (1)
-    {
-        take_fork(philo);
         eat(philo);
+
+        pthread_mutex_unlock(&philo->forks[philo->left_fork]);
+        pthread_mutex_unlock(&philo->forks[philo->right_fork]);
+
         sleep_and_think(philo);
+
         pthread_mutex_lock(&philo->mutex);
         if (philo->is_dead || (philo->eat_count >= philo->number_of_eats && philo->number_of_eats != -1))
         {
@@ -104,6 +96,36 @@ void *routine(void *arg)
             break;
         }
         pthread_mutex_unlock(&philo->mutex);
+    }
+    return NULL;
+}
+
+void *monitor_routine(void *arg)
+{
+    t_philo *philos = (t_philo *)arg;
+    int i;
+    int all_alive = 1;
+
+    while (all_alive)
+    {
+        for (i = 0; i < philos->number_of_philosophers; i++)
+        {
+            pthread_mutex_lock(&philos[i].mutex);
+            if (check_is_death(&philos[i]))
+            {
+                all_alive = 0;
+                pthread_mutex_unlock(&philos[i].mutex);
+                break;
+            }
+            if (philos[i].eat_count >= philos[i].number_of_eats && philos[i].number_of_eats != -1)
+            {
+                all_alive = 0;
+                pthread_mutex_unlock(&philos[i].mutex);
+                break;
+            }
+            pthread_mutex_unlock(&philos[i].mutex);
+        }
+        usleep(1000);
     }
     return NULL;
 }

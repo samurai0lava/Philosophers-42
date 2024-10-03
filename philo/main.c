@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/30 15:16:08 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/03 17:27:16 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,49 +129,86 @@ int handle_one_philo(t_philo *philo)
 	}
 	return (0);
 }
+
 int main(int ac, char **av)
 {
     t_philo     *philos;
     pthread_t   *threads;
+    pthread_mutex_t *forks;
     int         i;
-    int         all_alive;
 
-	i = 0;
-	all_alive = 0;
-	philos = malloc(sizeof(t_philo));
-	if (!philos)
-		return (1);
-	init_struct(philos);
+    philos = malloc(sizeof(t_philo));
+    if (!philos)
+        return (1);
+
     if (parse_input(ac, av, philos) != 0)
-        return (1);
-    threads = create_threads(philos);
-    if (threads == NULL)
-        return (1);
-    philos->start_time = get_time();
-    all_alive = 1;
-    while (all_alive)
     {
-        for (i = 0; i < philos->number_of_philosophers; i++)
-        {
-            pthread_mutex_lock(&philos[i].mutex);
-            if (check_is_death(&philos[i]))
-            {
-                all_alive = 0;
-                pthread_mutex_unlock(&philos[i].mutex);
-                break;
-            }
-            if (philos[i].eat_count >= philos[i].number_of_eats && philos[i].number_of_eats != -1)
-            {
-                all_alive = 0;
-                pthread_mutex_unlock(&philos[i].mutex);
-                break;
-            }
-            pthread_mutex_unlock(&philos[i].mutex);
-        }
-        usleep(1000);  // Sleep for 1ms to reduce CPU usage
+        free(philos);
+        return (1);
     }
+
+    philos = realloc(philos, sizeof(t_philo) * philos->number_of_philosophers);
+    forks = malloc(sizeof(pthread_mutex_t) * philos->number_of_philosophers);
+    threads = malloc(sizeof(pthread_t) * philos->number_of_philosophers);
+
+    if (!philos || !forks || !threads)
+    {
+        // Handle allocation error
+        free(philos);
+        free(forks);
+        free(threads);
+        return (1);
+    }
+
     for (i = 0; i < philos->number_of_philosophers; i++)
+    {
+        pthread_mutex_init(&forks[i], NULL);
+        philos[i].id = i + 1;
+        philos[i].left_fork = i;
+        philos[i].right_fork = (i + 1) % philos->number_of_philosophers;
+        philos[i].forks = forks;
+        // Copy other necessary fields from the parsed input
+        philos[i].time_to_die = philos->time_to_die;
+        philos[i].time_to_eat = philos->time_to_eat;
+        philos[i].time_to_sleep = philos->time_to_sleep;
+        philos[i].number_of_eats = philos->number_of_eats;
+        philos[i].number_of_philosophers = philos->number_of_philosophers;
+    }
+
+    philos->start_time = get_time();
+
+    for (i = 0; i < philos->number_of_philosophers; i++)
+    {
+        if (pthread_create(&threads[i], NULL, &routine, &philos[i]) != 0)
+        {
+            // Handle thread creation error
+            return (1);
+        }
+    }
+
+    // Monitor thread
+    pthread_t monitor;
+    if (pthread_create(&monitor, NULL, &monitor_routine, philos) != 0)
+    {
+        // Handle monitor thread creation error
+        return (1);
+    }
+
+    // Join threads
+    for (i = 0; i < philos->number_of_philosophers; i++)
+    {
         pthread_join(threads[i], NULL);
-    free_all(philos, threads);
+    }
+    pthread_join(monitor, NULL);
+
+    // Cleanup
+    for (i = 0; i < philos->number_of_philosophers; i++)
+    {
+        pthread_mutex_destroy(&forks[i]);
+    }
+    free(philos);
+    free(forks);
+    free(threads);
+
     return (0);
 }

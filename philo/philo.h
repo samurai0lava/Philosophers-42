@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/29 20:09:31 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/03 17:25:42 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct s_philo
 	int				number_of_forks;
     unsigned long long	start_time;
 	pthread_mutex_t mutex;
+    pthread_mutex_t *forks;
 }               t_philo;
 
 //Functions prototypes

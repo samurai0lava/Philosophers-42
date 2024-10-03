@@ -42,13 +42,12 @@ __U64_TYPE get_time(void)
 	if (gettimeofday(&tv, NULL) == -1)
 		return (1);
 	start = tv.tv_usec;
-	printf("tv_usec_start: %ld\n", start);
+	// printf("tv_usec_start: %ld\n", start);
 	if (precise_usleep(21000) == -1)
 		return (-1);
 	if (gettimeofday(&tv, NULL) == -1)
 		return (-1);
 	end = tv.tv_usec;
-	printf("tv_usec_end: %ld\n", end);
 	return (end - start);
 }
 
