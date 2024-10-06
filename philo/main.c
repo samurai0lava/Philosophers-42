@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/03 17:27:16 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/04 18:30:48 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,10 @@ int main(int ac, char **av)
 
     philos = malloc(sizeof(t_philo));
     if (!philos)
+    {
+        printf("Error: Memory allocation failed\n");
         return (1);
+    }
 
     if (parse_input(ac, av, philos) != 0)
     {
@@ -153,7 +156,7 @@ int main(int ac, char **av)
 
     if (!philos || !forks || !threads)
     {
-        // Handle allocation error
+        printf("Error: Memory allocation failed\n");
         free(philos);
         free(forks);
         free(threads);
@@ -162,17 +165,43 @@ int main(int ac, char **av)
 
     for (i = 0; i < philos->number_of_philosophers; i++)
     {
-        pthread_mutex_init(&forks[i], NULL);
+        if (pthread_mutex_init(&forks[i], NULL) != 0)
+        {
+            printf("Error: Mutex initialization failed\n");
+            // Cleanup previously initialized mutexes
+            while (--i >= 0)
+                pthread_mutex_destroy(&forks[i]);
+            free(philos);
+            free(forks);
+            free(threads);
+            return (1);
+        }
         philos[i].id = i + 1;
         philos[i].left_fork = i;
         philos[i].right_fork = (i + 1) % philos->number_of_philosophers;
         philos[i].forks = forks;
-        // Copy other necessary fields from the parsed input
         philos[i].time_to_die = philos->time_to_die;
         philos[i].time_to_eat = philos->time_to_eat;
         philos[i].time_to_sleep = philos->time_to_sleep;
         philos[i].number_of_eats = philos->number_of_eats;
         philos[i].number_of_philosophers = philos->number_of_philosophers;
+        philos[i].last_eat = 0;
+        philos[i].eat_count = 0;
+        philos[i].is_dead = 0;
+        if (pthread_mutex_init(&philos[i].mutex, NULL) != 0)
+        {
+            printf("Error: Philosopher mutex initialization failed\n");
+            // Cleanup
+            for (int j = 0; j < i; j++)
+            {
+                pthread_mutex_destroy(&forks[j]);
+                pthread_mutex_destroy(&philos[j].mutex);
+            }
+            free(philos);
+            free(forks);
+            free(threads);
+            return (1);
+        }
     }
 
     philos->start_time = get_time();
@@ -181,7 +210,16 @@ int main(int ac, char **av)
     {
         if (pthread_create(&threads[i], NULL, &routine, &philos[i]) != 0)
         {
-            // Handle thread creation error
+            printf("Error: Thread creation failed\n");
+            // Cleanup
+            for (int j = 0; j < philos->number_of_philosophers; j++)
+            {
+                pthread_mutex_destroy(&forks[j]);
+                pthread_mutex_destroy(&philos[j].mutex);
+            }
+            free(philos);
+            free(forks);
+            free(threads);
             return (1);
         }
     }
@@ -190,21 +228,38 @@ int main(int ac, char **av)
     pthread_t monitor;
     if (pthread_create(&monitor, NULL, &monitor_routine, philos) != 0)
     {
-        // Handle monitor thread creation error
+        printf("Error: Monitor thread creation failed\n");
+        // Cleanup
+        for (i = 0; i < philos->number_of_philosophers; i++)
+        {
+            pthread_cancel(threads[i]);
+            pthread_mutex_destroy(&forks[i]);
+            pthread_mutex_destroy(&philos[i].mutex);
+        }
+        free(philos);
+        free(forks);
+        free(threads);
         return (1);
     }
 
     // Join threads
     for (i = 0; i < philos->number_of_philosophers; i++)
     {
-        pthread_join(threads[i], NULL);
+        if (pthread_join(threads[i], NULL) != 0)
+        {
+            printf("Error: Thread join failed\n");
+        }
     }
-    pthread_join(monitor, NULL);
+    if (pthread_join(monitor, NULL) != 0)
+    {
+        printf("Error: Monitor thread join failed\n");
+    }
 
     // Cleanup
     for (i = 0; i < philos->number_of_philosophers; i++)
     {
         pthread_mutex_destroy(&forks[i]);
+        pthread_mutex_destroy(&philos[i].mutex);
     }
     free(philos);
     free(forks);
