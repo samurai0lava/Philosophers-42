@@ -3,33 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/06 18:48:32 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/07 11:26:14 by ilyass           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void init_struct(t_philo *philo)
+void	init_struct(t_philo *philo)
 {
-    philo->id = 0;
-    philo->left_fork = 0;
-    philo->right_fork = 0;
-    philo->eat_count = 0;
-    philo->last_eat = 0;
-    philo->is_eating = 0;
-    philo->is_sleeping = 0;
-    philo->is_thinking = 0;
-    philo->is_dead = 0;
-    philo->time_to_die = 0;
-    philo->time_to_eat = 0;
-    philo->time_to_sleep = 0;
-    philo->number_of_eats = 0;
-    philo->number_of_philosophers = 0;
-    philo->number_of_forks = 0;
-    philo->start_time = 0;
+	philo->id = 0;
+	philo->left_fork = 0;
+	philo->right_fork = 0;
+	philo->eat_count = 0;
+	philo->last_eat = 0;
+	philo->is_eating = 0;
+	philo->is_sleeping = 0;
+	philo->is_thinking = 0;
+	philo->is_dead = 0;
+	philo->time_to_die = 0;
+	philo->time_to_eat = 0;
+	philo->time_to_sleep = 0;
+	philo->number_of_eats = 0;
+	philo->number_of_philosophers = 0;
+	philo->number_of_forks = 0;
+	philo->start_time = 0;
 }
 // static void	print_struct(t_philo *philo)
 // {
@@ -49,117 +49,121 @@ void init_struct(t_philo *philo)
 // 	printf("number_of_philosophers: %d\n", philo->number_of_philosophers);
 // }
 
-int create_philos(t_philo *philo)
+int	create_philos(t_philo *philo)
 {
-    int i;
-    t_philo *philos;
+	int		i;
+	t_philo	*philos;
 
-    philos = malloc(sizeof(t_philo) * philo->number_of_philosophers);
-    if (!philos)
-        return (1);
-    i = 0;
-    while (i < philo->number_of_philosophers)
-    {
-        philos[i] = *philo;
-        philos[i].id = i + 1;
-        philos[i].left_fork = i;
-        philos[i].right_fork = (i + 1) % philo->number_of_philosophers;
-        philos[i].last_eat = get_time();
-        i++;
-    }
-    philo = philos;
-    return (0);
+	philos = malloc(sizeof(t_philo) * philo->number_of_philosophers);
+	if (!philos)
+		return (1);
+	i = 0;
+	while (i < philo->number_of_philosophers)
+	{
+		philos[i] = *philo;
+		philos[i].id = i + 1;
+		philos[i].left_fork = i;
+		philos[i].right_fork = (i + 1) % philo->number_of_philosophers;
+		philos[i].last_eat = get_time();
+		i++;
+	}
+	philo = philos;
+	return (0);
 }
-int init_mutex(t_philo *philo)
+int	init_mutex(t_philo *philo)
 {
-    int i;
-    i = 0;
-    while (i < philo->number_of_forks)
-    {
-        if (pthread_mutex_init(&philo->mutex, NULL) != 0)
-        {
-            write(2, "pthread_mutex_init error\n", 26);
-            return (1);
-        }
-        i++;
-    }
-    return (0);
-}
+	int	i;
 
-pthread_t *create_threads(t_philo *philo)
-{
-    int i;
-    pthread_t *philos;
-    i = 0;
-    philos = (pthread_t *)malloc(sizeof(pthread_t) * philo->number_of_philosophers);
-    if (philos == NULL)
-    {
-        write(2, "malloc : error\n", 16);
-        return (NULL);
-    }
-    while (i < philo->number_of_philosophers)
-    {
-        if (pthread_create(&philos[i], NULL, &routine, philo) != 0)
-        {
-            write(2, "pthread_create error\n", 22);
-            return (NULL);
-        }
-        i++;
-    }
-    return (philos);
+	i = 0;
+	while (i < philo->number_of_forks)
+	{
+		if (pthread_mutex_init(&philo->mutex, NULL) != 0)
+		{
+			write(2, "pthread_mutex_init error\n", 26);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
 }
 
-int main(int ac, char **av)
+pthread_t	*create_threads(t_philo *philo)
 {
-    t_philo *philos;
-    pthread_t *threads;
-    pthread_mutex_t *forks;
-    int i;
+	int			i;
+	pthread_t	*philos;
 
-    philos = malloc(sizeof(t_philo));
-    if (!philos)
-        return (1);
-    if (parse_input(ac, av, philos) != 0)
-        return(free(philos), 1);
-    if (philos->number_of_philosophers == 1)
-    {
-        usleep(philos->time_to_die * 1000);
-        printf("%d %s", 1, PHILO_DEAD);
-        free(philos);
-        return (0);
-    }
-    philos = realloc(philos, sizeof(t_philo) * philos->number_of_philosophers);
-    forks = malloc(sizeof(pthread_mutex_t) * philos->number_of_philosophers);
-    threads = malloc(sizeof(pthread_t) * philos->number_of_philosophers);
+	i = 0;
+	philos = (pthread_t *)malloc(sizeof(pthread_t)
+			* philo->number_of_philosophers);
+	if (philos == NULL)
+	{
+		write(2, "malloc : error\n", 16);
+		return (NULL);
+	}
+	while (i < philo->number_of_philosophers)
+	{
+		if (pthread_create(&philos[i], NULL, &routine, philo) != 0)
+		{
+			write(2, "pthread_create error\n", 22);
+			return (NULL);
+		}
+		i++;
+	}
+	return (philos);
+}
 
-    if (!philos || !forks || !threads)
-    {
-        printf("Error: Memory allocation failed\n");
-        free(philos);
-        free(forks);
-        free(threads);
-        return (1);
-    }
+int	main(int ac, char **av)
+{
+	t_philo			*philos;
+	pthread_t		*threads;
+	pthread_mutex_t	*forks;
+	int				i;
+	__U64_TYPE		start_time;
+	int				j;
+	pthread_t		monitor;
 
-    i = 0;
-    while (i < philos->number_of_philosophers)
-    {
-        if (pthread_mutex_init(&forks[i], NULL) != 0)
-        {
-            printf("Error: Mutex initialization failed\n");
-            while (--i >= 0)
-                pthread_mutex_destroy(&forks[i]);
-            free(philos);
-            free(forks);
-            free(threads);
-            return (1);
-        }
-        i++;
-    }
-
-    i = 0;
-    while (i < philos->number_of_philosophers)
-    {
+	philos = malloc(sizeof(t_philo));
+	if (!philos)
+		return (1);
+	if (parse_input(ac, av, philos) != 0)
+		return (free(philos), 1);
+	if (philos->number_of_philosophers == 1)
+	{
+		usleep(philos->time_to_die * 1000);
+		printf("%d %s", 1, PHILO_DEAD);
+		free(philos);
+		return (0);
+	}
+	philos = realloc(philos, sizeof(t_philo) * philos->number_of_philosophers);
+	forks = malloc(sizeof(pthread_mutex_t) * philos->number_of_philosophers);
+	threads = malloc(sizeof(pthread_t) * philos->number_of_philosophers);
+	if (!philos || !forks || !threads)
+	{
+		printf("Error: Memory allocation failed\n");
+		free(philos);
+		free(forks);
+		free(threads);
+		return (1);
+	}
+	i = 0;
+	while (i < philos->number_of_philosophers)
+	{
+		if (pthread_mutex_init(&forks[i], NULL) != 0)
+		{
+			printf("Error: Mutex initialization failed\n");
+			while (--i >= 0)
+				pthread_mutex_destroy(&forks[i]);
+			free(philos);
+			free(forks);
+			free(threads);
+			return (1);
+		}
+		i++;
+	}
+	start_time = get_time();
+	i = 0;
+	while (i < philos->number_of_philosophers)
+	{
         philos[i].id = i + 1;
         philos[i].left_fork = i;
         philos[i].right_fork = (i + 1) % philos->number_of_philosophers;
@@ -169,94 +173,79 @@ int main(int ac, char **av)
         philos[i].time_to_sleep = philos->time_to_sleep;
         philos[i].number_of_eats = philos->number_of_eats;
         philos[i].number_of_philosophers = philos->number_of_philosophers;
-        philos[i].last_eat = 0;
+        philos[i].last_eat = start_time;
+        philos[i].start_time = start_time;
         philos[i].eat_count = 0;
         philos[i].is_dead = 0;
-        if (pthread_mutex_init(&philos[i].mutex, NULL) != 0)
-        {
-            int j = 0;
-            while (j < i)
-            {
-                pthread_mutex_destroy(&forks[j]);
-                pthread_mutex_destroy(&philos[j].mutex);
-                j++;
-            }
-            free(philos);
-            free(forks);
-            free(threads);
-            return (1);
-        }
-        i++;
-    }
-    philos->start_time = get_time();
-    i = 0;
-    while (i < philos->number_of_philosophers)
-    {
-        if (pthread_create(&threads[i], NULL, &routine, &philos[i]) != 0)
-        {
-            printf("Error: Thread creation failed\n");
-            // Cleanup
-            int j = 0;
-            while (j < philos->number_of_philosophers)
-            {
-                pthread_mutex_destroy(&forks[j]);
-                pthread_mutex_destroy(&philos[j].mutex);
-                j++;
-            }
-            free(philos);
-            free(forks);
-            free(threads);
-            return (1);
-        }
-        i++;
-    }
-
-    // Monitor thread
-    pthread_t monitor;
-    if (pthread_create(&monitor, NULL, &monitor_routine, philos) != 0)
-    {
-        printf("Error: Monitor thread creation failed\n");
-        // Cleanup
-        i = 0;
-        while (i < philos->number_of_philosophers)
-        {
-            pthread_cancel(threads[i]);
-            pthread_mutex_destroy(&forks[i]);
-            pthread_mutex_destroy(&philos[i].mutex);
-            i++;
-        }
-        free(philos);
-        free(forks);
-        free(threads);
-        return (1);
-    }
-
-    // Join threads
-    i = 0;
-    while (i < philos->number_of_philosophers)
-    {
-        if (pthread_join(threads[i], NULL) != 0)
-        {
-            printf("Error: Thread join failed\n");
-        }
-        i++;
-    }
-    if (pthread_join(monitor, NULL) != 0)
-    {
-        printf("Error: Monitor thread join failed\n");
-    }
-
-    // Cleanup
-    i = 0;
-    while (i < philos->number_of_philosophers)
-    {
-        pthread_mutex_destroy(&forks[i]);
-        pthread_mutex_destroy(&philos[i].mutex);
-        i++;
-    }
-    free(philos);
-    free(forks);
-    free(threads);
-
-    return (0);
+		if (pthread_mutex_init(&philos[i].mutex, NULL) != 0)
+		{
+			j = 0;
+			while (j < i)
+			{
+				pthread_mutex_destroy(&forks[j]);
+				pthread_mutex_destroy(&philos[j].mutex);
+				j++;
+			}
+			free(philos);
+			free(forks);
+			free(threads);
+			return (1);
+		}
+		i++;
+	}
+	philos->start_time = get_time();
+	i = 0;
+	while (i < philos->number_of_philosophers)
+	{
+		if (pthread_create(&threads[i], NULL, &routine, &philos[i]) != 0)
+		{
+			j = 0;
+			while (j < philos->number_of_philosophers)
+			{
+				pthread_mutex_destroy(&forks[j]);
+				pthread_mutex_destroy(&philos[j].mutex);
+				j++;
+			}
+			free(philos);
+			free(forks);
+			free(threads);
+			return (1);
+		}
+		i++;
+	}
+	if (pthread_create(&monitor, NULL, &monitor_routine, philos) != 0)
+	{
+		i = 0;
+		while (i < philos->number_of_philosophers)
+		{
+			pthread_cancel(threads[i]);
+			pthread_mutex_destroy(&forks[i]);
+			pthread_mutex_destroy(&philos[i].mutex);
+			i++;
+		}
+		free(philos);
+		free(forks);
+		free(threads);
+		return (1);
+	}
+	i = 0;
+	while (i < philos->number_of_philosophers)
+	{
+		if (pthread_join(threads[i], NULL) != 0)
+			return (1);
+		i++;
+	}
+	if (pthread_join(monitor, NULL) != 0)
+		return (1);
+	i = 0;
+	while (i < philos->number_of_philosophers)
+	{
+		pthread_mutex_destroy(&forks[i]);
+		pthread_mutex_destroy(&philos[i].mutex);
+		i++;
+	}
+	free(philos);
+	free(forks);
+	free(threads);
+	return (0);
 }

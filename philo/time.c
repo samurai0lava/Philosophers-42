@@ -35,21 +35,13 @@ int precise_usleep(long usec)
 
 __U64_TYPE get_time(void)
 {
-	struct timeval tv;
-	__U64_TYPE start;
-	__U64_TYPE end;
+    struct timeval tv;
 
-	if (gettimeofday(&tv, NULL) == -1)
-		return (1);
-	start = tv.tv_usec;
-	// printf("tv_usec_start: %ld\n", start);
-	if (precise_usleep(21000) == -1)
-		return (-1);
-	if (gettimeofday(&tv, NULL) == -1)
-		return (-1);
-	end = tv.tv_usec;
-	return (end - start);
+    if (gettimeofday(&tv, NULL) == -1)
+        return (0);
+    return ((tv.tv_sec * (__U64_TYPE)1000) + (tv.tv_usec / 1000));
 }
+
 
 // int	main(void)
 // {
