@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/03 17:27:31 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/06 18:40:49 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,7 @@ void sleep_and_think(t_philo *philo)
     philo->is_sleeping = 1;
     printf("%llu %d %s", get_time() - philo->start_time, philo->id, PHILO_SLEEP);
     pthread_mutex_unlock(&philo->mutex);
-
     precise_usleep(philo->time_to_sleep * 1000);
-
     pthread_mutex_lock(&philo->mutex);
     philo->is_sleeping = 0;
     philo->is_thinking = 1;
@@ -59,7 +57,7 @@ int check_is_death(t_philo *philo)
     {
         philo->is_dead = 1;
         printf("%d %s", philo->id, PHILO_DEAD);
-        return (1); //<-- the operation has ended
+        return (1);
     }
     return (0);
 }
@@ -70,7 +68,6 @@ void *routine(void *arg)
 
     while (1)
     {
-        // Odd philosophers take left fork first, even take right fork first
         if (philo->id % 2 == 0)
         {
             pthread_mutex_lock(&philo->forks[philo->right_fork]);
@@ -81,14 +78,10 @@ void *routine(void *arg)
             pthread_mutex_lock(&philo->forks[philo->left_fork]);
             pthread_mutex_lock(&philo->forks[philo->right_fork]);
         }
-
         eat(philo);
-
         pthread_mutex_unlock(&philo->forks[philo->left_fork]);
         pthread_mutex_unlock(&philo->forks[philo->right_fork]);
-
         sleep_and_think(philo);
-
         pthread_mutex_lock(&philo->mutex);
         if (philo->is_dead || (philo->eat_count >= philo->number_of_eats && philo->number_of_eats != -1))
         {
@@ -97,7 +90,7 @@ void *routine(void *arg)
         }
         pthread_mutex_unlock(&philo->mutex);
     }
-    return NULL;
+    return (NULL);
 }
 
 void *monitor_routine(void *arg)

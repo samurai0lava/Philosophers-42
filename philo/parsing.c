@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilyass <ilyass@student.42.fr>              +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:06 by ilyass            #+#    #+#             */
-/*   Updated: 2024/09/23 11:05:10 by ilyass           ###   ########.fr       */
+/*   Updated: 2024/10/06 18:49:04 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ int	parse_input(int ac, char **av, t_philo *philo)
 			return (1);
 		}
 		philo->number_of_philosophers = ft_atoi(av[1]);
+		if(philo->number_of_philosophers == 0)
+		{
+			printf(MAGENTA ARG_FAILS RESET);
+			return (1);
+		}
 		philo->time_to_die = ft_atoi(av[2]);
 		philo->time_to_eat = ft_atoi(av[3]);
 		philo->time_to_sleep = ft_atoi(av[4]);
