@@ -7,10 +7,10 @@ OBJ = $(SRC:.c=.o)
 all : $(NAME)
 
 .c.o :
-	@$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME) : $(OBJ)
-	@$(CC) $(FLAGS) -o $(NAME) $(OBJ)
+	$(CC) $(FLAGS) -o $(NAME) $(OBJ)
 
 clean :
 	@rm -f $(OBJ)
