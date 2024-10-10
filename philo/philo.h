@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/06 18:49:09 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/10 18:50:20 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,20 @@ typedef struct s_philo
     int 			is_sleeping;
     int 			is_thinking;
     int 			is_dead;
-	int 			time_to_die;
-	int 			time_to_eat;
-	int				time_to_sleep;
-	int				number_of_eats;
-	int				number_of_philosophers;
-	int				number_of_forks;
+    int 			time_to_die;
+    int 			time_to_eat;
+    int				time_to_sleep;
+    int				number_of_eats;
+    int				number_of_philosophers;
+    int				number_of_forks;
     unsigned long long	start_time;
-	pthread_mutex_t mutex;
+    pthread_mutex_t mutex;
     pthread_mutex_t *forks;
 }               t_philo;
 
 //Functions prototypes
 int					parse_input(int ac, char **av, t_philo *philo);
-__U64_TYPE			get_time(void);
+unsigned long long	get_time(void);
 void				init_struct(t_philo *philo);
 int					precise_usleep(long usec);
 int 				ft_atoi(const char *str);
@@ -78,10 +78,6 @@ int					join_threads(pthread_t *threads, int nof);
 int					start_simulation(t_philo *philo, pthread_t *threads);
 int                 check_is_death(t_philo *philo);
 void                *monitor_routine(void *arg);
-void                *routine(void *arg);
-void                sleep_and_think(t_philo *philo);
-void                eat(t_philo *philo);
-void                take_fork(t_philo *philo);
 void                free_all(t_philo *philo, pthread_t *threads);
 
 #endif

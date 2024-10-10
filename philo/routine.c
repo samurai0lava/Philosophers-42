@@ -6,16 +6,15 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/10 18:44:22 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/10 18:51:10 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-
 void take_fork(t_philo *philo)
 {
-    __U64_TYPE current_time;
+    unsigned long long current_time;
     
     pthread_mutex_lock(&philo->mutex);
     if (!philo->is_dead)
@@ -28,7 +27,7 @@ void take_fork(t_philo *philo)
 
 void eat(t_philo *philo)
 {
-    __U64_TYPE current_time, eat_end_time;
+    unsigned long long current_time, eat_end_time;
     
     pthread_mutex_lock(&philo->mutex);
     if (!philo->is_dead)
@@ -61,7 +60,7 @@ void eat(t_philo *philo)
 
 void sleep_and_think(t_philo *philo)
 {
-    __U64_TYPE current_time, sleep_end_time;
+    unsigned long long current_time, sleep_end_time;
     
     pthread_mutex_lock(&philo->mutex);
     if (!philo->is_dead)
@@ -127,7 +126,7 @@ void *routine(void *arg)
 
 int check_is_death(t_philo *philo)
 {
-    __U64_TYPE current_time;
+    unsigned long long current_time;
 
     current_time = get_time();
     if ((current_time - philo->last_eat) > (unsigned long long)philo->time_to_die)

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   time.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/10 19:00:05 by samurai0lav       #+#    #+#             */
+/*   Updated: 2024/10/10 19:00:11 by samurai0lav      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 __U64_TYPE get_elapsed_time_microseconds(struct timeval start, struct timeval end)
@@ -33,24 +45,9 @@ int precise_usleep(long usec)
 	return (0);
 }
 
-__U64_TYPE get_time(void)
+unsigned long long get_time(void)
 {
     struct timeval tv;
-
-    if (gettimeofday(&tv, NULL) == -1)
-        return (0);
-    return ((tv.tv_sec * (__U64_TYPE)1000) + (tv.tv_usec / 1000));
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000ULL + tv.tv_usec / 1000ULL);
 }
-
-
-// int	main(void)
-// {
-// 	__U64_TYPE time;
-
-// 	time = get_time();
-// 	if(time == -1)
-// 		return (1);
-// 	else
-// 		printf("tv_usec: %ld\n", time);
-// 	return (0);
-// }
