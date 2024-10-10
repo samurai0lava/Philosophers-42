@@ -6,11 +6,12 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 13:37:41 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/09/29 17:29:05 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/10 18:36:38 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
 int	ft_atoi(const char *str)
 {
 	int			sign;
