@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/10 18:50:20 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/18 13:07:12 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,6 @@ int					join_threads(pthread_t *threads, int nof);
 int					start_simulation(t_philo *philo, pthread_t *threads);
 int                 check_is_death(t_philo *philo);
 void                *monitor_routine(void *arg);
-void                free_all(t_philo *philo, pthread_t *threads);
+void                free_all(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks);
 
 #endif

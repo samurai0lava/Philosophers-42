@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 13:37:41 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/10/10 18:36:38 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/18 13:11:31 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int join_threads(pthread_t *threads, int nof)
 	return (0);
 }
 
-void free_all(t_philo *philo, pthread_t *threads)
+void free_all(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks)
 {
     int i;
 
@@ -58,8 +58,13 @@ void free_all(t_philo *philo, pthread_t *threads)
     while (i < philo->number_of_philosophers)
     {
         pthread_mutex_destroy(&philo[i].mutex);
+        pthread_mutex_destroy(&forks[i]);
         i++;
     }
-    free(philo);
-    free(threads);
+	if(forks != NULL)
+		free(fork);
+	if(philo != NULL)
+		free(philo);
+	if(threads != NULL)
+    	free(threads);
 }
