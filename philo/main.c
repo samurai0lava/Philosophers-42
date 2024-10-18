@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/18 13:12:35 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/18 18:14:22 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,12 @@ int main(int ac, char **av)
     if (parse_input(ac, av, philos) != 0)
         return (free(philos), 1);
     if (philos->number_of_philosophers == 1)
-        return (handle_one_p(philos), 0);
+		return (handle_one_p(philos), 0);
+	philos = realloc(philos, sizeof(t_philo) * philos->number_of_philosophers);
     forks = malloc(sizeof(pthread_mutex_t) * philos->number_of_philosophers);
     threads = malloc(sizeof(pthread_t) * philos->number_of_philosophers);
-    if (!forks || !threads)
-        return (free_all(philos, threads, forks), 1);
+    if (!forks || !threads || !philos)
+		return (free_all(philos, threads, forks), 1);
     i = 0;
     while (i < philos->number_of_philosophers)
     {

@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 13:37:41 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/10/18 13:11:31 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/18 18:14:32 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void free_all(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks)
         i++;
     }
 	if(forks != NULL)
-		free(fork);
+		free(forks);
 	if(philo != NULL)
 		free(philo);
 	if(threads != NULL)
