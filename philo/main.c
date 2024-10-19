@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:16 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/19 14:00:00 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/19 14:10:27 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,25 @@ pthread_t *create_threads(t_philo *philos)
     return (threads);
 }
 
-static void handle_one_p(t_philo *philos)
+void handle_one_p(t_philo *philos)
 {
-    usleep(philos->time_to_die * 1000);
+    precise_usleep(philos->time_to_die * 1000);
     printf("%d %s", 1, PHILO_DEAD);
     free(philos);
+}
+
+int forks_mutext_init(t_philo *philo, pthread_mutex_t *forks)
+{
+	int i;
+
+	i = 0;
+	while (i < philo->number_of_forks)
+	{
+		if (pthread_mutex_init(&forks[i], NULL) != 0)
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 int main(int ac, char **av)
@@ -70,12 +84,8 @@ int main(int ac, char **av)
     if (!forks || !threads)
 		return (free_all(philos, threads, forks), 1);
     i = 0;
-    while (i < philos->number_of_philosophers)
-    {
-        if (pthread_mutex_init(&forks[i], NULL) != 0)
-            return (free_all(philos, threads, forks), 1);
-        i++;
-    }
+	if(forks_mutext_init(philos, forks) != 0)
+		return (free_all(philos, threads, forks), 1);
     start_time = get_time();
     i = 0;
     while (i < philos->number_of_philosophers)
