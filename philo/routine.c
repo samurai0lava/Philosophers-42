@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/18 18:56:03 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/19 14:01:07 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void eat(t_philo *philo)
                 return;
             }
             pthread_mutex_unlock(&philo->mutex);
-            precise_usleep(philo->time_to_eat);
+            precise_usleep(philo->time_to_eat); // Sleep for 10% of time_to_eat
         }
         
         pthread_mutex_lock(&philo->mutex);
@@ -80,7 +80,7 @@ void sleep_and_think(t_philo *philo)
                 return;
             }
             pthread_mutex_unlock(&philo->mutex);
-            precise_usleep(philo->time_to_sleep);
+            precise_usleep(philo->time_to_sleep); // Sleep for 10% of time_to_sleep
         }
         
         pthread_mutex_lock(&philo->mutex);
@@ -97,7 +97,7 @@ void *routine(void *arg)
     t_philo *philo = (t_philo *)arg;
 
     if (philo->id % 2 == 0)
-        usleep(1000);
+        usleep(1000); // Slight delay for even-numbered philosophers
 
     while (1)
     {

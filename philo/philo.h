@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:33 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/18 13:07:12 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/19 13:57:45 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct s_philo
 }               t_philo;
 
 //Functions prototypes
-int					parse_input(int ac, char **av, t_philo *philo);
+t_philo             *parse_input(int ac, char **av);
 unsigned long long	get_time(void);
 void				init_struct(t_philo *philo);
 int					precise_usleep(long usec);
