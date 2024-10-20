@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/19 14:01:07 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/20 13:13:44 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void eat(t_philo *philo)
         printf("%llu %d %s", current_time - philo->start_time, philo->id, PHILO_EAT);
         eat_end_time = current_time + philo->time_to_eat;
         pthread_mutex_unlock(&philo->mutex);
-        
         while (get_time() < eat_end_time)
         {
             pthread_mutex_lock(&philo->mutex);
@@ -50,7 +49,6 @@ void eat(t_philo *philo)
             pthread_mutex_unlock(&philo->mutex);
             precise_usleep(philo->time_to_eat); // Sleep for 10% of time_to_eat
         }
-        
         pthread_mutex_lock(&philo->mutex);
         philo->is_eating = 0;
         philo->eat_count++;
@@ -60,8 +58,9 @@ void eat(t_philo *philo)
 
 void sleep_and_think(t_philo *philo)
 {
-    unsigned long long current_time, sleep_end_time;
-    
+    unsigned long long current_time;
+    unsigned long long sleep_end_time;
+
     pthread_mutex_lock(&philo->mutex);
     if (!philo->is_dead)
     {
@@ -70,7 +69,6 @@ void sleep_and_think(t_philo *philo)
         printf("%llu %d %s", current_time - philo->start_time, philo->id, PHILO_SLEEP);
         sleep_end_time = current_time + philo->time_to_sleep;
         pthread_mutex_unlock(&philo->mutex);
-        
         while (get_time() < sleep_end_time)
         {
             pthread_mutex_lock(&philo->mutex);
@@ -82,7 +80,6 @@ void sleep_and_think(t_philo *philo)
             pthread_mutex_unlock(&philo->mutex);
             precise_usleep(philo->time_to_sleep); // Sleep for 10% of time_to_sleep
         }
-        
         pthread_mutex_lock(&philo->mutex);
         philo->is_sleeping = 0;
         philo->is_thinking = 1;
@@ -97,8 +94,7 @@ void *routine(void *arg)
     t_philo *philo = (t_philo *)arg;
 
     if (philo->id % 2 == 0)
-        usleep(1000); // Slight delay for even-numbered philosophers
-
+        usleep(1000);
     while (1)
     {
         pthread_mutex_lock(&philo->mutex);
