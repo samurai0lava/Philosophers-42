@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:17:24 by ilyass            #+#    #+#             */
-/*   Updated: 2024/10/20 13:13:44 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/10/21 18:24:03 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ void eat(t_philo *philo)
     unsigned long long current_time, eat_end_time;
     
     pthread_mutex_lock(&philo->mutex);
-    if (!philo->is_dead)
-    {
+    // if (!philo->is_dead)
+    // {
         philo->is_eating = 1;
         current_time = get_time();
-        philo->last_eat = current_time;  // Update last_eat time
+        philo->last_eat = current_time;
         printf("%llu %d %s", current_time - philo->start_time, philo->id, PHILO_EAT);
         eat_end_time = current_time + philo->time_to_eat;
         pthread_mutex_unlock(&philo->mutex);
@@ -47,12 +47,12 @@ void eat(t_philo *philo)
                 return;
             }
             pthread_mutex_unlock(&philo->mutex);
-            precise_usleep(philo->time_to_eat); // Sleep for 10% of time_to_eat
+            precise_usleep(philo->time_to_eat);
         }
         pthread_mutex_lock(&philo->mutex);
         philo->is_eating = 0;
         philo->eat_count++;
-    }
+    // }
     pthread_mutex_unlock(&philo->mutex);
 }
 
@@ -62,8 +62,8 @@ void sleep_and_think(t_philo *philo)
     unsigned long long sleep_end_time;
 
     pthread_mutex_lock(&philo->mutex);
-    if (!philo->is_dead)
-    {
+    // if (!philo->is_dead)
+    // {
         philo->is_sleeping = 1;
         current_time = get_time();
         printf("%llu %d %s", current_time - philo->start_time, philo->id, PHILO_SLEEP);
@@ -78,14 +78,14 @@ void sleep_and_think(t_philo *philo)
                 return;
             }
             pthread_mutex_unlock(&philo->mutex);
-            precise_usleep(philo->time_to_sleep); // Sleep for 10% of time_to_sleep
+            precise_usleep(philo->time_to_sleep);
         }
         pthread_mutex_lock(&philo->mutex);
         philo->is_sleeping = 0;
         philo->is_thinking = 1;
         current_time = get_time();
         printf("%llu %d %s", current_time - philo->start_time, philo->id, PHILO_THINK);
-    }
+    // }
     pthread_mutex_unlock(&philo->mutex);
 }
 
@@ -104,17 +104,13 @@ void *routine(void *arg)
             break;
         }
         pthread_mutex_unlock(&philo->mutex);
-
         pthread_mutex_lock(&philo->forks[philo->left_fork]);
         take_fork(philo);
         pthread_mutex_lock(&philo->forks[philo->right_fork]);
         take_fork(philo);
-
         eat(philo);
-
         pthread_mutex_unlock(&philo->forks[philo->left_fork]);
         pthread_mutex_unlock(&philo->forks[philo->right_fork]);
-
         sleep_and_think(philo);
     }
     return (NULL);
