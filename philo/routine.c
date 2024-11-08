@@ -12,6 +12,13 @@
 
 #include "philo.h"
 
+
+/*
+	take a fork :
+	we start from the left to the right
+
+
+*/
 void take_fork(t_philo *philo)
 {
 
