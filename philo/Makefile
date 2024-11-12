@@ -10,7 +10,7 @@ all : $(NAME)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME) : $(OBJ)
-	$(CC) $(FLAGS) -o $(NAME) $(OBJ)
+	$(CC) $(FLAGS) -o $(NAME) $(OBJ) -lpthread
 
 clean :
 	@rm -f $(OBJ)
