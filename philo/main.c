@@ -71,7 +71,6 @@ int main(int ac, char **av)
 	pthread_t *threads;
 	pthread_mutex_t *forks;
 	int i;
-	__U64_TYPE start_time;
 	pthread_t monitor;
 	
 	philos = parse_input(ac, av);
@@ -86,7 +85,6 @@ int main(int ac, char **av)
 	i = 0;
 	if(forks_mutext_init(philos, forks) != 0)
 		return (free_all(philos, threads, forks), 1);
-	start_time = get_time();
 	i = 0;
 	while (i < philos->number_of_philosophers)
 	{
@@ -100,7 +98,7 @@ int main(int ac, char **av)
 		philos[i].number_of_eats = philos->number_of_eats;
 		philos[i].number_of_philosophers = philos->number_of_philosophers;
 		philos[i].last_eat = get_time(); 
-		philos[i].start_time = start_time;
+		philos[i].start_time = get_time();
 		philos[i].eat_count = 0;
 		philos[i].is_dead = 0;
 		if (pthread_mutex_init(&philos[i].mutex, NULL) != 0)
