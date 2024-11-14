@@ -19,30 +19,24 @@ __U64_TYPE get_elapsed_time_microseconds(struct timeval start, struct timeval en
 
 int precise_usleep(long usec)
 {
-	struct timeval start, current;
-	long			elapsed;
-	long			rem;
+    struct timeval start, current;
+    long elapsed = 0;
 
-	gettimeofday(&start, NULL);
-	while (elapsed < usec)
-	{
-		if (gettimeofday(&current, NULL) == -1)
-		{
-			perror("gettimeofday");
-			return (-1);
-		}
-		elapsed = get_elapsed_time_microseconds(start, current);
-		rem = usec - elapsed;
-		if (rem > 1000)
-		{
-			if (usleep(rem / 2) == -1)
-			{
-				perror("usleep");
-				return (-1);
-			}
-		}
-	}
-	return (0);
+    if (gettimeofday(&start, NULL) != 0)
+        return (-1);
+
+    while (elapsed < usec)
+    {
+        if (gettimeofday(&current, NULL) != 0)
+            return (-1);
+            
+        elapsed = ((current.tv_sec - start.tv_sec) * 1000000) + 
+                  (current.tv_usec - start.tv_usec);
+
+        if (usec - elapsed > 1000)
+            usleep(500); // Sleep in smaller intervals
+    }
+    return (0);
 }
 
 unsigned long long get_time(void)

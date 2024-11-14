@@ -33,20 +33,17 @@ void take_fork(t_philo *philo)
 void eat(t_philo *philo)
 {
     pthread_mutex_lock(&philo->mutex);
+    philo->last_eat = get_time();
     philo->is_eating = 1;
-    philo->last_eat = get_time() - philo->start_time;
     printf("%llu %d %s", get_time() - philo->start_time, philo->id, PHILO_EAT);
     philo->eat_count++;
     pthread_mutex_unlock(&philo->mutex);
-    
     precise_usleep(philo->time_to_eat * 1000);
-    
     pthread_mutex_lock(&philo->mutex);
     philo->is_eating = 0;
     pthread_mutex_unlock(&philo->mutex);
-    
-    pthread_mutex_unlock(&philo->forks[philo->right_fork]);
     pthread_mutex_unlock(&philo->forks[philo->left_fork]);
+    pthread_mutex_unlock(&philo->forks[philo->right_fork]);
 }
 
 void think(t_philo *philo)
@@ -64,21 +61,24 @@ void sleep_and_think(t_philo *philo)
 void *routine(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
-    
+
+    pthread_mutex_lock(&philo->mutex);
+    philo->last_eat = get_time(); // Set initial last_eat time
+    pthread_mutex_unlock(&philo->mutex);
+
     if (philo->id % 2)
-        precise_usleep(1000);
-    
+        precise_usleep(philo->time_to_eat * 500);
+
     while (1)
     {
         pthread_mutex_lock(&philo->mutex);
-        if (philo->is_dead || (philo->number_of_eats != -1 && 
-            philo->eat_count >= philo->number_of_eats))
+        if (philo->is_dead)
         {
             pthread_mutex_unlock(&philo->mutex);
             break;
         }
         pthread_mutex_unlock(&philo->mutex);
-        
+
         take_fork(philo);
         eat(philo);
         sleep_and_think(philo);
@@ -108,33 +108,27 @@ void *monitor_routine(void *arg)
 {
     t_philo *philos = (t_philo *)arg;
     int i;
-    int finished_eating = 0;
-    
+    unsigned long long current;
+
     while (1)
     {
-        finished_eating = 0;
-        i = -1;
-        while (++i < philos->number_of_philosophers)
+        i = 0;
+        while (i < philos[0].number_of_philosophers)
         {
             pthread_mutex_lock(&philos[i].mutex);
-            if (philos[i].number_of_eats != -1 && 
-                philos[i].eat_count >= philos[i].number_of_eats)
-                finished_eating++;
+            current = get_time();
             if (!philos[i].is_eating && 
-                (get_time() - philos[i].start_time - philos[i].last_eat) > 
-                (unsigned long long)philos[i].time_to_die)
+                (current - philos[i].last_eat) >= (unsigned long long)philos[i].time_to_die)
             {
-                printf("%llu %d %s", get_time() - philos[i].start_time, 
-                       philos[i].id, PHILO_DEAD);
+                printf("%llu %d %s", current - philos[i].start_time, philos[i].id, PHILO_DEAD);
                 philos[i].is_dead = 1;
                 pthread_mutex_unlock(&philos[i].mutex);
-                return NULL;
+                return (NULL);
             }
             pthread_mutex_unlock(&philos[i].mutex);
+            i++;
         }
-        if (finished_eating == philos->number_of_philosophers)
-            return NULL;
-        usleep(1000);
+        usleep(100);
     }
-    return NULL;
+    return (NULL);
 }

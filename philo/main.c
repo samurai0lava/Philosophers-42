@@ -99,7 +99,7 @@ int main(int ac, char **av)
 		philos[i].time_to_sleep = philos->time_to_sleep;
 		philos[i].number_of_eats = philos->number_of_eats;
 		philos[i].number_of_philosophers = philos->number_of_philosophers;
-		philos[i].last_eat = start_time;
+		philos[i].last_eat = get_time(); 
 		philos[i].start_time = start_time;
 		philos[i].eat_count = 0;
 		philos[i].is_dead = 0;
