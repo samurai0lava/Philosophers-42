@@ -14,7 +14,6 @@
 
 void take_fork(t_philo *philo)
 {
-    // Lock forks in consistent order to prevent deadlocks
     if (philo->left_fork < philo->right_fork)
     {
         pthread_mutex_lock(&philo->forks[philo->left_fork]);
@@ -91,7 +90,6 @@ void *routine(void *arg)
     pthread_mutex_lock(&philo->mutex);
     philo->last_eat = get_time();
     pthread_mutex_unlock(&philo->mutex);
-
     if (philo->id % 2)
         precise_usleep(philo->time_to_eat * 100);
 
@@ -104,7 +102,6 @@ void *routine(void *arg)
             break;
         }
         pthread_mutex_unlock(&philo->mutex);
-
         take_fork(philo);
         eat(philo);
         sleep_and_think(philo);
@@ -112,15 +109,17 @@ void *routine(void *arg)
     return (NULL);
 }
 
-int check_is_death(t_philo *philo)
+int check_is_death(t_philo *philo, t_simulation *simutaion)
 {
     unsigned long long current_time;
 
     pthread_mutex_lock(&philo->mutex);
+    simutaion->sim_status = 0;
     current_time = get_time() - philo->start_time;
     if (!philo->is_eating &&
         (current_time - philo->last_eat) > (unsigned long long)philo->time_to_die)
     {
+        simutaion->sim_status = 1;
         philo->is_dead = 1;
         printf("%llu %d %s", current_time, philo->id, PHILO_DEAD);
         pthread_mutex_unlock(&philo->mutex);
@@ -133,19 +132,19 @@ int check_is_death(t_philo *philo)
 void *monitor_routine(void *arg)
 {
     t_philo *philos = (t_philo *)arg;
+    t_simulation *simulation = philos[0].simulation;
     int i;
     int all_ate_enough;
 
-    pthread_mutex_lock(&philos->mutex);
-    all_ate_enough = 0;
-    while (!all_ate_enough)
+    while (1)
     {
         all_ate_enough = 1;
-        i = 0;
-        while (i < philos[0].number_of_philosophers)
+        simulation->sim_status = 0;
+        for (i = 0; i < philos[0].number_of_philosophers; i++)
         {
-            if (check_is_death(&philos[i]))
-                return NULL;
+            check_is_death(&philos[i], simulation);
+            if(simulation->sim_status)
+                return (NULL);
             if (philos[0].number_of_eats > 0)
             {
                 pthread_mutex_lock(&philos[i].mutex);
@@ -153,10 +152,10 @@ void *monitor_routine(void *arg)
                     all_ate_enough = 0;
                 pthread_mutex_unlock(&philos[i].mutex);
             }
-            i++;
         }
+        if (all_ate_enough)
+            break;
         usleep(500);
     }
-    pthread_mutex_unlock(&philos->mutex);
     return NULL;
 }
