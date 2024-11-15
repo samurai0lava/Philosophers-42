@@ -109,41 +109,39 @@ void *routine(void *arg)
     return (NULL);
 }
 
-int check_is_death(t_philo *philo, t_simulation *simutaion)
+int check_is_death(t_philo *philo)
 {
-    unsigned long long current_time;
+    unsigned long long current_time = get_time();
 
     pthread_mutex_lock(&philo->mutex);
-    simutaion->sim_status = 0;
-    current_time = get_time() - philo->start_time;
-    if (!philo->is_eating &&
+    if (!philo->is_eating && 
         (current_time - philo->last_eat) > (unsigned long long)philo->time_to_die)
     {
-        simutaion->sim_status = 1;
         philo->is_dead = 1;
-        printf("%llu %d %s", current_time, philo->id, PHILO_DEAD);
+        printf("%llu %d %s\n", current_time - philo->start_time, philo->id, PHILO_DEAD);
         pthread_mutex_unlock(&philo->mutex);
-        return (1);
+        return 1;
     }
     pthread_mutex_unlock(&philo->mutex);
-    return (0);
+    return 0;
 }
+
 
 void *monitor_routine(void *arg)
 {
     t_philo *philos = (t_philo *)arg;
-    t_simulation *simulation = philos[0].simulation;
     int i;
     int all_ate_enough;
+    int status;
 
     while (1)
     {
         all_ate_enough = 1;
-        simulation->sim_status = 0;
         for (i = 0; i < philos[0].number_of_philosophers; i++)
         {
-            check_is_death(&philos[i], simulation);
-            if(simulation->sim_status)
+            status = check_is_death(&philos[i]);
+            printf("status: %d\n", status);
+            if (status == 1)
                 return (NULL);
             if (philos[0].number_of_eats > 0)
             {

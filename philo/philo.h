@@ -41,12 +41,6 @@
 
 //struct for the philosophers
 
-typedef struct s_simulation
-{
-    pthread_mutex_t *simulation;
-    int             sim_status;
-}              t_simulation;
-
 typedef struct s_philo
 {
     int				id;
@@ -67,7 +61,6 @@ typedef struct s_philo
     unsigned long long	start_time;
     pthread_mutex_t mutex;  
     pthread_mutex_t *forks;
-    t_simulation    *simulation;
 }               t_philo;
 
 //Functions prototypes
@@ -84,7 +77,7 @@ void				*routine(void *arg);
 pthread_t			*create_threads(t_philo *philo);
 int					join_threads(pthread_t *threads, int nof);
 int					start_simulation(t_philo *philo, pthread_t *threads);
-int check_is_death(t_philo *philo, t_simulation *simutaion);
+int                 check_is_death(t_philo *philo);         
 void                *monitor_routine(void *arg);
 void                free_all(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks);
 void                handle_one_p(t_philo *philos);
