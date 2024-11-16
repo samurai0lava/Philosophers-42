@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:26:45 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/15 10:29:19 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/16 15:42:54 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,9 @@ void *routine(void *arg)
 
     while (1)
     {
+        // check_is_death(philo);
+        // if(philo->is_dead == 1)
+        //     return (NULL);
         pthread_mutex_lock(&philo->mutex);
         if (philo->is_dead)
         {
@@ -132,20 +135,25 @@ void *monitor_routine(void *arg)
     t_philo *philos = (t_philo *)arg;
     int i;
     int all_ate_enough;
-    int status;
 
     while (1)
     {
         all_ate_enough = 1;
         for (i = 0; i < philos[0].number_of_philosophers; i++)
         {
-            status = check_is_death(&philos[i]);
-            printf("status: %d\n", status);
-            if (status == 1)
+            check_is_death(&philos[i]);
+            // printf("status: %d\n", status);
+            // printf("Dead flag: %d\n", philos->is_dead);
+            // why this shit not stopping
+            if (philos->is_dead == 1)
                 return (NULL);
+            // pthread_mutex_lock(&philos->mutex);
+            // printf("number of eats: %d \n", philos[0].number_of_eats);
+            // pthread_mutex_unlock(&philos->mutex);
             if (philos[0].number_of_eats > 0)
             {
                 pthread_mutex_lock(&philos[i].mutex);
+                // printf("number of eats: %d \n", philos[0].number_of_eats);
                 if (philos[i].eat_count < philos[0].number_of_eats)
                     all_ate_enough = 0;
                 pthread_mutex_unlock(&philos[i].mutex);
