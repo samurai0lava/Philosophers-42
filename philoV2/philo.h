@@ -54,15 +54,29 @@ typedef struct s_philo
 {
 	int     		id;
 	int     		eat_count;
-	long long		last_meal_time;   // Add this field
+	long long		last_meal_time;
 	t_data  		philo_data;
 	t_shared_data   shared_data;
 
 }   t_philo;
 
-// Add these function prototypes
-long long	get_time(void);
 
+int creath_thread(t_philo *philo);
+int create_thread_monitor(t_philo *philo);
+int init_mutexes(t_philo *philo);
+void init_philosophers(t_philo *philo);
+void cleanup(t_philo *philo);
+void start_simulation(t_philo *philo);
+int	ft_atoi(const char *str);
+int ft_isdigit(int c);
+int check_num(char **str);
+int parse_input(t_philo *philo, int ac, char **av);
+void take_fork(t_philo *philo);
+void eat(t_philo *philo);
+void sleep_and_think(t_philo *philo);
+void *routine(void *arg);
+void *monitor(void *arg);
+long long get_time(void);
 int precise_usleep(long usec);
 
 #endif

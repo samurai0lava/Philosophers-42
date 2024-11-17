@@ -62,7 +62,7 @@ static int return_error(char *str)
 static void init_philo(t_philo *philo, char **av)
 {
     philo->philo_data.numb_of_philos = ft_atoi(av[1]);
-    philo->philo_data.time_to_die = ft_atoi(av[2];
+    philo->philo_data.time_to_die = ft_atoi(av[2]);
     philo->philo_data.time_to_eat = ft_atoi(av[3]);
     philo->philo_data.time_to_sleep = ft_atoi(av[4]);
     if(av[5])
@@ -73,13 +73,13 @@ static void init_philo(t_philo *philo, char **av)
 
 int parse_input(t_philo *philo, int ac, char **av)
 {
-    if (ac != 5 || ac != 6)
-		return (return_error(ARG_FAILS));
+    // if (ac != 5 || ac != 6)
+	// 	return (return_error(ARG_FAILS));
    	if (ft_atoi(av[1]) < 1 || ft_atoi(av[2]) < 1 || ft_atoi(av[3]) < 1 || ft_atoi(av[4]) < 1 || (ac == 6 && ft_atoi(av[5]) < 1))
 		return (return_error(ARG_FAILS));
 	if (check_num(av) == 0)
 		return (return_error(ARG_FAILS));
-    init_philo(&philo, av);
+    init_philo(philo, av);
     if(philo->philo_data.numb_of_philos == 0)
 		return (return_error(ARG_FAILS));
     philo = malloc(sizeof(t_philo *) * philo->philo_data.numb_of_philos);

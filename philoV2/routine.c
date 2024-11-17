@@ -64,7 +64,7 @@ void *routine(void *arg)
     return (NULL);
 }
 
-void monitor(void *arg)
+void *monitor(void *arg)
 {
     t_philo *philo;
     long long current_time;
@@ -82,8 +82,9 @@ void monitor(void *arg)
             philo->shared_data.is_dead = 1;
             pthread_mutex_unlock(philo->shared_data.print);
             pthread_mutex_unlock(philo->shared_data.dead);
-            break;
+            return (NULL);
         }
         precise_usleep(1000);
     }
+    return (NULL);
 }

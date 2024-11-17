@@ -87,25 +87,20 @@ void cleanup(t_philo *philo)
 void start_simulation(t_philo *philo)
 {
     // Set start time for all philosophers
-    long long start_time = get_time();
+    long long   start_time; 
+    int         i;
+    start_time = get_time();
     philo->last_meal_time = start_time;
-    
-    // Create philosopher threads
     if (creath_thread(philo) != 0)
     {
         philo->shared_data.is_dead = 1;
         return;
     }
-    
-    // Create monitor thread
     if (create_thread_monitor(philo) != 0)
     {
         philo->shared_data.is_dead = 1;
         return;
     }
-    
-    // Wait for all threads to finish
-    int i;
     for (i = 0; i <= philo->philo_data.numb_of_philos; i++)
     {
         if (pthread_join(philo->shared_data.philos[i], NULL) != 0)
