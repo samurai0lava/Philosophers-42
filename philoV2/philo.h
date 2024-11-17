@@ -41,21 +41,28 @@ typedef struct s_shared_data
 	pthread_mutex_t *forks;
 	pthread_mutex_t	*print;
 	pthread_mutex_t	*dead;
-	int             *is_dead;
-	int             *is_eating;
-	int             *is_sleeping;
-	int             *is_thinking;
+	int             is_dead;
+	int             is_eating;
+	int             is_sleeping;
+	int             is_thinking;
 	pthread_t	   *philos;
-	
+	int				left_fork;
+	int				right_fork;
 }   t_shared_data;
 
 typedef struct s_philo
 {
 	int     		id;
 	int     		eat_count;
+	long long		last_meal_time;   // Add this field
 	t_data  		philo_data;
 	t_shared_data   shared_data;
 
 }   t_philo;
+
+// Add these function prototypes
+long long	get_time(void);
+
+int precise_usleep(long usec);
 
 #endif
