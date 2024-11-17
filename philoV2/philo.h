@@ -29,32 +29,33 @@
 
 typedef struct s_data
 {
-    int time_to_eat;
-    int time_to_die;
-    int time_to_sleep;
-    int numb_of_philos;
-
+	int time_to_eat;
+	int time_to_die;
+	int time_to_sleep;
+	int numb_of_philos;
+	int number_of_eats;
 }   t_data;
-
-
-typedef struct s_philo
-{
-    int     id;
-    int     eat_count;
-    t_data  philo_data;
-
-}   t_philo;
-
 
 typedef struct s_shared_data
 {
-
+	pthread_mutex_t *forks;
+	pthread_mutex_t	*print;
+	pthread_mutex_t	*dead;
+	int             *is_dead;
+	int             *is_eating;
+	int             *is_sleeping;
+	int             *is_thinking;
+	pthread_t	   *philos;
+	
 }   t_shared_data;
 
+typedef struct s_philo
+{
+	int     		id;
+	int     		eat_count;
+	t_data  		philo_data;
+	t_shared_data   shared_data;
 
-
-
-
-
+}   t_philo;
 
 #endif
