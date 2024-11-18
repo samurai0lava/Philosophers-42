@@ -1,14 +1,14 @@
 #include "philo.h"
 
-int creath_thread(t_philo *philo)
+int creath_thread(t_philo *philos)
 {
     int i;
     int check;
 
     i = 0;
-    while(philo->philo_data.numb_of_philos > i)
+    while(philos[0].philo_data.numb_of_philos > i)
     {
-        check = pthread_create(&philo->shared_data.philos[i], NULL, &routine, philo);
+        check = pthread_create(&philos[i].shared_data.philos[i], NULL, &routine, &philos[i]);
         if (check != 0)
             return (1);
         i++;
@@ -16,115 +16,128 @@ int creath_thread(t_philo *philo)
     return (0);
 }
 
-int create_thread_monitor(t_philo *philo)
+int create_thread_monitor(t_philo *philos)
 {
     int check;
 
-    check = pthread_create(&philo->shared_data.philos[philo->philo_data.numb_of_philos], NULL, &monitor, philo);
+    check = pthread_create(&philos[0].shared_data.philos[philos[0].philo_data.numb_of_philos], NULL, &monitor, philos);
     if (check != 0)
         return (1);
     return (0);
 }
 
-int init_mutexes(t_philo *philo)
+int init_mutexes(t_philo *philos)
 {
     int i;
     
-    philo->shared_data.forks = malloc(sizeof(pthread_mutex_t) * philo->philo_data.numb_of_philos);
-    philo->shared_data.print = malloc(sizeof(pthread_mutex_t));
-    philo->shared_data.dead = malloc(sizeof(pthread_mutex_t));
-    philo->shared_data.philos = malloc(sizeof(pthread_t) * (philo->philo_data.numb_of_philos + 1));
+    philos[0].shared_data.forks = malloc(sizeof(pthread_mutex_t) * philos[0].philo_data.numb_of_philos);
+    philos[0].shared_data.print = malloc(sizeof(pthread_mutex_t));
+    philos[0].shared_data.dead = malloc(sizeof(pthread_mutex_t));
+    philos[0].shared_data.philos = malloc(sizeof(pthread_t) * (philos[0].philo_data.numb_of_philos + 1));
     
-    if (!philo->shared_data.forks || !philo->shared_data.print || 
-        !philo->shared_data.dead || !philo->shared_data.philos)
+    if (!philos[0].shared_data.forks || !philos[0].shared_data.print || 
+        !philos[0].shared_data.dead || !philos[0].shared_data.philos)
         return (1);
     
     i = 0;
-    while (i < philo->philo_data.numb_of_philos)
+    while (i < philos[0].philo_data.numb_of_philos)
     {
-        if (pthread_mutex_init(&philo->shared_data.forks[i], NULL))
+        if (pthread_mutex_init(&philos[0].shared_data.forks[i], NULL))
             return (1);
         i++;
     }
-    if (pthread_mutex_init(philo->shared_data.print, NULL) || 
-        pthread_mutex_init(philo->shared_data.dead, NULL))
+    if (pthread_mutex_init(philos[0].shared_data.print, NULL) || 
+        pthread_mutex_init(philos[0].shared_data.dead, NULL))
         return (1);
     return (0);
 }
 
-void init_philosophers(t_philo *philo)
+void init_philosophers(t_philo *philos)
 {
     int i;
     
-    for (i = 0; i < philo->philo_data.numb_of_philos; i++)
+    i = 0;
+    while (i < philos[0].philo_data.numb_of_philos)
     {
-        philo->id = i + 1;
-        philo->eat_count = 0;
-        philo->last_meal_time = get_time();
-        philo->shared_data.is_dead = 0;
-        philo->shared_data.is_eating = 0;
-        philo->shared_data.is_sleeping = 0;
-        philo->shared_data.is_thinking = 0;
-        philo->shared_data.left_fork = i;
-        philo->shared_data.right_fork = (i + 1) % philo->philo_data.numb_of_philos;
+        philos[i].id = i + 1;
+        philos[i].eat_count = 0;
+        philos[i].last_meal_time = get_time();
+        philos[i].shared_data = philos[0].shared_data;
+        philos[i].philo_data = philos[0].philo_data;
+        philos[i].shared_data.is_dead = 0;
+        philos[i].shared_data.is_eating = 0;
+        philos[i].shared_data.is_sleeping = 0;
+        philos[i].shared_data.is_thinking = 0;
+        philos[i].shared_data.left_fork = i;
+        philos[i].shared_data.right_fork = (i + 1) % philos[0].philo_data.numb_of_philos;
+        i++;
     }
 }
 
-void cleanup(t_philo *philo)
+void cleanup(t_philo *philos)
 {
     int i;
     
-    for (i = 0; i < philo->philo_data.numb_of_philos; i++)
-        pthread_mutex_destroy(&philo->shared_data.forks[i]);
-    pthread_mutex_destroy(philo->shared_data.print);
-    pthread_mutex_destroy(philo->shared_data.dead);
-    free(philo->shared_data.forks);
-    free(philo->shared_data.print);
-    free(philo->shared_data.dead);
-    free(philo->shared_data.philos);
+    i = 0;
+    while (i < philos[0].philo_data.numb_of_philos)
+    {
+        pthread_mutex_destroy(&philos[0].shared_data.forks[i]);
+        i++;
+    }
+    pthread_mutex_destroy(philos[0].shared_data.print);
+    pthread_mutex_destroy(philos[0].shared_data.dead);
+    free(philos[0].shared_data.forks);
+    free(philos[0].shared_data.print);
+    free(philos[0].shared_data.dead);
+    free(philos[0].shared_data.philos);
 }
 
-void start_simulation(t_philo *philo)
+void start_simulation(t_philo *philos)
 {
-    // Set start time for all philosophers
     long long   start_time; 
     int         i;
+
+    i = 0;
     start_time = get_time();
-    philo->last_meal_time = start_time;
-    if (creath_thread(philo) != 0)
+    philos[0].last_meal_time = start_time;
+    if (creath_thread(philos) != 0)
     {
-        philo->shared_data.is_dead = 1;
+        philos[0].shared_data.is_dead = 1;
         return;
     }
-    if (create_thread_monitor(philo) != 0)
+    if (create_thread_monitor(philos) != 0)
     {
-        philo->shared_data.is_dead = 1;
+        philos[0].shared_data.is_dead = 1;
         return;
     }
-    for (i = 0; i <= philo->philo_data.numb_of_philos; i++)
+    while(i <= philos[0].philo_data.numb_of_philos)
     {
-        if (pthread_join(philo->shared_data.philos[i], NULL) != 0)
+        if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
         {
-            philo->shared_data.is_dead = 1;
+            philos[0].shared_data.is_dead = 1;
             break;
         }
+        i++;
     }
 }
 
 int main(int ac , char **av)
 {
-    t_philo philo;
+    t_philo *philos;
 
-    if (parse_input(&philo, ac, av) != 0)
+    philos = malloc(sizeof(t_philo) * atoi(av[1]));
+    if (!philos)
         return (1);
-    // printf("%d\n", philo.philo_data.numb_of_philos);
-    if (init_mutexes(&philo) != 0)
+    if (parse_input(&philos[0], ac, av) != 0)
+        return (1);
+    if (init_mutexes(philos) != 0)
     {
-        cleanup(&philo);
+        cleanup(philos);
         return (1);
     }
-    init_philosophers(&philo);
-    start_simulation(&philo);
-    cleanup(&philo);
+    init_philosophers(philos);
+    start_simulation(philos);
+    cleanup(philos);
+    free(philos);
     return (0);
 }
