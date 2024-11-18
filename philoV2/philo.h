@@ -48,6 +48,7 @@ typedef struct s_shared_data
 	pthread_t	   *philos;
 	int				left_fork;
 	int				right_fork;
+	unsigned long long start_time;
 }   t_shared_data;
 
 typedef struct s_philo
@@ -78,5 +79,6 @@ void *routine(void *arg);
 void *monitor(void *arg);
 long long get_time(void);
 int precise_usleep(long usec);
+int return_error(char *str);
 
 #endif

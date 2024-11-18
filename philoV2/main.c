@@ -70,6 +70,7 @@ void init_philosophers(t_philo *philos)
         philos[i].shared_data.is_thinking = 0;
         philos[i].shared_data.left_fork = i;
         philos[i].shared_data.right_fork = (i + 1) % philos[0].philo_data.numb_of_philos;
+        philos[i].shared_data.start_time = get_time();
         i++;
     }
 }
@@ -125,16 +126,26 @@ int main(int ac , char **av)
 {
     t_philo *philos;
 
-    philos = malloc(sizeof(t_philo) * atoi(av[1]));
+    if (ac != 5 && ac != 6)
+        return (return_error(ARG_FAILS));
+
+    philos = malloc(sizeof(t_philo) * ft_atoi(av[1]));
     if (!philos)
         return (1);
-    if (parse_input(&philos[0], ac, av) != 0)
+
+    if (parse_input(philos, ac, av) != 0)
+    {
+        free(philos);
         return (1);
+    }
+
     if (init_mutexes(philos) != 0)
     {
         cleanup(philos);
+        free(philos);
         return (1);
     }
+
     init_philosophers(philos);
     start_simulation(philos);
     cleanup(philos);

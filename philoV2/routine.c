@@ -2,21 +2,23 @@
 
 void take_fork(t_philo *philo)
 {
+
     pthread_mutex_lock(&philo->shared_data.forks[philo->shared_data.left_fork]);
     pthread_mutex_lock(philo->shared_data.print);
-    printf("%d %s", philo->id, PHILO_FORK);
+    printf("%lld %d has taken a fork\n", get_time() - philo->shared_data.start_time, philo->id);
     pthread_mutex_unlock(philo->shared_data.print);
     
     pthread_mutex_lock(&philo->shared_data.forks[philo->shared_data.right_fork]);
     pthread_mutex_lock(philo->shared_data.print);
-    printf("%d %s", philo->id, PHILO_FORK);
+    printf("%lld %d has taken a fork\n", get_time() - philo->shared_data.start_time, philo->id);
     pthread_mutex_unlock(philo->shared_data.print);
 }
 
 void eat(t_philo *philo)
 {
+
     pthread_mutex_lock(philo->shared_data.print);
-    printf("%d %s", philo->id, PHILO_EAT);
+    printf("%lld %d is eating\n", get_time() - philo->shared_data.start_time, philo->id);
     pthread_mutex_unlock(philo->shared_data.print);
     
     philo->last_meal_time = get_time();
@@ -31,8 +33,9 @@ void eat(t_philo *philo)
 
 void sleep_and_think(t_philo *philo)
 {
+
     pthread_mutex_lock(philo->shared_data.print);
-    printf("%d %s", philo->id, PHILO_SLEEP);
+    printf("%lld %d is sleeping\n", get_time() - philo->shared_data.start_time, philo->id);
     pthread_mutex_unlock(philo->shared_data.print);
     
     philo->shared_data.is_sleeping = 1;
@@ -40,7 +43,7 @@ void sleep_and_think(t_philo *philo)
     philo->shared_data.is_sleeping = 0;
     
     pthread_mutex_lock(philo->shared_data.print);
-    printf("%d %s", philo->id, PHILO_THINK);
+    printf("%lld %d is thinking\n", get_time() - philo->shared_data.start_time, philo->id);
     pthread_mutex_unlock(philo->shared_data.print);
     philo->shared_data.is_thinking = 1;
 }
@@ -78,7 +81,7 @@ void *monitor(void *arg)
         {
             pthread_mutex_lock(philo->shared_data.dead);
             pthread_mutex_lock(philo->shared_data.print);
-            printf("%lld %d %s", current_time, philo->id, PHILO_DEAD);
+            printf("%lld %d died\n", current_time - philo->shared_data.start_time, philo->id);
             philo->shared_data.is_dead = 1;
             pthread_mutex_unlock(philo->shared_data.print);
             pthread_mutex_unlock(philo->shared_data.dead);
