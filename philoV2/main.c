@@ -117,6 +117,7 @@ int main(int ac , char **av)
 
     if (parse_input(&philo, ac, av) != 0)
         return (1);
+    // printf("%d\n", philo.philo_data.numb_of_philos);
     if (init_mutexes(&philo) != 0)
     {
         cleanup(&philo);
