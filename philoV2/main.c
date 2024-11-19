@@ -47,7 +47,8 @@ int init_mutexes(t_philo *philos)
         i++;
     }
     if (pthread_mutex_init(philos[0].shared_data.print, NULL) || 
-        pthread_mutex_init(philos[0].shared_data.dead, NULL))
+        pthread_mutex_init(philos[0].shared_data.dead, NULL) ||
+        pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL)) // Initialize new mutex
         return (1);
     return (0);
 }
@@ -87,6 +88,7 @@ void cleanup(t_philo *philos)
     }
     pthread_mutex_destroy(philos[0].shared_data.print);
     pthread_mutex_destroy(philos[0].shared_data.dead);
+    pthread_mutex_destroy(&philos[0].shared_data.state_mutex); // Destroy new mutex
     free(philos[0].shared_data.forks);
     free(philos[0].shared_data.print);
     free(philos[0].shared_data.dead);

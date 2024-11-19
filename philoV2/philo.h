@@ -38,18 +38,19 @@ typedef struct s_data
 
 typedef struct s_shared_data
 {
-	pthread_mutex_t *forks;
-	pthread_mutex_t	*print;
-	pthread_mutex_t	*dead;
-	int             is_dead;
-	int             is_eating;
-	int             is_sleeping;
-	int             is_thinking;
-	pthread_t	   *philos;
-	int				left_fork;
-	int				right_fork;
-	unsigned long long start_time;
-}   t_shared_data;
+    pthread_mutex_t *forks;
+    pthread_mutex_t *print;
+    pthread_mutex_t *dead;
+    pthread_mutex_t state_mutex; // New mutex for shared states
+    pthread_t *philos;
+    long long start_time;
+    int is_dead;
+    int is_eating;
+    int is_sleeping;
+    int is_thinking;
+    int left_fork;
+    int right_fork;
+} t_shared_data;
 
 typedef struct s_philo
 {
