@@ -11,21 +11,13 @@ int creath_thread(t_philo *philos)
         check = pthread_create(&philos[i].shared_data.philos[i], NULL, &routine, &philos[i]);
         if (check != 0)
             return (1);
+        check = pthread_create(&philos[i].shared_data.philos[philos[0].philo_data.numb_of_philos + i], NULL, &monitor, &philos[i]);
+        if (check != 0)
+            return (1);
         i++;
     }
     return (0);
 }
-
-int create_thread_monitor(t_philo *philos)
-{
-    int check;
-
-    check = pthread_create(&philos[0].shared_data.philos[philos[0].philo_data.numb_of_philos], NULL, &monitor, philos);
-    if (check != 0)
-        return (1);
-    return (0);
-}
-
 int init_mutexes(t_philo *philos)
 {
     int i;
@@ -33,7 +25,7 @@ int init_mutexes(t_philo *philos)
     philos[0].shared_data.forks = malloc(sizeof(pthread_mutex_t) * philos[0].philo_data.numb_of_philos);
     philos[0].shared_data.print = malloc(sizeof(pthread_mutex_t));
     philos[0].shared_data.dead = malloc(sizeof(pthread_mutex_t));
-    philos[0].shared_data.philos = malloc(sizeof(pthread_t) * (philos[0].philo_data.numb_of_philos + 1));
+    philos[0].shared_data.philos = malloc(sizeof(pthread_t) * (philos[0].philo_data.numb_of_philos * 2));
     
     if (!philos[0].shared_data.forks || !philos[0].shared_data.print || 
         !philos[0].shared_data.dead || !philos[0].shared_data.philos)
@@ -52,7 +44,6 @@ int init_mutexes(t_philo *philos)
         return (1);
     return (0);
 }
-
 void init_philosophers(t_philo *philos)
 {
     int i;
@@ -65,7 +56,9 @@ void init_philosophers(t_philo *philos)
         philos[i].last_meal_time = get_time();
         philos[i].shared_data = philos[0].shared_data;
         philos[i].philo_data = philos[0].philo_data;
+        pthread_mutex_lock(&philos[i].shared_data.state_mutex);
         philos[i].shared_data.is_dead = 0;
+        pthread_mutex_unlock(&philos[i].shared_data.state_mutex);
         philos[i].shared_data.is_eating = 0;
         philos[i].shared_data.is_sleeping = 0;
         philos[i].shared_data.is_thinking = 0;
@@ -75,7 +68,6 @@ void init_philosophers(t_philo *philos)
         i++;
     }
 }
-
 void cleanup(t_philo *philos)
 {
     int i;
@@ -108,12 +100,7 @@ void start_simulation(t_philo *philos)
         philos[0].shared_data.is_dead = 1;
         return;
     }
-    if (create_thread_monitor(philos) != 0)
-    {
-        philos[0].shared_data.is_dead = 1;
-        return;
-    }
-    while(i <= philos[0].philo_data.numb_of_philos)
+    while(i < philos[0].philo_data.numb_of_philos * 2)
     {
         if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
         {
