@@ -29,7 +29,7 @@ int create_thread_monitor(t_philo *philos)
 int init_mutexes(t_philo *philos)
 {
     int i;
-    
+
     philos[0].shared_data.forks = malloc(sizeof(pthread_mutex_t) * philos[0].philo_data.numb_of_philos);
     philos[0].shared_data.print = malloc(sizeof(pthread_mutex_t));
     philos[0].shared_data.dead = malloc(sizeof(pthread_mutex_t));
