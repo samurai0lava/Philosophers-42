@@ -57,12 +57,14 @@ void *routine(void *arg)
         pthread_mutex_unlock(&philo->shared_data.state_mutex);
         take_fork(philo);
         eat(philo);
-        if (philo->eat_count == philo->philo_data.number_of_eats)
+
+        if (philo->eat_count == philo->philo_data.number_of_eats * philo->philo_data.numb_of_philos)
             break;
+        printf("eat count: %d\n", philo->eat_count);
         sleep_and_think(philo);
     }
     return (NULL);
-}
+} 
 
 void *monitor(void *arg)
 {

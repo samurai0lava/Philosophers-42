@@ -57,7 +57,6 @@ typedef struct s_philo
 	long long		last_meal_time;
 	t_data  		philo_data;
 	t_shared_data   shared_data;
-
 }   t_philo;
 
 
