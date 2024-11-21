@@ -66,9 +66,6 @@ void init_philosophers(t_philo *philos)
         philos[i].shared_data = philos[0].shared_data;
         philos[i].philo_data = philos[0].philo_data;
         philos[i].shared_data.is_dead = 0;
-        philos[i].shared_data.is_eating = 0;
-        philos[i].shared_data.is_sleeping = 0;
-        philos[i].shared_data.is_thinking = 0;
         philos[i].shared_data.left_fork = i;
         philos[i].shared_data.right_fork = (i + 1) % philos[0].philo_data.numb_of_philos;
         philos[i].shared_data.start_time = get_time();
@@ -93,6 +90,15 @@ void cleanup(t_philo *philos)
     free(philos[0].shared_data.print);
     free(philos[0].shared_data.dead);
     free(philos[0].shared_data.philos);
+    if(philos != NULL)
+        free(philos);
+    philos = NULL;
+}
+
+void handle_one_philo(t_philo *philos)
+{
+    precise_usleep(philos[0].philo_data.time_to_die * 1000);
+    printf(RED "%lld %d died\n" RESET, get_time() - philos[0].shared_data.start_time, philos[0].id);
 }
 
 void start_simulation(t_philo *philos)
@@ -127,30 +133,24 @@ void start_simulation(t_philo *philos)
 int main(int ac , char **av)
 {
     t_philo *philos;
+    int     numbofphilos;
 
     if (ac != 5 && ac != 6)
         return (return_error(ARG_FAILS));
-
+    numbofphilos = parse_num_of_philos(av[1]);
+    if (numbofphilos == -1)
+        return (return_error(ARG_FAILS));
     philos = malloc(sizeof(t_philo) * ft_atoi(av[1]));
     if (!philos)
         return (1);
-
     if (parse_input(philos, ac, av) != 0)
-    {
-        free(philos);
-        return (1);
-    }
-
+        return (free(philos),1);
     if (init_mutexes(philos) != 0)
-    {
-        cleanup(philos);
-        free(philos);
-        return (1);
-    }
-
+        return (cleanup(philos),1);
     init_philosophers(philos);
+    if(philos[0].philo_data.numb_of_philos == 1)
+        return (handle_one_philo(philos),cleanup(philos),0);
     start_simulation(philos);
     cleanup(philos);
-    free(philos);
     return (0);
 }

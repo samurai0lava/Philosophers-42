@@ -43,11 +43,9 @@ typedef struct s_shared_data
     pthread_mutex_t *dead;
     pthread_mutex_t state_mutex; // New mutex for shared states
     pthread_t *philos;
+    pthread_t *monitor_thread;
     long long start_time;
     int is_dead;
-    int is_eating;
-    int is_sleeping;
-    int is_thinking;
     int left_fork;
     int right_fork;
 } t_shared_data;
@@ -81,5 +79,6 @@ void *monitor(void *arg);
 long long get_time(void);
 int precise_usleep(long usec);
 int return_error(char *str);
+int parse_num_of_philos(char *av);
 
 #endif
