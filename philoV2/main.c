@@ -98,10 +98,14 @@ void cleanup(t_philo *philos)
 void handle_one_philo(t_philo *philos)
 {
     precise_usleep(philos[0].philo_data.time_to_die * 1000);
+    pthread_mutex_lock(philos[0].shared_data.print);
     printf(RED "%lld %d died\n" RESET, get_time() - philos[0].shared_data.start_time, philos[0].id);
+    pthread_mutex_unlock(philos[0].shared_data.print);
+    philos[0].shared_data.is_dead = 1;
 }
 
-void start_simulation(t_philo *philos)
+
+int start_simulation(t_philo *philos)
 {
     long long   start_time; 
     int         i;
@@ -109,25 +113,17 @@ void start_simulation(t_philo *philos)
     i = 0;
     start_time = get_time();
     philos[0].last_meal_time = start_time;
-    if (creath_thread(philos) != 0)
-    {
-        philos[0].shared_data.is_dead = 1;
-        return;
-    }
     if (create_thread_monitor(philos) != 0)
-    {
-        philos[0].shared_data.is_dead = 1;
-        return;
-    }
+        return (1);
+    if (creath_thread(philos) != 0)
+        return (1);
     while(i <= philos[0].philo_data.numb_of_philos)
     {
         if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
-        {
-            philos[0].shared_data.is_dead = 1;
-            break;
-        }
+            return (1);
         i++;
     }
+    return (0);
 }
 
 int main(int ac , char **av)
@@ -150,7 +146,8 @@ int main(int ac , char **av)
     init_philosophers(philos);
     if(philos[0].philo_data.numb_of_philos == 1)
         return (handle_one_philo(philos),cleanup(philos),0);
-    start_simulation(philos);
+    if (start_simulation(philos) != 0)
+        return (cleanup(philos),1);
     cleanup(philos);
     return (0);
 }

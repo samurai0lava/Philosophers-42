@@ -65,7 +65,7 @@ int create_thread_monitor(t_philo *philo);
 int init_mutexes(t_philo *philo);
 void init_philosophers(t_philo *philo);
 void cleanup(t_philo *philo);
-void start_simulation(t_philo *philo);
+int start_simulation(t_philo *philo);
 int	ft_atoi(const char *str);
 int ft_isdigit(int c);
 int check_num(char **str);
