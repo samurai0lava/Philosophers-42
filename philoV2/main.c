@@ -69,6 +69,7 @@ void init_philosophers(t_philo *philos)
         philos[i].shared_data.left_fork = i;
         philos[i].shared_data.right_fork = (i + 1) % philos[0].philo_data.numb_of_philos;
         philos[i].shared_data.start_time = get_time();
+        philos[i].shared_data.is_eating = 0;
         i++;
     }
 }

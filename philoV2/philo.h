@@ -49,6 +49,7 @@ typedef struct s_shared_data
     int is_dead;
     int left_fork;
     int right_fork;
+    int is_eating;
 } t_shared_data;
 
 typedef struct s_philo
@@ -80,6 +81,7 @@ long long get_time(void);
 int precise_usleep(long usec);
 int return_error(char *str);
 int parse_num_of_philos(char *av);
+int dead_philo(t_philo *philo);
 
 int check_if_all_ate(t_philo *philos);
 
