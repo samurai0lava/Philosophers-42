@@ -48,7 +48,7 @@ int init_mutexes(t_philo *philos)
     if (pthread_mutex_init(philos[0].shared_data.print, NULL) || 
         pthread_mutex_init(philos[0].shared_data.dead, NULL) ||
         pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL) ||
-        pthread_mutex_init(&philos[0].shared_data.eats)) // Initialize new mutex
+        pthread_mutex_init(&philos[0].shared_data.eats, NULL)) // Initialize new mutex
         return (1);
     return (0);
 }

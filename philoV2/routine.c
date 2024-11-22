@@ -7,7 +7,6 @@ void take_fork(t_philo *philo)
     pthread_mutex_lock(philo->shared_data.print);
     printf(GREEN "%lld %d has taken a fork\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
     pthread_mutex_unlock(philo->shared_data.print);
-    
     pthread_mutex_lock(&philo->shared_data.forks[philo->shared_data.right_fork]);
     pthread_mutex_lock(philo->shared_data.print);
     printf(GREEN "%lld %d has taken a fork\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
@@ -38,22 +37,41 @@ void sleep_and_think(t_philo *philo)
     printf(ORANGE "%lld %d is thinking\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
     pthread_mutex_unlock(philo->shared_data.print);
 }
+// int check_death(t_philo *philo)
+// {
+//     long long current_time;
 
+//     pthread_mutex_lock(&philo->shared_data.state_mutex);
+//     current_time = get_time();
+//     if (current_time - philo->last_meal_time > philo->philo_data.time_to_die)
+//     {
+//         philo->shared_data.is_dead = 1;
+//         pthread_mutex_lock(philo->shared_data.print);
+//         printf(RED "%lld %d died\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
+//         pthread_mutex_unlock(philo->shared_data.print);
+//         pthread_mutex_unlock(&philo->shared_data.state_mutex);
+//         return (1);
+//     }
+//     pthread_mutex_unlock(&philo->shared_data.state_mutex);
+//     return (0);
+// }
 void *routine(void *arg)
 {
     t_philo     *philo;
-    long long   current_time;
 
     philo = (t_philo *)arg;
     if (philo->id % 2 == 0)
         precise_usleep(1000);
     while (1)
     {
+        if(check_if_all_ate(philo))
+            break;
         pthread_mutex_lock(&philo->shared_data.state_mutex);
-        current_time = get_time();
-        if(philo[0].shared_data.is_dead == 1)
+        if(philo->shared_data.is_dead)
         {
-            printf(RED "%lld %d died\n" RESET, current_time - philo->shared_data.start_time, philo->id);
+            pthread_mutex_lock(philo->shared_data.print);   
+            printf(RED "%lld %d died\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
+            pthread_mutex_unlock(philo->shared_data.print);
             pthread_mutex_unlock(&philo->shared_data.state_mutex);
             break;
         }
@@ -118,9 +136,9 @@ int	check_if_all_ate(t_philo *philos)
 	}
 	if (finished_eating == philos[0].philo_data.numb_of_philos)
 	{
-		pthread_mutex_lock(&philos[0].shared_data.dead);
+		pthread_mutex_lock(philos[0].shared_data.dead);
         philos[0].shared_data.is_dead = 1;
-		pthread_mutex_unlock(&philos[0].shared_data.dead);
+		pthread_mutex_unlock(philos[0].shared_data.dead);
 		return (1);
 	}
 	return (0);
