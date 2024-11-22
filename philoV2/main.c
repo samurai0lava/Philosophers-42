@@ -1,5 +1,14 @@
 #include "philo.h"
 
+int create_thread_monitor(t_philo *philos)
+{
+    int check;
+
+    check = pthread_create(&philos[0].shared_data.monitor_thread, NULL, &monitor, philos);
+    if (check != 0)
+        return (1);
+    return (0);
+}
 int creath_thread(t_philo *philos)
 {
     int i;
@@ -16,15 +25,6 @@ int creath_thread(t_philo *philos)
     return (0);
 }
 
-int create_thread_monitor(t_philo *philos)
-{
-    int check;
-
-    check = pthread_create(&philos[0].shared_data.philos[philos[0].philo_data.numb_of_philos], NULL, &monitor, philos);
-    if (check != 0)
-        return (1);
-    return (0);
-}
 
 int init_mutexes(t_philo *philos)
 {
@@ -123,6 +123,7 @@ int start_simulation(t_philo *philos)
             return (1);
         i++;
     }
+    pthread_join(philos[0].shared_data.monitor_thread, NULL);
     return (0);
 }
 

@@ -43,7 +43,7 @@ typedef struct s_shared_data
     pthread_mutex_t *dead;
     pthread_mutex_t state_mutex; // New mutex for shared states
     pthread_t *philos;
-    pthread_t *monitor_thread;
+    pthread_t monitor_thread;
     long long start_time;
     int is_dead;
     int left_fork;
