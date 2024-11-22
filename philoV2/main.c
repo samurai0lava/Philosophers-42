@@ -9,6 +9,7 @@ int create_thread_monitor(t_philo *philos)
         return (1);
     return (0);
 }
+
 int creath_thread(t_philo *philos)
 {
     int i;
@@ -25,7 +26,6 @@ int creath_thread(t_philo *philos)
     return (0);
 }
 
-
 int init_mutexes(t_philo *philos)
 {
     int i;
@@ -34,7 +34,6 @@ int init_mutexes(t_philo *philos)
     philos[0].shared_data.print = malloc(sizeof(pthread_mutex_t));
     philos[0].shared_data.dead = malloc(sizeof(pthread_mutex_t));
     philos[0].shared_data.philos = malloc(sizeof(pthread_t) * (philos[0].philo_data.numb_of_philos + 1));
-    
     if (!philos[0].shared_data.forks || !philos[0].shared_data.print || 
         !philos[0].shared_data.dead || !philos[0].shared_data.philos)
         return (1);
@@ -48,7 +47,8 @@ int init_mutexes(t_philo *philos)
     }
     if (pthread_mutex_init(philos[0].shared_data.print, NULL) || 
         pthread_mutex_init(philos[0].shared_data.dead, NULL) ||
-        pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL)) // Initialize new mutex
+        pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL) ||
+        pthread_mutex_init(&philos[0].shared_data.eats)) // Initialize new mutex
         return (1);
     return (0);
 }
@@ -86,6 +86,7 @@ void cleanup(t_philo *philos)
     pthread_mutex_destroy(philos[0].shared_data.print);
     pthread_mutex_destroy(philos[0].shared_data.dead);
     pthread_mutex_destroy(&philos[0].shared_data.state_mutex); // Destroy new mutex
+    pthread_mutex_destroy(&philos[0].shared_data.eats);
     free(philos[0].shared_data.forks);
     free(philos[0].shared_data.print);
     free(philos[0].shared_data.dead);
@@ -117,13 +118,13 @@ int start_simulation(t_philo *philos)
         return (1);
     if (creath_thread(philos) != 0)
         return (1);
+    pthread_join(philos[0].shared_data.monitor_thread, NULL);
     while(i <= philos[0].philo_data.numb_of_philos)
     {
         if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
             return (1);
         i++;
     }
-    pthread_join(philos[0].shared_data.monitor_thread, NULL);
     return (0);
 }
 
