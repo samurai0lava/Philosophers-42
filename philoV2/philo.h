@@ -43,11 +43,9 @@ typedef struct s_shared_data
     pthread_mutex_t *dead;
     pthread_mutex_t state_mutex; // New mutex for shared states
     pthread_t *philos;
+    pthread_t monitor_thread;
     long long start_time;
     int is_dead;
-    int is_eating;
-    int is_sleeping;
-    int is_thinking;
     int left_fork;
     int right_fork;
 } t_shared_data;
@@ -59,7 +57,6 @@ typedef struct s_philo
 	long long		last_meal_time;
 	t_data  		philo_data;
 	t_shared_data   shared_data;
-
 }   t_philo;
 
 
@@ -68,7 +65,7 @@ int create_thread_monitor(t_philo *philo);
 int init_mutexes(t_philo *philo);
 void init_philosophers(t_philo *philo);
 void cleanup(t_philo *philo);
-void start_simulation(t_philo *philo);
+int start_simulation(t_philo *philo);
 int	ft_atoi(const char *str);
 int ft_isdigit(int c);
 int check_num(char **str);
@@ -81,5 +78,6 @@ void *monitor(void *arg);
 long long get_time(void);
 int precise_usleep(long usec);
 int return_error(char *str);
+int parse_num_of_philos(char *av);
 
 #endif

@@ -55,7 +55,7 @@ int check_num(char **str)
 int return_error(char *str)
 {
     printf(MAGENTA "%s" RESET, str);
-    return (1);
+    return (-1);
 }
 
 static void init_philo(t_philo *philo, char **av)
@@ -85,4 +85,22 @@ int parse_input(t_philo *philo, int ac, char **av)
     else
         return (return_error(ARG_FAILS));
     return (0);
+}
+
+int parse_num_of_philos(char *av)
+{
+    int numb_of_philos;
+    int i;
+
+    i = 0;
+    if (ft_atoi(av) < 1)
+        return (-1);
+    while(av[i])
+    {
+        if (ft_isdigit(av[i]) == 0)
+            return (-1);
+        i++;
+    }
+    numb_of_philos = ft_atoi(av);
+    return (numb_of_philos);
 }
