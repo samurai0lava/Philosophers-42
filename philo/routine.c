@@ -2,31 +2,26 @@
 
 void eat(t_philo *philo)
 {
-    // Avoid deadlock by locking forks in a consistent order
-    int first_fork = philo->shared_data.left_fork;
-    int second_fork = philo->shared_data.right_fork;
-    if (philo->id % 2 == 0) {
+    int first_fork;
+    int second_fork;
+
+	first_fork = philo->shared_data.left_fork;
+	second_fork = philo->shared_data.right_fork;
+    if (philo->id % 2 == 0)
+	{
         first_fork = philo->shared_data.right_fork;
         second_fork = philo->shared_data.left_fork;
     }
-
-    // Lock forks
     pthread_mutex_lock(&philo->shared_data.forks[first_fork]);
     printf(GREEN "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_FORK);
     pthread_mutex_lock(&philo->shared_data.forks[second_fork]);
     printf(GREEN "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_FORK);
-
-    // Update state variables atomically
     pthread_mutex_lock(&philo->shared_data.state_mutex);
-    philo->last_meal_time = get_time();  // Update just before eating
+    philo->last_meal_time = get_time();
     philo->eat_count++;
     printf(ORANGE "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_EAT);
     pthread_mutex_unlock(&philo->shared_data.state_mutex);
-
-    // Simulate eating
     precise_usleep(philo->philo_data.time_to_eat);
-
-    // Unlock forks in reverse order
     pthread_mutex_unlock(&philo->shared_data.forks[second_fork]);
     pthread_mutex_unlock(&philo->shared_data.forks[first_fork]);
 }
@@ -55,12 +50,6 @@ int check_is_dead(t_philo *philos)
         pthread_mutex_lock(&philos[i].shared_data.state_mutex);
         if (current_time - philos[i].last_meal_time > philos[i].philo_data.time_to_die && philos[i].shared_data.is_eating == 0)
         {
-			// printf("get time: %lld\n", get_time());
-			// printf("time_to_die: %d\n", philos[i].philo_data.time_to_die);
-			// printf("start_time: %lld\n", philos[i].shared_data.start_time);
-			// printf("current_time: %lld\n", current_time);
-			// printf("last_meal_time: %lld\n", philos[i].last_meal_time);
-			// printf(RED "lfar9 : %lld\n" RESET, current_time - philos[i].last_meal_time);
             printf(RED "%lld %d died\n" RESET, get_time() - philos->shared_data.start_time, philos[i].id);
 			pthread_mutex_lock(philos[i].shared_data.dead);
             philos[0].shared_data.is_dead = 1;

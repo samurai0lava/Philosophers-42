@@ -1,8 +1,6 @@
 
 #include "philo.h"
 
-
-
 int precise_usleep(long usec)
 {
 	long long	start;
@@ -12,8 +10,6 @@ int precise_usleep(long usec)
 		usleep(500);
 	return (0);
 }
-
-// Gets the current time in milliseconds
 
 long long get_time(void)
 {
