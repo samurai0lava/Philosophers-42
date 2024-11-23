@@ -44,7 +44,9 @@ int check_is_dead(t_philo *philos)
         if (current_time - philos[i].last_meal_time > philos[i].philo_data.time_to_die && philos[i].shared_data.is_eating == 0)
         {
             printf(RED "%lld %d died\n" RESET, get_time() - philos->shared_data.start_time, philos[i].id);
+			pthread_mutex_lock(philos[i].shared_data.dead);
             philos[0].shared_data.is_dead = 1;
+			pthread_mutex_unlock(philos[i].shared_data.dead);
             pthread_mutex_unlock(&philos[i].shared_data.state_mutex);
             return (1);
         }
@@ -91,7 +93,7 @@ void *monitor(void *arg)
 			break;
 		precise_usleep(500);
 	}
-	return (NULL);
+	return (arg);
 }
 
 int	check_if_all_ate(t_philo *philos)

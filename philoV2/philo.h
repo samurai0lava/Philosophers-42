@@ -41,7 +41,7 @@ typedef struct s_shared_data
     pthread_mutex_t *forks;
     pthread_mutex_t *print;
     pthread_mutex_t *dead;
-    pthread_mutex_t state_mutex; // New mutex for shared states
+    pthread_mutex_t state_mutex;
     pthread_mutex_t eats;
     pthread_t *philos;
     pthread_t monitor_thread;

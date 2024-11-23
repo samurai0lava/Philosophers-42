@@ -122,6 +122,7 @@ int start_simulation(t_philo *philos)
     pthread_join(philos[0].shared_data.monitor_thread, NULL);
     while(i <= philos[0].philo_data.numb_of_philos)
     {
+        printf("Joining thread %d\n", i);
         if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
             return (1);
         i++;
