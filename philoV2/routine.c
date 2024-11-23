@@ -74,7 +74,7 @@ void *routine(void *arg)
 
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 0)
-		precise_usleep(1000);
+		precise_usleep(500);
 	while (dead_philo(philo) == 0)
 	{
 		eat(philo);
@@ -91,7 +91,7 @@ void *monitor(void *arg)
 	{
 		if (check_if_all_ate(philos) == 1 || check_is_dead(philos) == 1)
 			break;
-		precise_usleep(500);
+		precise_usleep(10);
 	}
 	return (arg);
 }

@@ -7,6 +7,7 @@ int create_thread_monitor(t_philo *philos)
     check = pthread_create(&philos[0].shared_data.monitor_thread, NULL, &monitor, philos);
     if (check != 0)
         return (1);
+    // pthread_detach(philos[0].shared_data.monitor_thread);
     return (0);
 }
 
@@ -21,6 +22,7 @@ int creath_thread(t_philo *philos)
         check = pthread_create(&philos[i].shared_data.philos[i], NULL, &routine, &philos[i]);
         if (check != 0)
             return (1);
+        pthread_detach(philos[i].shared_data.philos[i]);
         i++;
     }
     return (0);
@@ -48,7 +50,7 @@ int init_mutexes(t_philo *philos)
     if (pthread_mutex_init(philos[0].shared_data.print, NULL) || 
         pthread_mutex_init(philos[0].shared_data.dead, NULL) ||
         pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL) ||
-        pthread_mutex_init(&philos[0].shared_data.eats, NULL)) // Initialize new mutex
+        pthread_mutex_init(&philos[0].shared_data.eats, NULL))
         return (1);
     return (0);
 }
@@ -86,7 +88,7 @@ void cleanup(t_philo *philos)
     }
     pthread_mutex_destroy(philos[0].shared_data.print);
     pthread_mutex_destroy(philos[0].shared_data.dead);
-    pthread_mutex_destroy(&philos[0].shared_data.state_mutex); // Destroy new mutex
+    pthread_mutex_destroy(&philos[0].shared_data.state_mutex);
     pthread_mutex_destroy(&philos[0].shared_data.eats);
     free(philos[0].shared_data.forks);
     free(philos[0].shared_data.print);
@@ -110,9 +112,9 @@ void handle_one_philo(t_philo *philos)
 int start_simulation(t_philo *philos)
 {
     long long   start_time; 
-    int         i;
+    // int         i;
 
-    i = 0;
+    // i = 0;
     start_time = get_time();
     philos[0].last_meal_time = start_time;
     if (create_thread_monitor(philos) != 0)
@@ -120,13 +122,13 @@ int start_simulation(t_philo *philos)
     if (creath_thread(philos) != 0)
         return (1);
     pthread_join(philos[0].shared_data.monitor_thread, NULL);
-    while(i <= philos[0].philo_data.numb_of_philos)
-    {
-        printf("Joining thread %d\n", i);
-        if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
-            return (1);
-        i++;
-    }
+    // while(i <= philos[0].philo_data.numb_of_philos)
+    // {
+    //     printf("Joining thread %d\n", i);
+    //     if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
+    //         return (1);
+    //     i++;
+    // }
     return (0);
 }
 
