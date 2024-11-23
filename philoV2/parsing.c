@@ -102,5 +102,7 @@ int parse_num_of_philos(char *av)
         i++;
     }
     numb_of_philos = ft_atoi(av);
+    if (numb_of_philos > 200)
+        return (-1);
     return (numb_of_philos);
 }
