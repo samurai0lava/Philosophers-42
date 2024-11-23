@@ -1,32 +1,23 @@
 #include "philo.h"
 
-void take_fork(t_philo *philo)
+void    eat(t_philo *philo)
 {
-
-	pthread_mutex_lock(&philo->shared_data.forks[philo->shared_data.left_fork]);
-	pthread_mutex_lock(philo->shared_data.print);
-	printf(GREEN "%lld %d has taken a fork\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
-	pthread_mutex_unlock(philo->shared_data.print);
-	pthread_mutex_lock(&philo->shared_data.forks[philo->shared_data.right_fork]);
-	pthread_mutex_lock(philo->shared_data.print);
-	printf(GREEN "%lld %d has taken a fork\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
-	pthread_mutex_unlock(philo->shared_data.print);
-}
-
-void eat(t_philo *philo)
-{
+    pthread_mutex_lock(&philo->shared_data.forks[philo->shared_data.left_fork]);
+    printf(GREEN "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_FORK);
+    pthread_mutex_lock(&philo->shared_data.forks[philo->shared_data.right_fork]);
+    printf(GREEN "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_FORK);
     pthread_mutex_lock(&philo->shared_data.state_mutex);
-    pthread_mutex_lock(philo->shared_data.print);
-    printf(BLUE "%lld %d is eating\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
-    philo->last_meal_time = get_time();
-    philo->eat_count++;
     philo->shared_data.is_eating = 1;
-    pthread_mutex_unlock(philo->shared_data.print);
-    precise_usleep(philo->philo_data.time_to_eat * 1000);
+    philo->last_meal_time = get_time() - philo->shared_data.start_time;
+    philo->eat_count++;
+    printf(ORANGE "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_EAT);
+    pthread_mutex_unlock(&philo->shared_data.state_mutex);
+    precise_usleep(philo->philo_data.time_to_eat);
+    pthread_mutex_lock(&philo->shared_data.state_mutex);
     philo->shared_data.is_eating = 0;
     pthread_mutex_unlock(&philo->shared_data.state_mutex);
-    pthread_mutex_unlock(&philo->shared_data.forks[philo->shared_data.left_fork]);
     pthread_mutex_unlock(&philo->shared_data.forks[philo->shared_data.right_fork]);
+    pthread_mutex_unlock(&philo->shared_data.forks[philo->shared_data.left_fork]);
 }
 
 void sleep_and_think(t_philo *philo)
@@ -34,7 +25,7 @@ void sleep_and_think(t_philo *philo)
 	pthread_mutex_lock(philo->shared_data.print);
 	printf(YELLOW "%lld %d is sleeping\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
 	pthread_mutex_unlock(philo->shared_data.print);
-	precise_usleep(philo->philo_data.time_to_sleep * 1000);
+	precise_usleep(philo->philo_data.time_to_sleep);
 	pthread_mutex_lock(philo->shared_data.print);
 	printf(ORANGE "%lld %d is thinking\n" RESET, get_time() - philo->shared_data.start_time, philo->id);
 	pthread_mutex_unlock(philo->shared_data.print);
@@ -50,14 +41,10 @@ int check_is_dead(t_philo *philos)
     {
         current_time = get_time();
         pthread_mutex_lock(&philos[i].shared_data.state_mutex);
-        if (current_time - philos[i].last_meal_time > philos[i].philo_data.time_to_die)
+        if (current_time - philos[i].last_meal_time > philos[i].philo_data.time_to_die && philos[i].shared_data.is_eating == 0)
         {
-            pthread_mutex_lock(philos->shared_data.dead);
-            pthread_mutex_lock(philos->shared_data.print);
             printf(RED "%lld %d died\n" RESET, get_time() - philos->shared_data.start_time, philos[i].id);
             philos[0].shared_data.is_dead = 1;
-            pthread_mutex_unlock(philos->shared_data.print);
-            pthread_mutex_unlock(philos->shared_data.dead);
             pthread_mutex_unlock(&philos[i].shared_data.state_mutex);
             return (1);
         }
@@ -78,6 +65,7 @@ int dead_philo(t_philo *philo)
 	pthread_mutex_unlock(philo->shared_data.dead);
 	return (0);
 }
+
 void *routine(void *arg)
 {
 	t_philo     *philo;
@@ -87,7 +75,6 @@ void *routine(void *arg)
 		precise_usleep(1000);
 	while (dead_philo(philo) == 0)
 	{
-		take_fork(philo);
 		eat(philo);
 		sleep_and_think(philo);
 	}
@@ -100,7 +87,6 @@ void *monitor(void *arg)
 
 	while (1)
 	{
-
 		if (check_if_all_ate(philos) == 1 || check_is_dead(philos) == 1)
 			break;
 		precise_usleep(500);

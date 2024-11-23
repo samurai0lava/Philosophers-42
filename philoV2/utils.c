@@ -1,26 +1,25 @@
 
 #include "philo.h"
 
-long long get_time(void)
-{
-    struct timeval tv;
-    
-    gettimeofday(&tv, NULL);
-    return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
-}
+
 
 int precise_usleep(long usec)
 {
-    long start;
-    long elapsed;
-    
-    start = get_time() * 1000;
-    while (1)
-    {
-        elapsed = (get_time() * 1000) - start;
-        if (elapsed >= usec)
-            break;
-        usleep(100);
-    }
-    return (0);
+	long long	start;
+
+	start = get_time();
+	while ((get_time() - start) < usec)
+		usleep(500);
+	return (0);
+}
+
+// Gets the current time in milliseconds
+
+long long get_time(void)
+{
+	struct timeval	time;
+
+	if (gettimeofday(&time, NULL) == -1)
+		return -1;
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
