@@ -101,7 +101,7 @@ void cleanup(t_philo *philos)
 
 void handle_one_philo(t_philo *philos)
 {
-    precise_usleep(philos[0].philo_data.time_to_die * 1000);
+    precise_usleep(philos[0].philo_data.time_to_die);
     pthread_mutex_lock(philos[0].shared_data.print);
     printf(RED "%lld %d died\n" RESET, get_time() - philos[0].shared_data.start_time, philos[0].id);
     pthread_mutex_unlock(philos[0].shared_data.print);
