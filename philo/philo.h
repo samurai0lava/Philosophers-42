@@ -59,7 +59,6 @@ typedef struct s_philo
 	t_data  		philo_data;
 	t_shared_data   shared_data;
 }  					t_philo;
-
 int					creath_thread(t_philo *philo);
 int					create_thread_monitor(t_philo *philo);
 int 				init_mutexes(t_philo *philo);
@@ -80,5 +79,6 @@ int					return_error(char *str);
 int 				parse_num_of_philos(char *av);
 int					dead_philo(t_philo *philo);
 int					check_if_all_ate(t_philo *philos);
+int					check_is_dead(t_philo *philos);
 
 #endif
