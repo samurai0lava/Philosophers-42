@@ -19,8 +19,10 @@ void eat(t_philo *philo)
     pthread_mutex_lock(&philo->shared_data.state_mutex);
     philo->last_meal_time = get_time();
     philo->eat_count++;
-    printf(ORANGE "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_EAT);
     pthread_mutex_unlock(&philo->shared_data.state_mutex);
+	pthread_mutex_lock(philo->shared_data.print);
+    printf(ORANGE "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_EAT);
+	pthread_mutex_unlock(philo->shared_data.print);
     precise_usleep(philo->philo_data.time_to_eat);
     pthread_mutex_unlock(&philo->shared_data.forks[second_fork]);
     pthread_mutex_unlock(&philo->shared_data.forks[first_fork]);
