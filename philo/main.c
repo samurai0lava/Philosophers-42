@@ -79,6 +79,8 @@ void cleanup(t_philo *philos)
 {
 	int i;
 	
+	if(philos == NULL)
+		return ;
 	i = 0;
 	while (i < philos[0].philo_data.numb_of_philos)
 	{
@@ -110,9 +112,9 @@ void handle_one_philo(t_philo *philos)
 int start_simulation(t_philo *philos)
 {
 	long long   start_time; 
-	int         i;
+	// int         i;
 
-	i = 0;
+	// i = 0;
 	start_time = get_time();
 	philos[0].last_meal_time = start_time;
 	if (create_thread_monitor(philos) != 0)
@@ -120,12 +122,12 @@ int start_simulation(t_philo *philos)
 	if (creath_thread(philos) != 0)
 		return (1);
 	pthread_join(philos[0].shared_data.monitor_thread, NULL);
-	while(i <= philos[0].philo_data.numb_of_philos)
-	{
-	    if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
-	        return (1);
-	    i++;
-	}
+	// while(i <= philos[0].philo_data.numb_of_philos)
+	// {
+	//     if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
+	//         return (1);
+	//     i++;
+	// }
 	return (0);
 }
 
