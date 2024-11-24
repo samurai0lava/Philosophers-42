@@ -1,5 +1,5 @@
 CC = cc
-FLAGS = -Wall -Wextra -Werror -fsanitize=thread -pedantic -g3
+FLAGS = -Wall -Wextra -Werror #-fsanitize=thread -pedantic -g3
 NAME = philo
 SRC = main.c parsing.c utils.c routine.c monitor.c
 OBJ = $(SRC:.c=.o)

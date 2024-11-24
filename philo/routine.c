@@ -5,7 +5,6 @@ void eat(t_philo *philo)
     int first_fork;
     int second_fork;
 
-    // Determine fork order based on philosopher ID
     first_fork = philo->shared_data.left_fork;
     second_fork = philo->shared_data.right_fork;
     if (philo->id % 2 == 0)
@@ -13,32 +12,23 @@ void eat(t_philo *philo)
         first_fork = philo->shared_data.right_fork;
         second_fork = philo->shared_data.left_fork;
     }
-
-    // Lock the forks
     pthread_mutex_lock(&philo->shared_data.forks[first_fork]);
     printf(GREEN "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_FORK);
     pthread_mutex_lock(&philo->shared_data.forks[second_fork]);
     printf(GREEN "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_FORK);
-
-    // Update philosopher state with synchronization
     pthread_mutex_lock(&philo->shared_data.state_mutex);
-    philo->last_meal_time = get_time();
-    philo->eat_count++;
-    pthread_mutex_unlock(&philo->shared_data.state_mutex);
-
-    // Print eating message
+	philo->last_meal_time = get_time();
+	pthread_mutex_unlock(&philo->shared_data.state_mutex);
+	pthread_mutex_lock(&philo->shared_data.eats);
+	philo->eat_count++;
+	pthread_mutex_unlock(&philo->shared_data.eats);
     pthread_mutex_lock(philo->shared_data.print);
     printf(ORANGE "%llu %d %s" RESET, get_time() - philo->shared_data.start_time, philo->id, PHILO_EAT);
     pthread_mutex_unlock(philo->shared_data.print);
-
-    // Simulate eating
     precise_usleep(philo->philo_data.time_to_eat);
-
-    // Unlock the forks
     pthread_mutex_unlock(&philo->shared_data.forks[second_fork]);
     pthread_mutex_unlock(&philo->shared_data.forks[first_fork]);
 }
-
 
 void sleep_and_think(t_philo *philo)
 {

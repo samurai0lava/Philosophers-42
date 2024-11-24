@@ -67,14 +67,15 @@ int check_if_all_ate(t_philo *philos)
         pthread_mutex_unlock(&philos[i].shared_data.eats);
         i++;
     }
-    pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
 
     if (finished_eating == philos[0].philo_data.numb_of_philos)
     {
         pthread_mutex_lock(philos[0].shared_data.dead);
         philos[0].shared_data.is_dead = 1;
         pthread_mutex_unlock(philos[0].shared_data.dead);
+		pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
         return (1);
     }
+    pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
     return (0);
 }
