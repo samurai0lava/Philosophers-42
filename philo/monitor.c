@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/24 11:00:23 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/25 13:03:03 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,39 +60,6 @@ int	check_is_dead(t_philo *philos)
 	return (0);
 }
 
-int	check_if_all_ate(t_philo *philos)
-{
-	int	i;
-	int	finished_eating;
-
-	pthread_mutex_lock(&philos[0].shared_data.state_mutex);
-	i = 0;
-	finished_eating = 0;
-	if (philos[0].philo_data.number_of_eats == -1)
-	{
-		pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
-		return (0);
-	}
-	while (i < philos[0].philo_data.numb_of_philos)
-	{
-		pthread_mutex_lock(&philos[i].shared_data.eats);
-		if (philos[i].eat_count >= philos[i].philo_data.number_of_eats)
-			finished_eating++;
-		pthread_mutex_unlock(&philos[i].shared_data.eats);
-		i++;
-	}
-	if (finished_eating == philos[0].philo_data.numb_of_philos)
-	{
-		pthread_mutex_lock(philos[0].shared_data.dead);
-		philos[0].shared_data.is_dead = 1;
-		pthread_mutex_unlock(philos[0].shared_data.dead);
-		pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
-		return (1);
-	}
-	pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
-	return (0);
-}
-
 int dead_philo(t_philo *philo)
 {
 	pthread_mutex_lock(philo->shared_data.dead);
@@ -102,5 +69,24 @@ int dead_philo(t_philo *philo)
 		return (1);
 	}
 	pthread_mutex_unlock(philo->shared_data.dead);
+	return (0);
+}
+
+int pthread_mutex_philo(t_philo *philos)
+{
+	int	i;
+
+	if (pthread_mutex_init(philos[0].shared_data.print, NULL)
+		|| pthread_mutex_init(philos[0].shared_data.dead, NULL)
+		|| pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL)
+		|| pthread_mutex_init(&philos[0].shared_data.eats, NULL))
+		return (1);
+	i = 0;
+	while (i < philos[0].philo_data.numb_of_philos)
+	{
+		if (pthread_mutex_init(&philos[0].shared_data.forks[i], NULL))
+			return (1);
+		i++;
+	}
 	return (0);
 }

@@ -1,9 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/25 11:40:00 by iouhssei          #+#    #+#             */
+/*   Updated: 2024/11/25 11:40:15 by iouhssei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-int	ft_atoi(const char *str)
+int ft_atoi(const char *str)
 {
-    int			sign;
-    long int	return_value;
+    int         sign;
+    long int    return_value;
+
     sign = 1;
     return_value = 0;
     while (*str && (*str == ' ' || (*str >= '\t' && *str <= '\r')))

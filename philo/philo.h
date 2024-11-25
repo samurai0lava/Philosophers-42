@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/24 10:54:01 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/25 11:50:07 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_philo
 	t_data			philo_data;
 	t_shared_data	shared_data;
 }					t_philo;
+
 int					creath_thread(t_philo *philo);
 int					create_thread_monitor(t_philo *philo);
 int					init_mutexes(t_philo *philo);
@@ -93,5 +94,6 @@ int					dead_philo(t_philo *philo);
 int					check_if_all_ate(t_philo *philos);
 int					check_is_dead(t_philo *philos);
 void				printf_state(t_philo *philo, char *state);
+int					pthread_mutex_philo(t_philo *philos);
 
 #endif
