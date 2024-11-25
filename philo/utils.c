@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/25 11:43:24 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/25 17:52:57 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ void cleanup(t_philo *philos)
 	if(philos == NULL)
 		return ;
 	i = 0;
+	while (i < philos[0].philo_data.numb_of_philos)
+	{
+		pthread_mutex_unlock(&philos[0].shared_data.forks[i]);
+		i++;
+	}
 	while (i < philos[0].philo_data.numb_of_philos)
 	{
 		pthread_mutex_destroy(&philos[0].shared_data.forks[i]);

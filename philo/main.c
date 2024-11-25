@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/25 11:49:32 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/25 17:49:25 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,11 @@ void handle_one_philo(t_philo *philos)
 {
 	precise_usleep(philos[0].philo_data.time_to_die);
 	pthread_mutex_lock(philos[0].shared_data.print);
-	printf(RED "%lld %d died\n" RESET, get_time() - philos[0].shared_data.start_time, philos[0].id);
+	printf("%lld %d died\n", get_time() - philos[0].shared_data.start_time, philos[0].id);
 	pthread_mutex_unlock(philos[0].shared_data.print);
+	pthread_mutex_lock(philos[0].shared_data.dead);
 	philos[0].shared_data.is_dead = 1;
+	pthread_mutex_unlock(philos[0].shared_data.dead);
 }
 
 int start_simulation(t_philo *philos)
@@ -73,7 +75,16 @@ int start_simulation(t_philo *philos)
 		return (1);
 	if (creath_thread(philos) != 0)
 		return (1);
-	pthread_join(philos[0].shared_data.monitor_thread, NULL);
+	if(pthread_join(philos[0].shared_data.monitor_thread, NULL) == 0)
+		printf("monitor joined\n");
+	// int i;
+	// i = 0;
+	// while (i < philos[0].philo_data.numb_of_philos)
+	// {
+	// 	pthread_join(philos[0].shared_data.philos[i], NULL);
+	// 	printf("thread : %d joined\n", i);
+	// 	i++;
+	// }
 	return (0);
 }
 
