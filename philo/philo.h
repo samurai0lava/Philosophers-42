@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/25 11:50:07 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/26 21:14:32 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,6 @@ int					check_if_all_ate(t_philo *philos);
 int					check_is_dead(t_philo *philos);
 void				printf_state(t_philo *philo, char *state);
 int					pthread_mutex_philo(t_philo *philos);
+void				wait_and_cleanup(t_philo *philos, pthread_t *threads);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/25 17:49:25 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/26 21:22:51 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,14 @@ int init_mutexes(t_philo *philos)
 			* (philos[0].philo_data.numb_of_philos + 1));
 	if (!philos[0].shared_data.philos)
 		return (1);
-	if (pthread_mutex_philo(philos) != 0)
-		return (1);
+    if (pthread_mutex_philo(philos) != 0)
+    {
+        free(philos[0].shared_data.forks);
+        free(philos[0].shared_data.print);
+        free(philos[0].shared_data.dead);
+        free(philos[0].shared_data.philos);
+        return (1);
+    }
 	return (0);
 }
 
