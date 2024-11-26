@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/26 21:22:51 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/26 21:51:32 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,16 +81,15 @@ int start_simulation(t_philo *philos)
 		return (1);
 	if (creath_thread(philos) != 0)
 		return (1);
-	if(pthread_join(philos[0].shared_data.monitor_thread, NULL) == 0)
-		printf("monitor joined\n");
-	// int i;
-	// i = 0;
-	// while (i < philos[0].philo_data.numb_of_philos)
-	// {
-	// 	pthread_join(philos[0].shared_data.philos[i], NULL);
-	// 	printf("thread : %d joined\n", i);
-	// 	i++;
-	// }
+	if(pthread_join(philos[0].shared_data.monitor_thread, NULL) != 0)
+		return (1);
+	int i;
+	i = 0;
+	while (i < philos[0].philo_data.numb_of_philos)
+	{
+		pthread_join(philos[0].shared_data.philos[i], NULL);
+		i++;
+	}
 	return (0);
 }
 
@@ -110,12 +109,12 @@ int main(int ac , char **av)
 	if (parse_input(philos, ac, av) != 0)
 		return (free(philos),1);
 	if (init_mutexes(philos) != 0)
-		return (cleanup(philos),1);
+		return (wait_and_cleanup(philos, philos->shared_data.philos),1);
 	init_philosophers(philos);
 	if(philos[0].philo_data.numb_of_philos == 1)
 		return (handle_one_philo(philos),cleanup(philos),0);
 	if (start_simulation(philos) != 0)
-		return (cleanup(philos),1);
- 	cleanup(philos);
+		return (wait_and_cleanup(philos, philos->shared_data.philos),1);
+ 	wait_and_cleanup(philos, philos->shared_data.philos);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/26 21:03:25 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/26 21:48:17 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,39 +39,30 @@ static void forks_change(t_philo *philo, int *first_fork, int *second_fork)
     }
 }
 
-void eat(t_philo *philo)
+void	eat(t_philo *philo)
 {
-    int first_fork;
-    int second_fork;
+	int	first_fork;
+	int	second_fork;
 
-    forks_change(philo, &first_fork, &second_fork);
-
-    // Lock forks
-    pthread_mutex_lock(&philo->shared_data.forks[first_fork]);
-    pthread_mutex_lock(&philo->shared_data.forks[second_fork]);
-
-    // Update shared state
-    pthread_mutex_lock(&philo->shared_data.state_mutex);
-    philo->last_meal_time = get_time();
-    pthread_mutex_unlock(&philo->shared_data.state_mutex);
-
-    pthread_mutex_lock(&philo->shared_data.eats);
-    philo->eat_count++;
-    pthread_mutex_unlock(&philo->shared_data.eats);
-
-    // Print and eat
-    pthread_mutex_lock(philo->shared_data.print);
-    printf_state(philo, PHILO_FORK);
-    printf_state(philo, PHILO_FORK);
-    printf_state(philo, PHILO_EAT);
-    pthread_mutex_unlock(philo->shared_data.print);
-
-    precise_usleep(philo->philo_data.time_to_eat);
-
-    // Unlock forks
-    pthread_mutex_unlock(&philo->shared_data.forks[second_fork]);
-    pthread_mutex_unlock(&philo->shared_data.forks[first_fork]);
+	forks_change(philo, &first_fork, &second_fork);
+	pthread_mutex_lock(&philo->shared_data.forks[first_fork]);
+	printf_state(philo, PHILO_FORK);
+	pthread_mutex_lock(&philo->shared_data.forks[second_fork]);
+	printf_state(philo, PHILO_FORK);
+	pthread_mutex_lock(&philo->shared_data.state_mutex);
+	philo->last_meal_time = get_time();
+	pthread_mutex_unlock(&philo->shared_data.state_mutex);
+	pthread_mutex_lock(&philo->shared_data.eats);
+	philo->eat_count++;
+	pthread_mutex_unlock(&philo->shared_data.eats);
+	pthread_mutex_lock(philo->shared_data.print);
+	printf_state(philo, PHILO_EAT);
+	pthread_mutex_unlock(philo->shared_data.print);
+	precise_usleep(philo->philo_data.time_to_eat);
+	pthread_mutex_unlock(&philo->shared_data.forks[second_fork]);
+	pthread_mutex_unlock(&philo->shared_data.forks[first_fork]);
 }
+
 
 
 void	sleep_and_think(t_philo *philo)
