@@ -1,0 +1,2 @@
+refactor the struct to share the mutex only in philo himself not in shared data
+ssyr tn3ss
