@@ -33,9 +33,8 @@ long long	get_time(void)
 
 void wait_and_cleanup(t_philo *philos, pthread_t *threads)
 {
-    int i;
 
-    i = 0;
+    // i = 0;
     if (philos == NULL || threads == NULL)
         return;
     
