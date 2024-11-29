@@ -35,17 +35,24 @@ void wait_and_cleanup(t_philo *philos, pthread_t *threads)
 {
     int i;
 
-	i = 0;
+    i = 0;
     if (philos == NULL || threads == NULL)
         return;
-    while (i < philos[0].philo_data.numb_of_philos)
-	{
-        pthread_join(threads[i], NULL);
-		i++;
-	}
+    
+    // Wait for monitor thread first
+    pthread_join(philos[0].shared_data.monitor_thread, NULL);
+    
+    // Signal all philosophers to stop
+    pthread_mutex_lock(philos[0].shared_data.dead);
+    philos[0].shared_data.is_dead = 1;
+    pthread_mutex_unlock(philos[0].shared_data.dead);
+    
+    // Give threads time to finish
+    precise_usleep(1000);
+    
+    // Then cleanup
     cleanup(philos);
 }
-
 
 void cleanup(t_philo *philos)
 {
@@ -56,13 +63,25 @@ void cleanup(t_philo *philos)
     i = 0;
     while (i < philos[0].philo_data.numb_of_philos)
     {
+        // Attempt to unlock before destroying
+        pthread_mutex_unlock(&philos[0].shared_data.forks[i]);
         pthread_mutex_destroy(&philos[0].shared_data.forks[i]);
         i++;
     }
+    
+    // Unlock all mutexes before destroying
+    pthread_mutex_unlock(philos[0].shared_data.print);
+    pthread_mutex_unlock(philos[0].shared_data.dead);
+    pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
+    pthread_mutex_unlock(&philos[0].shared_data.eats);
+    
+    // Destroy mutexes
     pthread_mutex_destroy(philos[0].shared_data.print);
     pthread_mutex_destroy(philos[0].shared_data.dead);
     pthread_mutex_destroy(&philos[0].shared_data.state_mutex);
     pthread_mutex_destroy(&philos[0].shared_data.eats);
+    
+    // Free allocated memory
     free(philos[0].shared_data.forks);
     free(philos[0].shared_data.print);
     free(philos[0].shared_data.dead);

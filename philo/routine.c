@@ -44,11 +44,22 @@ void	eat(t_philo *philo)
 	int	first_fork;
 	int	second_fork;
 
+    // Check if simulation should stop before taking forks
+    if (dead_philo(philo))
+        return;
+
 	forks_change(philo, &first_fork, &second_fork);
 	pthread_mutex_lock(&philo->shared_data.forks[first_fork]);
 	printf_state(philo, PHILO_FORK);
+    
+    // Check again before taking second fork
+    if (dead_philo(philo))
+    {
+        pthread_mutex_unlock(&philo->shared_data.forks[first_fork]);
+        return;
+    }
+    
 	pthread_mutex_lock(&philo->shared_data.forks[second_fork]);
-	printf_state(philo, PHILO_FORK);
 	pthread_mutex_lock(&philo->shared_data.state_mutex);
 	philo->last_meal_time = get_time();
 	pthread_mutex_unlock(&philo->shared_data.state_mutex);
@@ -62,8 +73,6 @@ void	eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->shared_data.forks[second_fork]);
 	pthread_mutex_unlock(&philo->shared_data.forks[first_fork]);
 }
-
-
 
 void	sleep_and_think(t_philo *philo)
 {
@@ -83,9 +92,11 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 0)
 		precise_usleep(philo->philo_data.time_to_eat / 2);
-	while (dead_philo(philo) == 0)
+	while (!dead_philo(philo))
 	{
 		eat(philo);
+		if (dead_philo(philo))
+			break;
 		sleep_and_think(philo);
 	}
 	return (NULL);
