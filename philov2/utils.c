@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/26 21:48:39 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/29 17:30:40 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void wait_and_cleanup(t_philo *philos, pthread_t *threads)
         pthread_join(threads[i], NULL);
 		i++;
 	}
+	pthread_join(philos[0].shared_data.monitor_thread, NULL);
     cleanup(philos);
 }
 
@@ -54,12 +55,30 @@ void cleanup(t_philo *philos)
     if (philos == NULL)
         return;
     i = 0;
+	// while(i < philos[0].philo_data.numb_of_philos)
+	// {
+	// 	if (pthread_mutex_unlock(&philos[0].shared_data.forks[i]) != 0)
+	// 	{
+	// 		printf("failed to unlock : the forks mutex %d\n", i);
+	// 		return ;
+	// 	}
+	// 	i++;
+	// }
+	i = 0;
     while (i < philos[0].philo_data.numb_of_philos)
     {
-        pthread_mutex_destroy(&philos[0].shared_data.forks[i]);
+        if (pthread_mutex_destroy(&philos[0].shared_data.forks[i]) != 0)
+		{
+			printf("failed to destroy : the forks mutex %d\n", i);
+			return ;
+		}
         i++;
     }
-    pthread_mutex_destroy(philos[0].shared_data.print);
+    if (pthread_mutex_destroy(philos[0].shared_data.print) != 0)
+	{
+		printf("failed to destroy : the print mutex\n");
+		return ;
+	}
     pthread_mutex_destroy(philos[0].shared_data.dead);
     pthread_mutex_destroy(&philos[0].shared_data.state_mutex);
     pthread_mutex_destroy(&philos[0].shared_data.eats);

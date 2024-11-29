@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/26 21:48:17 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/29 17:30:18 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,22 @@ void	printf_state(t_philo *philo, char *state)
 
 static void forks_change(t_philo *philo, int *first_fork, int *second_fork)
 {
+    int left_fork = philo->shared_data.left_fork;
+    int right_fork = philo->shared_data.right_fork;
+
+    // Assign forks based on philosopher's ID (odd/even)
     if (philo->id % 2 == 0)
     {
-        *first_fork = philo->shared_data.right_fork;
-        *second_fork = philo->shared_data.left_fork;
+        *first_fork = right_fork;
+        *second_fork = left_fork;
     }
     else
     {
-        *first_fork = philo->shared_data.left_fork;
-        *second_fork = philo->shared_data.right_fork;
+        *first_fork = left_fork;
+        *second_fork = right_fork;
     }
-    // Ensure consistent locking order
+
+    // Ensure consistent locking order to prevent deadlocks
     if (*first_fork > *second_fork)
     {
         int tmp = *first_fork;
@@ -43,7 +48,7 @@ void	eat(t_philo *philo)
 {
 	int	first_fork;
 	int	second_fork;
-
+	
 	forks_change(philo, &first_fork, &second_fork);
 	pthread_mutex_lock(&philo->shared_data.forks[first_fork]);
 	printf_state(philo, PHILO_FORK);
