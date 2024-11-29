@@ -46,8 +46,9 @@ void	eat(t_philo *philo)
 
     // Check if simulation should stop before taking forks
     if (dead_philo(philo))
+	{
         return;
-
+	}
 	forks_change(philo, &first_fork, &second_fork);
 	pthread_mutex_lock(&philo->shared_data.forks[first_fork]);
 	printf_state(philo, PHILO_FORK);
