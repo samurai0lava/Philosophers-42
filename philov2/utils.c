@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/30 15:07:37 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/11/30 15:46:25 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,21 @@ long long	get_time(void)
 
 void wait_and_cleanup(t_philo *philos, pthread_t *threads)
 {
-    int i;
+    // int i;
 
     if (philos == NULL || threads == NULL)
         return;
 
     // Join philosopher threads
-    for (i = 0; i < philos[0].philo_data.numb_of_philos; i++)
-    {
-        if (pthread_join(threads[i], NULL) != 0)
-            printf("Error: Failed to join thread %d\n", i);
-    }
+    // for (i = 0; i < philos[0].philo_data.numb_of_philos; i++)
+    // {
+    //     if (pthread_join(threads[i], NULL) != 0)
+    //         printf("Error: Failed to join thread %d\n", i);
+    // }
 
-    // Join monitor thread
-    if (pthread_join(philos[0].shared_data.monitor_thread, NULL) != 0)
-        printf("Error: Failed to join monitor thread\n");
+    // // Join monitor thread
+    // if (pthread_join(philos[0].shared_data.monitor_thread, NULL) != 0)
+    //     printf("Error: Failed to join monitor thread\n");
 
     // Synchronize cleanup to avoid data races
     // pthread_mutex_lock(&philos[0].shared_data.cleanup_mutex);
