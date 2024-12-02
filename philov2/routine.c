@@ -46,9 +46,7 @@ void	eat(t_philo *philo)
 	int	first_fork;
 	int	second_fork;
 
-	// (pthread_mutex_lock(&philo->shared_data.state_mutex);
 	forks_change(philo, &first_fork, &second_fork);
-	// pthread_mutex_unlock(&philo->shared_data.state_mutex);
 	if (pthread_mutex_lock(&philo->shared_data.forks[first_fork]) != 0)
 		return ;
 	printf_state(philo, PHILO_FORK);
@@ -97,7 +95,7 @@ void	*routine(void *arg)
 
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 0)
-		precise_usleep(philo->philo_data.time_to_eat / 2);
+		precise_usleep(10);
 	while (dead_philo(philo) == 0)
 	{
 		eat(philo);
