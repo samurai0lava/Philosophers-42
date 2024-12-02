@@ -63,12 +63,12 @@ void init_philosophers(t_philo *philos)
 void handle_one_philo(t_philo *philos)
 {
 	precise_usleep(philos[0].philo_data.time_to_die);
-	pthread_mutex_lock(philos[0].shared_data.print);
+	// pthread_mutex_lock(philos[0].shared_data.print);
 	printf("%lld %d died\n", get_time() - philos[0].shared_data.start_time, philos[0].id);
-	pthread_mutex_unlock(philos[0].shared_data.print);
-	pthread_mutex_lock(philos[0].shared_data.dead);
+	// pthread_mutex_unlock(philos[0].shared_data.print);
+	// pthread_mutex_lock(philos[0].shared_data.dead);
 	philos[0].shared_data.is_dead = 1;
-	pthread_mutex_unlock(philos[0].shared_data.dead);
+	// pthread_mutex_unlock(philos[0].shared_data.dead);
 }
 
 int start_simulation(t_philo *philos)

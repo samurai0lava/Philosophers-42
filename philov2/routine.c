@@ -45,37 +45,50 @@ void	eat(t_philo *philo)
 {
 	int	first_fork;
 	int	second_fork;
-	
-	pthread_mutex_lock(&philo->shared_data.state_mutex);
+
+	// (pthread_mutex_lock(&philo->shared_data.state_mutex);
 	forks_change(philo, &first_fork, &second_fork);
-	pthread_mutex_unlock(&philo->shared_data.state_mutex);
-	pthread_mutex_lock(&philo->shared_data.forks[first_fork]);
+	// pthread_mutex_unlock(&philo->shared_data.state_mutex);
+	if (pthread_mutex_lock(&philo->shared_data.forks[first_fork]) != 0)
+		return ;
 	printf_state(philo, PHILO_FORK);
-	pthread_mutex_lock(&philo->shared_data.forks[second_fork]);
+	if (pthread_mutex_lock(&philo->shared_data.forks[second_fork]) != 0)
+		return ;
 	printf_state(philo, PHILO_FORK);
-	pthread_mutex_lock(&philo->shared_data.state_mutex);
+	if (pthread_mutex_lock(&philo->shared_data.state_mutex) != 0)
+		return ;
 	philo->last_meal_time = get_time();
-	pthread_mutex_unlock(&philo->shared_data.state_mutex);
+	if (pthread_mutex_unlock(&philo->shared_data.state_mutex))
+		return ;
 	pthread_mutex_lock(&philo->shared_data.eats);
 	philo->eat_count++;
-	pthread_mutex_unlock(&philo->shared_data.eats);
-	pthread_mutex_lock(philo->shared_data.print);
+	if (pthread_mutex_unlock(&philo->shared_data.eats) != 0)
+		return ;
+	if (pthread_mutex_lock(philo->shared_data.print))
+		return ;
 	printf_state(philo, PHILO_EAT);
-	pthread_mutex_unlock(philo->shared_data.print);
+	if (pthread_mutex_unlock(philo->shared_data.print))
+		return ;
 	precise_usleep(philo->philo_data.time_to_eat);
-	pthread_mutex_unlock(&philo->shared_data.forks[second_fork]);
-	pthread_mutex_unlock(&philo->shared_data.forks[first_fork]);
+	if (pthread_mutex_unlock(&philo->shared_data.forks[second_fork]) != 0)
+		return ;
+	if (pthread_mutex_unlock(&philo->shared_data.forks[first_fork]) != 0)
+		return ;
 }
 
 void	sleep_and_think(t_philo *philo)
 {
-	pthread_mutex_lock(philo->shared_data.print);
+	if (pthread_mutex_lock(philo->shared_data.print) != 0)
+		return ;
 	printf_state(philo, PHILO_SLEEP);
-	pthread_mutex_unlock(philo->shared_data.print);
+	if (pthread_mutex_unlock(philo->shared_data.print) != 0)
+		return ;
 	precise_usleep(philo->philo_data.time_to_sleep);
-	pthread_mutex_lock(philo->shared_data.print);
+	if (pthread_mutex_lock(philo->shared_data.print) != 0)
+		return ;
 	printf_state(philo, PHILO_THINK);
-	pthread_mutex_unlock(philo->shared_data.print);
+	if (pthread_mutex_unlock(philo->shared_data.print) != 0)
+		return ;
 }
 
 void	*routine(void *arg)
