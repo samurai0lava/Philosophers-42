@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/30 15:07:17 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/02 13:49:04 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ void handle_one_philo(t_philo *philos)
 
 int start_simulation(t_philo *philos)
 {
-	long long   start_time; 
+	long long	start_time; 
+	int			i;
 
 	start_time = get_time();
 	philos[0].last_meal_time = start_time;
@@ -81,13 +82,13 @@ int start_simulation(t_philo *philos)
 		return (1);
 	if (creath_thread(philos) != 0)
 		return (1);
+	i = 0;
 	if(pthread_join(philos[0].shared_data.monitor_thread, NULL) != 0)
 		return (1);
-	int i;
-	i = 0;
 	while (i < philos[0].philo_data.numb_of_philos)
 	{
-		pthread_join(philos[0].shared_data.philos[i], NULL);
+		if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
+			return (1);
 		i++;
 	}
 	return (0);
@@ -115,23 +116,6 @@ int main(int ac , char **av)
 		return (handle_one_philo(philos),cleanup(philos),0);
 	if (start_simulation(philos) != 0)
 		return (wait_and_cleanup(philos, philos->shared_data.philos),1);
-	int i = 0;
-	while(i < philos->philo_data.numb_of_philos)
-	{
-		pthread_join(philos->shared_data.philos[i],NULL);
-		i++;
-	}
-	// pthread_join(philos->shared_data.monitor_thread, NULL);
-	// i = 0;
-    // while (i < philos[0].philo_data.numb_of_philos)
-    // {
-    //     if (pthread_mutex_destroy(&philos[0].shared_data.forks[i]) != 0)
-	// 	{
-	// 		printf("failed to destroy : the forks mutex %d\n", i);
-	// 		return 1 ;
-	// 	}
-    //     i++;
-    // }
  	wait_and_cleanup(philos, philos->shared_data.philos);
 	return (0);
 }

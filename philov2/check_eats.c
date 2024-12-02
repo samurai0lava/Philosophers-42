@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/25 14:05:55 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/02 13:45:52 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,13 @@ int check_if_all_ate(t_philo *philos)
 		pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
 		return (0);
 	}
-
 	finished_eating = 0;
 	finished_eating = check_individual_eats(philos, &finished_eating);
-
 	if (check_and_update_dead_state(philos, finished_eating))
 	{
 		pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
 		return (1);
 	}
-
 	pthread_mutex_unlock(&philos[0].shared_data.state_mutex);
 	return (0);
 }
