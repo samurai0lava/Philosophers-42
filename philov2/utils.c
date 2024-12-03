@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/02 14:15:55 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/03 18:58:32 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void wait_and_cleanup(t_philo *philos, pthread_t *threads)
 
     if (philos == NULL || threads == NULL)
         return;
+    i = 0;
     while(i < philos[0].philo_data.numb_of_philos)
     {
         if (pthread_join(threads[i], NULL) != 0)
@@ -98,16 +99,15 @@ int create_thread_monitor(t_philo *philos)
 int creath_thread(t_philo *philos)
 {
 	int	i;
-	int check;
 
 	i = 0;
 	while(philos[0].philo_data.numb_of_philos > i)
 	{
-		check = pthread_create(&philos[i].shared_data.philos[i],
-				NULL, &routine, &philos[i]);
-		if (check != 0)
+		if (pthread_create(&philos[i].shared_data.philos[i],
+				NULL, &routine, &philos[i]) != 0)
 			return (1);
-		pthread_detach(philos[i].shared_data.philos[i]);
+		if (pthread_detach(philos[i].shared_data.philos[i]) != 0)
+			return (1);
 		i++;
 	}
 	return (0);
