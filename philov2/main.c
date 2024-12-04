@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/02 13:49:04 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/04 12:59:51 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,26 @@ int init_mutexes(t_philo *philos)
 		return (1);
 	philos[0].shared_data.print = malloc(sizeof(pthread_mutex_t));
 	if (!philos[0].shared_data.print)
+	{
+        free(philos[0].shared_data.forks);
 		return (1);
+	}
 	philos[0].shared_data.dead = malloc(sizeof(pthread_mutex_t));
 	if (!philos[0].shared_data.dead)
+	{
+        free(philos[0].shared_data.print);	
+        free(philos[0].shared_data.forks);
 		return (1);
+	}
 	philos[0].shared_data.philos = malloc(sizeof(pthread_t)
-			* (philos[0].philo_data.numb_of_philos + 1));
+			* (philos[0].philo_data.numb_of_philos));
 	if (!philos[0].shared_data.philos)
+	{
+        free(philos[0].shared_data.forks);
+        free(philos[0].shared_data.print);
+        free(philos[0].shared_data.dead);		
 		return (1);
+	}
     if (pthread_mutex_philo(philos) != 0)
     {
         free(philos[0].shared_data.forks);
