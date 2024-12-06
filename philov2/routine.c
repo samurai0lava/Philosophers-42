@@ -12,33 +12,41 @@
 
 #include "philo.h"
 
-void	printf_state(t_philo *philo, char *state)
+static void	forks_change(t_philo *philo, int *first_fork, int *second_fork)
 {
-	printf("%lld %d %s",
-		get_time() - philo->shared_data.start_time, philo->id, state);
+	int	left_fork;
+	int	right_fork;
+	int	tmp;
+
+	left_fork = philo->shared_data.left_fork;
+	right_fork = philo->shared_data.right_fork;
+	if (philo->id % 2 == 0)
+	{
+		*first_fork = right_fork;
+		*second_fork = left_fork;
+	}
+	else
+	{
+		*first_fork = left_fork;
+		*second_fork = right_fork;
+	}
+	if (*first_fork > *second_fork)
+	{
+		tmp = *first_fork;
+		*first_fork = *second_fork;
+		*second_fork = tmp;
+	}
 }
 
-static void forks_change(t_philo *philo, int *first_fork, int *second_fork)
+void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
 {
-    int left_fork = philo->shared_data.left_fork;
-    int right_fork = philo->shared_data.right_fork;
-
-    if (philo->id % 2 == 0)
-    {
-        *first_fork = right_fork;
-        *second_fork = left_fork;
-    }
-    else
-    {
-        *first_fork = left_fork;
-        *second_fork = right_fork;
-    }
-    if (*first_fork > *second_fork)
-    {
-        int tmp = *first_fork;
-        *first_fork = *second_fork;
-        *second_fork = tmp;
-    }
+	forks_change(philo, first_fork, second_fork);
+	if (pthread_mutex_lock(&philo->shared_data.forks[*first_fork]) != 0)
+		return ;
+	printf_state(philo, PHILO_FORK);
+	if (pthread_mutex_lock(&philo->shared_data.forks[*second_fork]) != 0)
+		return ;
+	printf_state(philo, PHILO_FORK);
 }
 
 void	eat(t_philo *philo)
@@ -46,13 +54,7 @@ void	eat(t_philo *philo)
 	int	first_fork;
 	int	second_fork;
 
-	forks_change(philo, &first_fork, &second_fork);
-	if (pthread_mutex_lock(&philo->shared_data.forks[first_fork]) != 0)
-		return ;
-	printf_state(philo, PHILO_FORK);
-	if (pthread_mutex_lock(&philo->shared_data.forks[second_fork]) != 0)
-		return ;
-	printf_state(philo, PHILO_FORK);
+	acquire_forks(philo, &first_fork, &second_fork);
 	if (pthread_mutex_lock(&philo->shared_data.state_mutex) != 0)
 		return ;
 	philo->last_meal_time = get_time();

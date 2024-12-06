@@ -13,15 +13,15 @@
 #ifndef PHILO_H
 # define PHILO_H
 
-//includes
+// includes
+# include <limits.h>
 # include <pthread.h>
-# include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
-# include <limits.h>
+# include <unistd.h>
 
-//PHILO MESSAGES
+// PHILO MESSAGES
 # define PHILO_EAT "is eating\n"
 # define PHILO_SLEEP "is sleeping\n"
 # define PHILO_THINK "is thinking\n"
@@ -29,7 +29,7 @@
 # define PHILO_DEAD "died\n"
 # define ARG_FAILS "Philo Usage : num_of_philos die eat sleep [eats]\n"
 
-//colors
+// colors
 # define RED "\033[0;31m"
 # define GREEN "\033[0;32m"
 # define YELLOW "\033[0;33m"
@@ -96,5 +96,9 @@ int					check_is_dead(t_philo *philos);
 void				printf_state(t_philo *philo, char *state);
 int					pthread_mutex_philo(t_philo *philos);
 void				wait_and_cleanup(t_philo *philos, pthread_t *threads);
+void				free_mine(t_philo *philos);
+void				init_philo_parsing(t_philo *philo, char **av);
+void				acquire_forks(t_philo *philo, int *first_fork,
+						int *second_fork);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/26 21:22:12 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/06 10:24:10 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ int	check_is_dead(t_philo *philos)
 		current_time = get_time();
 		pthread_mutex_lock(&philos[i].shared_data.state_mutex);
 		pthread_mutex_lock(philos[i].shared_data.dead);
-		if (current_time - philos[i].last_meal_time
-			> philos[i].philo_data.time_to_die
+		if (current_time
+			- philos[i].last_meal_time > philos[i].philo_data.time_to_die
 			&& philos[i].shared_data.is_eating == 0)
 		{
 			printf_state(&philos[i], PHILO_DEAD);
@@ -60,37 +60,43 @@ int	check_is_dead(t_philo *philos)
 	return (0);
 }
 
-int dead_philo(t_philo *philo)
+int	dead_philo(t_philo *philo)
 {
-    int is_dead;
+	int	is_dead;
 
-    pthread_mutex_lock(&philo->shared_data.state_mutex);
-    is_dead = philo->shared_data.is_dead;
-    pthread_mutex_unlock(&philo->shared_data.state_mutex);
-
-    return (is_dead);
+	pthread_mutex_lock(&philo->shared_data.state_mutex);
+	is_dead = philo->shared_data.is_dead;
+	pthread_mutex_unlock(&philo->shared_data.state_mutex);
+	return (is_dead);
 }
 
-
-int pthread_mutex_philo(t_philo *philos)
+int	pthread_mutex_philo(t_philo *philos)
 {
-    int i;
+	int	i;
 
-    if (pthread_mutex_init(philos[0].shared_data.print, NULL) != 0 ||
-        pthread_mutex_init(philos[0].shared_data.dead, NULL) != 0 ||
-        pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL) != 0 ||
-        pthread_mutex_init(&philos[0].shared_data.eats, NULL) != 0)
-        return (1);
-    i = 0;
-    while (i < philos[0].philo_data.numb_of_philos)
-    {
-        if (pthread_mutex_init(&philos[0].shared_data.forks[i], NULL) != 0)
-        {
-            while (--i >= 0)
-                pthread_mutex_destroy(&philos[0].shared_data.forks[i]);
-            return (1);
-        }
-        i++;
-    }
-    return (0);
+	if (pthread_mutex_init(philos[0].shared_data.print, NULL) != 0
+		|| pthread_mutex_init(philos[0].shared_data.dead, NULL) != 0
+		|| pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL) != 0
+		|| pthread_mutex_init(&philos[0].shared_data.eats, NULL) != 0)
+		return (1);
+	i = 0;
+	while (i < philos[0].philo_data.numb_of_philos)
+	{
+		if (pthread_mutex_init(&philos[0].shared_data.forks[i], NULL) != 0)
+		{
+			while (--i >= 0)
+				pthread_mutex_destroy(&philos[0].shared_data.forks[i]);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+void	free_mine(t_philo *philos)
+{
+	free(philos[0].shared_data.forks);
+	free(philos[0].shared_data.print);
+	free(philos[0].shared_data.dead);
+	free(philos[0].shared_data.philos);
 }
