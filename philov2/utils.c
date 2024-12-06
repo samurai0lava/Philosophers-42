@@ -6,57 +6,48 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/06 10:23:08 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/06 12:00:46 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	wait_and_cleanup(t_philo *philos, pthread_t *threads)
+void wait_and_cleanup(t_philo *philos, pthread_t *threads)
 {
-	int	i;
+    int i;
 
-	if (philos == NULL || threads == NULL)
-		return ;
-	i = 0;
-	while (i < philos[0].philo_data.numb_of_philos)
-	{
-		if (pthread_join(threads[i], NULL) != 0)
-			return ;
-		i++;
-	}
-	if (pthread_join(philos[0].shared_data.monitor_thread, NULL) != 0)
-		return ;
-	cleanup(philos);
+    if (philos == NULL || threads == NULL)
+        return;
+    i = 0;
+    while (i < philos[0].philo_data.numb_of_philos)
+    {
+        pthread_join(threads[i], NULL);
+        i++;
+    }
+    pthread_join(philos[0].shared_data.monitor_thread, NULL);
+    cleanup(philos);
 }
 
-void	cleanup(t_philo *philos)
+void cleanup(t_philo *philos)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (i < philos[0].philo_data.numb_of_philos)
-	{
-		if (pthread_mutex_destroy(&philos[0].shared_data.forks[i]) != 0)
-			return ;
-		i++;
-	}
-	if (pthread_mutex_destroy(philos[0].shared_data.print) != 0)
-		return ;
-	if (pthread_mutex_destroy(philos[0].shared_data.dead) != 0)
-		return ;
-	if (pthread_mutex_destroy(&philos[0].shared_data.state_mutex))
-		return ;
-	if (pthread_mutex_destroy(&philos[0].shared_data.eats))
-		return ;
-	i = 0;
-	while (i < philos[0].philo_data.numb_of_philos)
-	{
-		free(&philos[0].shared_data.forks[i]);
-		i++;
-	}
-	free_mine(philos);
-	free(philos);
+    i = 0;
+    while (i < philos[0].philo_data.numb_of_philos)
+    {
+        pthread_mutex_destroy(&philos[0].shared_data.forks[i]);
+        i++;
+    }
+    pthread_mutex_destroy(philos[0].shared_data.print);
+    pthread_mutex_destroy(philos[0].shared_data.dead);
+    pthread_mutex_destroy(&philos[0].shared_data.state_mutex);
+    pthread_mutex_destroy(&philos[0].shared_data.eats);
+
+    free(philos[0].shared_data.forks);
+    free(philos[0].shared_data.print);
+    free(philos[0].shared_data.dead);
+    free(philos[0].shared_data.philos);
+    free(philos);
 }
 
 int	create_thread_monitor(t_philo *philos)
