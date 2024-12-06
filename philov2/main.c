@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/04 12:59:51 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/06 16:31:43 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	handle_one_philo(t_philo *philos)
 int	start_simulation(t_philo *philos)
 {
 	long long	start_time;
-	int			i;
+	// int			i;
 
 	start_time = get_time();
 	philos[0].last_meal_time = start_time;
@@ -81,15 +81,15 @@ int	start_simulation(t_philo *philos)
 		return (1);
 	if (creath_thread(philos) != 0)
 		return (1);
-	i = 0;
+	// i = 0;
 	if (pthread_join(philos[0].shared_data.monitor_thread, NULL) != 0)
 		return (1);
-	while (i < philos[0].philo_data.numb_of_philos)
-	{
-		if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
-			return (1);
-		i++;
-	}
+	// while (i < philos[0].philo_data.numb_of_philos)
+	// {
+	// 	if (pthread_join(philos[0].shared_data.philos[i], NULL) != 0)
+	// 		return (1);
+	// 	i++;
+	// }
 	return (0);
 }
 
