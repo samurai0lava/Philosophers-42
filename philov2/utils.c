@@ -6,22 +6,22 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/06 12:04:15 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/07 19:28:20 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	wait_and_cleanup(t_philo *philos, pthread_t *threads)
+void	wait_and_cleanup(t_philo *philos)
 {
 	int	i;
 
-	if (philos == NULL || threads == NULL)
+	if (philos == NULL)
 		return ;
 	i = 0;
 	while (i < philos[0].philo_data.numb_of_philos)
 	{
-		if (pthread_join(threads[i], NULL) != 0)
+		if (pthread_join(philos[i].shared_data.philos[i], NULL) != 0)
 			return ;
 		i++;
 	}
@@ -80,8 +80,8 @@ int	creath_thread(t_philo *philos)
 		if (pthread_create(&philos[i].shared_data.philos[i], NULL, &routine,
 				&philos[i]) != 0)
 			return (1);
-		if (pthread_detach(philos[i].shared_data.philos[i]) != 0)
-			return (1);
+		// if (pthread_detach(philos[i].shared_data.philos[i]) != 0)
+		// 	return (1);
 		i++;
 	}
 	return (0);

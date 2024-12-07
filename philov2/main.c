@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/06 16:46:58 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/07 19:26:11 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,12 +101,12 @@ int	main(int ac, char **av)
 	if (parse_input(philos, ac, av) != 0)
 		return (free(philos), 1);
 	if (init_mutexes(philos) != 0)
-		return (wait_and_cleanup(philos, philos->shared_data.philos), 1);
+		return (wait_and_cleanup(philos), 1);
 	init_philosophers(philos);
 	if (philos[0].philo_data.numb_of_philos == 1)
 		return (handle_one_philo(philos), cleanup(philos), 0);
 	if (start_simulation(philos) != 0)
-		return (wait_and_cleanup(philos, philos->shared_data.philos), 1);
-	wait_and_cleanup(philos, philos->shared_data.philos);
+		return (wait_and_cleanup(philos), 1);
+	wait_and_cleanup(philos);
 	return (0);
 }

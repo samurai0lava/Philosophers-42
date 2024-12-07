@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/26 21:14:32 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/07 19:25:52 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int					check_if_all_ate(t_philo *philos);
 int					check_is_dead(t_philo *philos);
 void				printf_state(t_philo *philo, char *state);
 int					pthread_mutex_philo(t_philo *philos);
-void				wait_and_cleanup(t_philo *philos, pthread_t *threads);
+void				wait_and_cleanup(t_philo *philos);
 void				free_mine(t_philo *philos);
 void				init_philo_parsing(t_philo *philo, char **av);
 void				acquire_forks(t_philo *philo, int *first_fork,
