@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/07 19:26:11 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/07 22:02:00 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,8 @@ int	start_simulation(t_philo *philos)
 		return (1);
 	if (creath_thread(philos) != 0)
 		return (1);
-	if (pthread_join(philos[0].shared_data.monitor_thread, NULL) != 0)
-		return (1);
+	// if (pthread_join(philos[0].shared_data.monitor_thread, NULL) != 0)
+	// 	return (1);
 	return (0);
 }
 
