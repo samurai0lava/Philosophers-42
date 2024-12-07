@@ -51,11 +51,10 @@ typedef struct s_shared_data
 {
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*print;
-	pthread_mutex_t	*dead;
+	pthread_mutex_t	*dead; //delete the poointer
 	pthread_mutex_t	state_mutex;
 	pthread_mutex_t	eats;
-	pthread_t		*philos;
-	pthread_t		monitor_thread;
+	pthread_t		*philos; 
 	long long		start_time;
 	int				is_dead;
 	int				left_fork;
@@ -65,11 +64,14 @@ typedef struct s_shared_data
 
 typedef struct s_philo
 {
+	//t_custom_philo  *philos;
 	int				id;
 	int				eat_count;
 	long long		last_meal_time;
 	t_data			philo_data;
 	t_shared_data	shared_data;
+	//pthread_t		philo_thread;
+	//pthread_t		monitor_thread;
 }					t_philo;
 
 int					creath_thread(t_philo *philo);

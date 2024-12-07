@@ -43,7 +43,9 @@ void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
 	forks_change(philo, first_fork, second_fork);
 	if (pthread_mutex_lock(&philo->shared_data.forks[*first_fork]) != 0)
 		return ;
+	// lock mutex for print
 	printf_state(philo, PHILO_FORK);
+	// unlock mutex for print
 	if (pthread_mutex_lock(&philo->shared_data.forks[*second_fork]) != 0)
 		return ;
 	printf_state(philo, PHILO_FORK);

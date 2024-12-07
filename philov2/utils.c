@@ -84,6 +84,7 @@ int	creath_thread(t_philo *philos)
 		// 	return (1);
 		i++;
 	}
+	i = 0;
 	while (philos[0].philo_data.numb_of_philos > i)
 	{
 		if (pthread_join(philos[i].shared_data.philos[i], NULL) != 0)
