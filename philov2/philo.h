@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/07 19:25:52 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/08 21:55:23 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,28 +50,26 @@ typedef struct s_data
 typedef struct s_shared_data
 {
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	*print;
-	pthread_mutex_t	*dead; //delete the poointer
+	pthread_mutex_t	print;
+	pthread_mutex_t	dead; //delete the poointer
 	pthread_mutex_t	state_mutex;
 	pthread_mutex_t	eats;
-	pthread_t		*philos; 
 	long long		start_time;
 	int				is_dead;
-	int				left_fork;
-	int				right_fork;
 	int				is_eating;
+	pthread_t		monitor_thread;
+	t_philo			*philos;
+	
 }					t_shared_data;
 
 typedef struct s_philo
 {
-	//t_custom_philo  *philos;
 	int				id;
+	int				left_fork;
+	int				right_fork;
 	int				eat_count;
 	long long		last_meal_time;
-	t_data			philo_data;
-	t_shared_data	shared_data;
-	//pthread_t		philo_thread;
-	//pthread_t		monitor_thread;
+	pthread_t		philo_thread;
 }					t_philo;
 
 int					creath_thread(t_philo *philo);

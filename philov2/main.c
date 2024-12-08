@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/07 22:02:00 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/08 21:53:49 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,23 +18,10 @@ int	init_mutexes(t_philo *philos)
 			* philos[0].philo_data.numb_of_philos);
 	if (!philos[0].shared_data.forks)
 		return (1);
-	philos[0].shared_data.print = malloc(sizeof(pthread_mutex_t));  // nop need for alloc
-	if (!philos[0].shared_data.print)
-		return (free(philos[0].shared_data.forks), 1);
-	philos[0].shared_data.dead = malloc(sizeof(pthread_mutex_t));  // nop need for alloc
-	if (!philos[0].shared_data.dead)
-	{
-		free(philos[0].shared_data.print);
-		free(philos[0].shared_data.forks);
-		return (1);
-	}
 	philos[0].shared_data.philos = malloc(sizeof(pthread_t)
 			* (philos[0].philo_data.numb_of_philos));
 	if (!philos[0].shared_data.philos)
 	{
-		free(philos[0].shared_data.forks);
-		free(philos[0].shared_data.print); // to remove
-		free(philos[0].shared_data.dead); // to remove
 		return (1);
 	}
 	if (pthread_mutex_philo(philos) != 0)
