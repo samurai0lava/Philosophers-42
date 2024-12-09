@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/06 10:24:10 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/09 14:37:45 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,22 +70,22 @@ int	dead_philo(t_philo *philo)
 	return (is_dead);
 }
 
-int	pthread_mutex_philo(t_philo *philos)
+int	pthread_mutex_philo(t_philo *philos, t_shared_data data)
 {
 	int	i;
 
-	if (pthread_mutex_init(philos[0].shared_data.print, NULL) != 0
-		|| pthread_mutex_init(philos[0].shared_data.dead, NULL) != 0
-		|| pthread_mutex_init(&philos[0].shared_data.state_mutex, NULL) != 0
-		|| pthread_mutex_init(&philos[0].shared_data.eats, NULL) != 0)
+	if (pthread_mutex_init(&data.print, NULL) != 0
+		|| pthread_mutex_init(&data.dead, NULL) != 0
+		|| pthread_mutex_init(&data.state_mutex, NULL) != 0
+		|| pthread_mutex_init(&data.eats, NULL) != 0)
 		return (1);
 	i = 0;
 	while (i < philos[0].philo_data.numb_of_philos)
 	{
-		if (pthread_mutex_init(&philos[0].shared_data.forks[i], NULL) != 0)
+		if (pthread_mutex_init(&data.forks[i], NULL) != 0)
 		{
 			while (--i >= 0)
-				pthread_mutex_destroy(&philos[0].shared_data.forks[i]);
+				pthread_mutex_destroy(&data.forks[i]);
 			return (1);
 		}
 		i++;
@@ -93,10 +93,3 @@ int	pthread_mutex_philo(t_philo *philos)
 	return (0);
 }
 
-void	free_mine(t_philo *philos)
-{
-	free(philos[0].shared_data.forks);
-	free(philos[0].shared_data.print);
-	free(philos[0].shared_data.dead);
-	free(philos[0].shared_data.philos);
-}

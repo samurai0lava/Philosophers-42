@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:00 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/11/25 11:40:15 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/09 14:27:34 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	parse_input(t_philo *philo, int ac, char **av)
 		if (check_num(av) == 0)
 			return (return_error(ARG_FAILS));
 		init_philo_parsing(philo, av);
-		if (philo->philo_data.numb_of_philos == 0)
+		if (philo[0]->philo_data.numb_of_philos == 0)
 			return (return_error(ARG_FAILS));
 	}
 	else

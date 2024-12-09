@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/08 21:03:07 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/09 14:52:32 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,6 @@ typedef struct s_shared_data
 	int				is_dead;
 	int				is_eating;
 	pthread_t		monitor_thread;
-	t_philo			*philos;
-	
 }					t_shared_data;
 
 typedef struct s_philo
@@ -71,6 +69,13 @@ typedef struct s_philo
 	long long		last_meal_time;
 	pthread_t		philo_thread;
 }					t_philo;
+
+typedef struct s_philo_all
+{
+	t_philo			*philos;
+	t_data			philo_data;
+	t_shared_data	data;
+}	t_philo_all;
 
 int					creath_thread(t_philo *philo);
 int					create_thread_monitor(t_philo *philo);

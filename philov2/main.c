@@ -6,21 +6,21 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/08 21:53:49 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/09 14:31:53 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_mutexes(t_philo *philos)
+int	init_mutexes(t_shared_data shared_data, t_philo *philo)
 {
-	philos[0].shared_data.forks = malloc(sizeof(pthread_mutex_t)
-			* philos[0].philo_data.numb_of_philos);
-	if (!philos[0].shared_data.forks)
+	shared_data.forks = malloc(sizeof(pthread_mutex_t)
+			* philo->philo_data.numb_of_philos);
+	if (!shared_data.forks)
 		return (1);
-	philos[0].shared_data.philos = malloc(sizeof(pthread_t)
-			* (philos[0].philo_data.numb_of_philos));
-	if (!philos[0].shared_data.philos)
+	shared_data.philos = malloc(sizeof(pthread_t)
+			* (philo->philo_data.numb_of_philos));
+	if (shared_data.philos)
 	{
 		return (1);
 	}
