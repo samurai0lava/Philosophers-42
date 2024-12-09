@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/09 14:52:32 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/09 19:11:21 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,33 +77,31 @@ typedef struct s_philo_all
 	t_shared_data	data;
 }	t_philo_all;
 
-int					creath_thread(t_philo *philo);
-int					create_thread_monitor(t_philo *philo);
-int					init_mutexes(t_philo *philo);
-void				init_philosophers(t_philo *philo);
-void				cleanup(t_philo *philo);
-int					start_simulation(t_philo *philo);
+int					creath_thread(t_philo_all *philo);
+int					create_thread_monitor(t_philo_all *philo);
+int					init_mutexes(t_philo_all *philo);
+void				init_philosophers(t_philo_all *philo);
+void				cleanup(t_philo_all *philo);
+int					start_simulation(t_philo_all *philo);
 int					ft_atoi(const char *str);
 int					ft_isdigit(int c);
 int					check_num(char **str);
-int					parse_input(t_philo *philo, int ac, char **av);
-void				eat(t_philo *philo);
-void				sleep_and_think(t_philo *philo);
+int					parse_input(t_philo_all *philo, int ac, char **av);
+void				eat(t_philo_all *philo);
+void				sleep_and_think(t_philo_all *philo);
 void				*routine(void *arg);
 void				*monitor(void *arg);
 long long			get_time(void);
 int					precise_usleep(long usec);
 int					return_error(char *str);
 int					parse_num_of_philos(char *av);
-int					dead_philo(t_philo *philo);
-int					check_if_all_ate(t_philo *philos);
-int					check_is_dead(t_philo *philos);
-void				printf_state(t_philo *philo, char *state);
-int					pthread_mutex_philo(t_philo *philos);
-void				wait_and_cleanup(t_philo *philos);
-void				free_mine(t_philo *philos);
-void				init_philo_parsing(t_philo *philo, char **av);
-void				acquire_forks(t_philo *philo, int *first_fork,
+int					dead_philo(t_philo_all *philo);
+int					check_if_all_ate(t_philo_all *philos);
+int					check_is_dead(t_philo_all *philos);
+void	printf_state(t_philo_all *philo, int id, char *state);
+int					pthread_mutex_philo(t_philo_all *philos);
+void				init_philo_parsing(t_philo_all *philo, char **av);
+void				acquire_forks(t_philo_all *philo, int *first_fork,
 						int *second_fork);
 
 #endif
