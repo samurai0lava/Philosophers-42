@@ -6,13 +6,13 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/09 19:15:18 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/10 13:55:48 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	cleanup(t_philo_all *philos)
+void	cleanup(t_philo *philos)
 {
 	int	i;
 
@@ -32,37 +32,34 @@ void	cleanup(t_philo_all *philos)
 	if (pthread_mutex_destroy(&philos->data.eats))
 		return ;
 	free(philos->data.forks);
-	free(philos->philos);
+	philos->data.forks = NULL;
 	free(philos);
+	philos = NULL;
 }
 
-int	create_thread_monitor(t_philo_all *philos)
+int create_thread_monitor(t_philo *philos)
 {
-	int	check;
-
-	check = pthread_create(&philos->data.monitor_thread, NULL, &monitor,
-			(void *)philos);
-	if (check != 0)
-		return (1);
-	return (0);
+    if (pthread_create(&philos->data.monitor_thread, NULL, &monitor, philos) != 0)
+        return (1);
+    return (0);
 }
 
-int	creath_thread(t_philo_all *philos)
+int	creath_thread(t_philo *philos)
 {
 	int	i;
 
 	i = 0;
 	while (philos->philo_data.numb_of_philos > i)
 	{
-		if (pthread_create(&philos->philos[i].philo_thread, NULL, &routine,
-				(void *)philos) != 0)
+		if (pthread_create(&philos[i].philo_thread, NULL, &routine,
+			&philos[i]) != 0)
 			return (1);
 		i++;
 	}
 	i = 0;
 	while (i < philos->philo_data.numb_of_philos)
 	{
-		if (pthread_join(philos->philos[i].philo_thread, NULL) != 0)
+		if (pthread_join(philos[i].philo_thread, NULL) != 0)
 			return (1);
 		i++;
 	}

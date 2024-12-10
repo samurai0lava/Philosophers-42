@@ -6,13 +6,13 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/09 19:10:19 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/10 10:18:00 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	check_individual_eats(t_philo_all *philos, int *finished_eating)
+static int	check_individual_eats(t_philo *philos, int *finished_eating)
 {
 	int	i;
 
@@ -20,7 +20,7 @@ static int	check_individual_eats(t_philo_all *philos, int *finished_eating)
 	while (i < philos->philo_data.numb_of_philos)
 	{
 		pthread_mutex_lock(&philos->data.eats);
-		if (philos->philos[i].eat_count >= philos->philo_data.number_of_eats)
+		if (philos[i].eat_count >= philos->philo_data.number_of_eats)
 			(*finished_eating)++;
 		pthread_mutex_unlock(&philos->data.eats);
 		i++;
@@ -28,7 +28,7 @@ static int	check_individual_eats(t_philo_all *philos, int *finished_eating)
 	return (*finished_eating);
 }
 
-static int	check_and_update_dead_state(t_philo_all *philos, int finished_eating)
+static int	check_and_update_dead_state(t_philo *philos, int finished_eating)
 {
 	if (philos->philo_data.numb_of_philos == finished_eating)
 	{
@@ -40,7 +40,7 @@ static int	check_and_update_dead_state(t_philo_all *philos, int finished_eating)
 	return (0);
 }
 
-int	check_if_all_ate(t_philo_all *philos)
+int	check_if_all_ate(t_philo *philos)
 {
 	int	finished_eating;
 
@@ -61,7 +61,7 @@ int	check_if_all_ate(t_philo_all *philos)
 	return (0);
 }
 
-void	init_philo_parsing(t_philo_all *philo, char **av)
+void	init_philo_parsing(t_philo *philo, char **av)
 {
 	philo->philo_data.numb_of_philos = ft_atoi(av[1]);
 	philo->philo_data.time_to_die = ft_atoi(av[2]);
@@ -73,11 +73,11 @@ void	init_philo_parsing(t_philo_all *philo, char **av)
 		philo->philo_data.number_of_eats = -1;
 }
 
-void	printf_state(t_philo_all *philo, int id, char *state)
+void	printf_state(t_philo *philo, char *state)
 {
     if (pthread_mutex_lock(&philo->data.print) != 0)
         return ;
-    printf("%lld %d %s", get_time() - philo->data.start_time, id, state);
+    printf("%lld %d %s", get_time() - philo->data.start_time, philo->id, state);
     if (pthread_mutex_unlock(&philo->data.print) != 0)
         return ;
 }

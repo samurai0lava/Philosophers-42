@@ -6,21 +6,21 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/09 19:10:47 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/10 10:11:04 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	forks_change(t_philo_all *philo, int *first_fork, int *second_fork)
+static void	forks_change(t_philo *philo, int *first_fork, int *second_fork)
 {
 	int	left_fork;
 	int	right_fork;
 	int	tmp;
 
-	left_fork = philo->philos->left_fork;
-	right_fork = philo->philos->right_fork;
-	if (philo->philos->id % 2 == 0)
+	left_fork = philo->left_fork;
+	right_fork = philo->right_fork;
+	if (philo->id % 2 == 0)
 	{
 		*first_fork = right_fork;
 		*second_fork = left_fork;
@@ -38,18 +38,18 @@ static void	forks_change(t_philo_all *philo, int *first_fork, int *second_fork)
 	}
 }
 
-void	acquire_forks(t_philo_all *philo, int *first_fork, int *second_fork)
+void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
 {
     forks_change(philo, first_fork, second_fork);
     if (pthread_mutex_lock(&philo->data.forks[*first_fork]) != 0)
         return ;
-    printf_state(philo, philo->philos->id, PHILO_FORK);
+    printf_state(philo, PHILO_FORK);
     if (pthread_mutex_lock(&philo->data.forks[*second_fork]) != 0)
         return ;
-    printf_state(philo, philo->philos->id, PHILO_FORK);
+    printf_state(philo, PHILO_FORK);
 }
 
-void	eat(t_philo_all *philo)
+void	eat(t_philo *philo)
 {
     int	first_fork;
     int	second_fork;
@@ -57,14 +57,14 @@ void	eat(t_philo_all *philo)
     acquire_forks(philo, &first_fork, &second_fork);
     if (pthread_mutex_lock(&philo->data.state_mutex) != 0)
         return ;
-    philo->philos->last_meal_time = get_time();
+    philo->last_meal_time = get_time();
     if (pthread_mutex_unlock(&philo->data.state_mutex) != 0)
         return ;
     pthread_mutex_lock(&philo->data.eats);
-    philo->philos->eat_count++;
+    philo->eat_count++;
     if (pthread_mutex_unlock(&philo->data.eats) != 0)
         return ;
-    printf_state(philo, philo->philos->id, PHILO_EAT);
+    printf_state(philo, PHILO_EAT);
     precise_usleep(philo->philo_data.time_to_eat);
     if (pthread_mutex_unlock(&philo->data.forks[second_fork]) != 0)
         return ;
@@ -72,19 +72,19 @@ void	eat(t_philo_all *philo)
         return ;
 }
 
-void	sleep_and_think(t_philo_all *philo)
+void	sleep_and_think(t_philo *philo)
 {
-    printf_state(philo, philo->philos->id, PHILO_SLEEP);
+    printf_state(philo, PHILO_SLEEP);
     precise_usleep(philo->philo_data.time_to_sleep);
-    printf_state(philo, philo->philos->id, PHILO_THINK);
+    printf_state(philo, PHILO_THINK);
 }
 
 void	*routine(void *arg)
 {
-	t_philo_all	*philo;
-
-	philo = (t_philo_all *)arg;
-	if (philo->philos->id % 2 == 0)
+	t_philo	*philo;
+	
+	philo = (t_philo *)arg;
+	if (philo->id % 2 == 0)
 		precise_usleep(10);
 	while (dead_philo(philo) == 0)
 	{

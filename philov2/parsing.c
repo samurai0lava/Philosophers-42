@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:00 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/09 14:03:09 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/10 10:12:39 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	check_num(char **str)
 	return (1);
 }
 
-int	parse_input(t_philo_all *philo, int ac, char **av)
+int	parse_input(t_philo *philo, int ac, char **av)
 {
 	if (ac == 5 || ac == 6)
 	{

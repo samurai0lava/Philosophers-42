@@ -6,32 +6,25 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/09 19:15:24 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/10 13:59:32 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_mutexes(t_philo_all *philo)
+int	init_mutexes(t_philo *philo)
 {
 	int	i;
 
-	philo->philos = malloc(sizeof(t_philo) * philo->philo_data.numb_of_philos);
-	if (!philo->philos)
-		return (1);
 	philo->data.forks = malloc(sizeof(pthread_mutex_t)
 			* philo->philo_data.numb_of_philos);
 	if (!philo->data.forks)
-	{
-		free(philo->philos);
 		return (1);
-	}
 	i = 0;
 	while (i < philo->philo_data.numb_of_philos)
 	{
 		if (pthread_mutex_init(&philo->data.forks[i], NULL) != 0)
 		{
-			free(philo->philos);
 			free(philo->data.forks);
 			return (1);
 		}
@@ -42,47 +35,44 @@ int	init_mutexes(t_philo_all *philo)
 		|| pthread_mutex_init(&philo->data.state_mutex, NULL) != 0
 		|| pthread_mutex_init(&philo->data.eats, NULL) != 0)
 	{
-		free(philo->philos);
 		free(philo->data.forks);
 		return (1);
 	}
 	return (0);
 }
 
-void	init_philosophers(t_philo_all *philos)
+void	init_philosophers(t_philo *philos)
 {
 	int	i;
 
 	i = 0;
 	while (i < philos->philo_data.numb_of_philos)
 	{
-		philos->philos[i].id = i + 1;
-		philos->philos[i].eat_count = 0;
-		philos->philos[i].last_meal_time = get_time();
+		philos[i].id = i + 1;
+		philos[i].eat_count = 0;
+		philos[i].last_meal_time = get_time();
 		philos->data.is_dead = 0;
-		philos->philos[i].left_fork = i;
-		philos->philos[i].right_fork = (i + 1)
-			% philos[0].philo_data.numb_of_philos;
+		philos[i].left_fork = i;
+		philos[i].right_fork = (i + 1) % philos[0].philo_data.numb_of_philos;
 		philos->data.start_time = get_time();
 		philos->data.is_eating = 0;
 		i++;
 	}
 }
 
-void	handle_one_philo(t_philo_all *philos)
+void	handle_one_philo(t_philo *philos)
 {
 	precise_usleep(philos->philo_data.time_to_die);
-	printf("%lld %d died\n", get_time() - philos->data.start_time,
-		philos->philos->id);
+	printf("%lld %d died\n", get_time() - philos->data.start_time, philos->id);
 }
 
-int	start_simulation(t_philo_all *philos)
+int	start_simulation(t_philo *philos)
 {
 	long long	start_time;
 
-	// int 		i;
 	start_time = get_time();
-	philos->philos->last_meal_time = start_time;
+	philos->last_meal_time = start_time;
+
 	if (create_thread_monitor(philos) != 0)
 		return (1);
 	if (creath_thread(philos) != 0)
@@ -94,15 +84,15 @@ int	start_simulation(t_philo_all *philos)
 
 int	main(int ac, char **av)
 {
-	t_philo_all	*philos;
-	int			numbofphilos;
+	t_philo	*philos;
+	int		numbofphilos;
 
 	if (ac != 5 && ac != 6)
 		return (return_error(ARG_FAILS));
 	numbofphilos = parse_num_of_philos(av[1]);
 	if (numbofphilos == -1)
 		return (return_error(ARG_FAILS));
-	philos = malloc(sizeof(t_philo_all));
+	philos = malloc(sizeof(t_philo) * numbofphilos);
 	if (!philos)
 		return (1);
 	if (parse_input(philos, ac, av) != 0)

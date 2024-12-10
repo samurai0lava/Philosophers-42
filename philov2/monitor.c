@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/09 19:11:33 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/10 10:13:37 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	*monitor(void *arg)
 {
-	t_philo_all	*philos;
+	t_philo	*philos;
 
-	philos = (t_philo_all *)arg;
+	philos = (t_philo *)arg;
 	while (1)
 	{
 		pthread_mutex_lock(&philos->data.dead);
@@ -32,7 +32,7 @@ void	*monitor(void *arg)
 	return (arg);
 }
 
-int	check_is_dead(t_philo_all *philos)
+int	check_is_dead(t_philo *philos)
 {
     int			i;
     long long	current_time;
@@ -44,10 +44,10 @@ int	check_is_dead(t_philo_all *philos)
         pthread_mutex_lock(&philos->data.state_mutex);
         pthread_mutex_lock(&philos->data.dead);
         if (current_time
-            - philos->philos[i].last_meal_time > philos->philo_data.time_to_die
+            - philos[i].last_meal_time > philos->philo_data.time_to_die
             && philos->data.is_eating == 0)
         {
-            printf_state(philos, philos->philos[i].id, PHILO_DEAD);
+            printf_state(philos, PHILO_DEAD);
             philos->data.is_dead = 1;
             pthread_mutex_unlock(&philos->data.dead);
             pthread_mutex_unlock(&philos->data.state_mutex);
@@ -60,7 +60,7 @@ int	check_is_dead(t_philo_all *philos)
     return (0);
 }
 
-int	dead_philo(t_philo_all *philo)
+int	dead_philo(t_philo *philo)
 {
 	int	is_dead;
 
@@ -70,7 +70,7 @@ int	dead_philo(t_philo_all *philo)
 	return (is_dead);
 }
 
-int	pthread_mutex_philo(t_philo_all *philos)
+int	pthread_mutex_philo(t_philo *philos)
 {
 	int	i;
 
