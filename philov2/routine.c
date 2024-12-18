@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/18 18:26:28 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/18 22:34:52 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,32 +48,72 @@ void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
         return ;
     printf_state(philo, PHILO_FORK);
 }
-void update_last_meal(t_philo *philo)
-{
-	if(pthread_mutex_lock(&philo->data.state_mutex) != 0)
-		return ;
-	philo->last_meal_time = get_time();
-	if (pthread_mutex_unlock(&philo->data.state_mutex) != 0)
-    	return ;
-}
+// void update_last_meal(t_philo *philo)
+// {
+// 	if(pthread_mutex_lock(&philo->data.state_mutex) != 0)
+// 		return ;
+// 	philo->last_meal_time = get_time();
+// 	if (pthread_mutex_unlock(&philo->data.state_mutex) != 0)
+//     	return ;
+// }
+
+// void eat(t_philo *philo)
+// {
+//     int first_fork;
+//     int second_fork;
+
+//     acquire_forks(philo, &first_fork, &second_fork);
+    
+//     pthread_mutex_lock(&philo->data.state_mutex);
+//     philo->data.is_eating = 1;
+//     pthread_mutex_lock(&philo->data.eats);
+//     philo->eat_count++;
+//     pthread_mutex_unlock(&philo->data.eats);
+//     printf_state(philo, PHILO_EAT);
+//     philo->data.is_eating = 0;
+//     pthread_mutex_unlock(&philo->data.state_mutex);
+    
+//     precise_usleep(philo->philo_data.time_to_eat);
+//     pthread_mutex_unlock(&philo->data.forks[second_fork]);
+//     pthread_mutex_unlock(&philo->data.forks[first_fork]);
+// }
 
 void	eat(t_philo *philo)
 {
-    int	first_fork;
-    int	second_fork;
+	int	first_fork;
+	int	second_fork;
 
-    acquire_forks(philo, &first_fork, &second_fork);
-    if(pthread_mutex_lock(&philo->data.eats) != 0)
+	acquire_forks(philo, &first_fork, &second_fork);
+	if (pthread_mutex_lock(&philo->data.state_mutex) != 0)
 		return ;
-    philo->eat_count++;
-    if (pthread_mutex_unlock(&philo->data.eats) != 0)
-        return ;
-    printf_state(philo, PHILO_EAT);
-    precise_usleep(philo->philo_data.time_to_eat);
-    if (pthread_mutex_unlock(&philo->data.forks[second_fork]) != 0)
-        return ;
-    if (pthread_mutex_unlock(&philo->data.forks[first_fork]) != 0)
-        return ;
+	philo->last_meal_time = get_time();
+	if (pthread_mutex_unlock(&philo->data.state_mutex))
+		return ;
+	pthread_mutex_lock(&philo->data.eats);
+	philo->eat_count++;
+	if (pthread_mutex_unlock(&philo->data.eats) != 0)
+		return ;
+	printf_state(philo, PHILO_EAT);
+	precise_usleep(philo->philo_data.time_to_eat);
+	if (pthread_mutex_unlock(&philo->data.forks[second_fork]) != 0)
+		return ;
+	if (pthread_mutex_unlock(&philo->data.forks[first_fork]) != 0)
+		return ;
+}
+
+void *routine(void *arg)
+{
+    t_philo *philo;
+    
+    philo = (t_philo *)arg;
+    if (philo->id % 2 == 0)
+        precise_usleep(philo->philo_data.time_to_eat / 2);
+    while (philo->data.is_dead == 0)
+    {
+        eat(philo);
+        sleep_and_think(philo);
+    }
+    return (NULL);
 }
 
 void	sleep_and_think(t_philo *philo)
@@ -83,18 +123,3 @@ void	sleep_and_think(t_philo *philo)
     printf_state(philo, PHILO_THINK);
 }
 
-void	*routine(void *arg)
-{
-	t_philo	*philo;
-	
-	philo = (t_philo *)arg;
-	if (philo->id % 2 == 0)
-		precise_usleep(philo->philo_data.time_to_eat / 2);
-	while (dead_philo(philo) == 0)
-	{
-		eat(philo);
-		update_last_meal(philo);
-		sleep_and_think(philo);
-	}
-	return (NULL);
-}
