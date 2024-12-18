@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/10 10:11:04 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/18 18:26:28 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,14 @@ void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
         return ;
     printf_state(philo, PHILO_FORK);
 }
+void update_last_meal(t_philo *philo)
+{
+	if(pthread_mutex_lock(&philo->data.state_mutex) != 0)
+		return ;
+	philo->last_meal_time = get_time();
+	if (pthread_mutex_unlock(&philo->data.state_mutex) != 0)
+    	return ;
+}
 
 void	eat(t_philo *philo)
 {
@@ -55,12 +63,8 @@ void	eat(t_philo *philo)
     int	second_fork;
 
     acquire_forks(philo, &first_fork, &second_fork);
-    if (pthread_mutex_lock(&philo->data.state_mutex) != 0)
-        return ;
-    philo->last_meal_time = get_time();
-    if (pthread_mutex_unlock(&philo->data.state_mutex) != 0)
-        return ;
-    pthread_mutex_lock(&philo->data.eats);
+    if(pthread_mutex_lock(&philo->data.eats) != 0)
+		return ;
     philo->eat_count++;
     if (pthread_mutex_unlock(&philo->data.eats) != 0)
         return ;
@@ -85,10 +89,11 @@ void	*routine(void *arg)
 	
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 0)
-		precise_usleep(10);
+		precise_usleep(philo->philo_data.time_to_eat / 2);
 	while (dead_philo(philo) == 0)
 	{
 		eat(philo);
+		update_last_meal(philo);
 		sleep_and_think(philo);
 	}
 	return (NULL);

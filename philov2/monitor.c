@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/10 10:13:37 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/18 17:54:25 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@ void	*monitor(void *arg)
 	t_philo	*philos;
 
 	philos = (t_philo *)arg;
+	if(philos->data.is_dead == 1)
+	{
+		printf(RED "DEAD\n" RESET);
+		return (NULL);
+	}
 	while (1)
 	{
 		pthread_mutex_lock(&philos->data.dead);

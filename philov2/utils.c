@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/10 13:55:48 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/18 17:47:12 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,12 @@ int	creath_thread(t_philo *philos)
 			return (1);
 		i++;
 	}
-	i = 0;
-	while (i < philos->philo_data.numb_of_philos)
-	{
-		if (pthread_join(philos[i].philo_thread, NULL) != 0)
-			return (1);
-		i++;
-	}
+    i = 0;
+    while(philos->philo_data.numb_of_philos > i)
+    {
+        if(pthread_join(philos[i].philo_thread, NULL) != 0)
+            return (1);
+        i++;
+    }
 	return (0);
 }

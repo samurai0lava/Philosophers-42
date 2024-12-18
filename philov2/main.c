@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/10 13:59:32 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/18 17:49:17 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ void	init_philosophers(t_philo *philos)
 		philos[i].right_fork = (i + 1) % philos[0].philo_data.numb_of_philos;
 		philos->data.start_time = get_time();
 		philos->data.is_eating = 0;
+		philos[i].data = philos[0].data;
+		philos[i].philo_data = philos[0].philo_data;
 		i++;
 	}
 }
