@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/18 22:34:52 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:56:49 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,21 @@ void	eat(t_philo *philo)
 void *routine(void *arg)
 {
     t_philo *philo;
-    
+
     philo = (t_philo *)arg;
     if (philo->id % 2 == 0)
         precise_usleep(philo->philo_data.time_to_eat / 2);
-    while (philo->data.is_dead == 0)
+    while (1)
     {
+        pthread_mutex_lock(&philo->data.dead);
+        if (philo->data.is_dead)
+        {
+            pthread_mutex_unlock(&philo->data.dead);
+			printf(RED "DEAD : %d\n" RESET, philo->data.is_dead);
+            return (NULL);
+        }
+        pthread_mutex_unlock(&philo->data.dead);
+        
         eat(philo);
         sleep_and_think(philo);
     }

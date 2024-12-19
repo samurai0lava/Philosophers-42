@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_eats.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/10 10:18:00 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/19 11:29:08 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,20 @@ void	init_philo_parsing(t_philo *philo, char **av)
 		philo->philo_data.number_of_eats = -1;
 }
 
+// int dead_philo(t_philo *philo)
+// {
+// 	int is_dead;
+// 	pthread_mutex_lock(&philo->data.state_mutex);
+// 	is_dead = philo->data.is_dead;
+// 	pthread_mutex_unlock(&philo->data.state_mutex);
+// 	return (is_dead);
+// }
+
 void	printf_state(t_philo *philo, char *state)
 {
-    if (pthread_mutex_lock(&philo->data.print) != 0)
-        return ;
-    printf("%lld %d %s", get_time() - philo->data.start_time, philo->id, state);
-    if (pthread_mutex_unlock(&philo->data.print) != 0)
-        return ;
+	if (pthread_mutex_lock(&philo->data.print) != 0)
+		return ;
+	printf("%lld %d %s", get_time() - philo->data.start_time, philo->id, state);
+	if (pthread_mutex_unlock(&philo->data.print) != 0)
+		return ;
 }
