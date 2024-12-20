@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/19 11:04:29 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/20 11:54:56 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 static int check_philo_death(t_philo *philo, long long current_time)
 {
-    int is_dead = 0;
-    
     pthread_mutex_lock(&philo->data.state_mutex);
     if (current_time - philo->last_meal_time > philo->philo_data.time_to_die)
     {
@@ -24,13 +22,13 @@ static int check_philo_death(t_philo *philo, long long current_time)
         {
             philo->data.is_dead = 1;
             printf_state(philo, PHILO_DEAD);
-            is_dead = 1;
         }
         pthread_mutex_unlock(&philo->data.dead);
+        pthread_mutex_unlock(&philo->data.state_mutex);
+        return 1;
     }
     pthread_mutex_unlock(&philo->data.state_mutex);
-    
-    return is_dead;
+    return 0;
 }
 
 void *monitor(void *arg)
@@ -46,12 +44,15 @@ void *monitor(void *arg)
         while (i < philos[0].philo_data.numb_of_philos)
         {
             current_time = get_time();
-            if (check_philo_death(&philos[i], current_time))
+            if (check_philo_death(&philos[i], current_time) || check_if_all_ate(philos))
+            {
+                pthread_mutex_lock(&philos->data.dead);
+                philos->data.is_dead = 1;
+                pthread_mutex_unlock(&philos->data.dead);
                 return (NULL);
+            }
             i++;
         }
-        if (check_if_all_ate(philos))
-            return (NULL);            
         usleep(100);
     }
     return (NULL);
@@ -59,7 +60,7 @@ void *monitor(void *arg)
 
 int check_is_dead(t_philo *philos)
 {
-	int is_dead;
+    int is_dead;
 
     pthread_mutex_lock(&philos->data.dead);
     is_dead = philos->data.is_dead;
@@ -71,12 +72,9 @@ int pthread_mutex_philo(t_philo *philos)
 {
     int i;
 
-    if (pthread_mutex_init(&philos->data.print, NULL) != 0
-        || pthread_mutex_init(&philos->data.dead, NULL) != 0
-        || pthread_mutex_init(&philos->data.state_mutex, NULL) != 0
-        || pthread_mutex_init(&philos->data.eats, NULL) != 0)
+    if (pthread_mutex_init(&philos->data.print, NULL) != 0 || pthread_mutex_init(&philos->data.dead, NULL) != 0 || pthread_mutex_init(&philos->data.state_mutex, NULL) != 0 || pthread_mutex_init(&philos->data.eats, NULL) != 0)
         return (1);
-        
+
     i = 0;
     while (i < philos[0].philo_data.numb_of_philos)
     {

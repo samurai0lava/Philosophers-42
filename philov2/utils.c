@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/19 12:00:08 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/20 10:19:13 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,5 @@ int	creath_thread(t_philo *philos)
 			return (1);
 		i++;
 	}
-    i = 0;
-    while(philos->philo_data.numb_of_philos > i)
-    {
-        if(pthread_join(philos[i].philo_thread, NULL) != 0)
-            return (1);
-        i++;
-    }
 	return (0);
 }

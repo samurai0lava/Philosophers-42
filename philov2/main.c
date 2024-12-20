@@ -3,21 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/18 17:49:17 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/20 10:19:18 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_mutexes(t_philo *philo)
+int init_mutexes(t_philo *philo)
 {
-	int	i;
+	int i;
 
-	philo->data.forks = malloc(sizeof(pthread_mutex_t)
-			* philo->philo_data.numb_of_philos);
+	philo->data.forks = malloc(sizeof(pthread_mutex_t) * philo->philo_data.numb_of_philos);
 	if (!philo->data.forks)
 		return (1);
 	i = 0;
@@ -30,10 +29,7 @@ int	init_mutexes(t_philo *philo)
 		}
 		i++;
 	}
-	if (pthread_mutex_init(&philo->data.print, NULL) != 0
-		|| pthread_mutex_init(&philo->data.dead, NULL) != 0
-		|| pthread_mutex_init(&philo->data.state_mutex, NULL) != 0
-		|| pthread_mutex_init(&philo->data.eats, NULL) != 0)
+	if (pthread_mutex_init(&philo->data.print, NULL) != 0 || pthread_mutex_init(&philo->data.dead, NULL) != 0 || pthread_mutex_init(&philo->data.state_mutex, NULL) != 0 || pthread_mutex_init(&philo->data.eats, NULL) != 0)
 	{
 		free(philo->data.forks);
 		return (1);
@@ -41,9 +37,9 @@ int	init_mutexes(t_philo *philo)
 	return (0);
 }
 
-void	init_philosophers(t_philo *philos)
+void init_philosophers(t_philo *philos)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (i < philos->philo_data.numb_of_philos)
@@ -62,16 +58,16 @@ void	init_philosophers(t_philo *philos)
 	}
 }
 
-void	handle_one_philo(t_philo *philos)
+void handle_one_philo(t_philo *philos)
 {
 	precise_usleep(philos->philo_data.time_to_die);
 	printf("%lld %d died\n", get_time() - philos->data.start_time, philos->id);
 }
 
-int	start_simulation(t_philo *philos)
+int start_simulation(t_philo *philos)
 {
 	long long	start_time;
-
+	int			i;
 	start_time = get_time();
 	philos->last_meal_time = start_time;
 
@@ -81,13 +77,20 @@ int	start_simulation(t_philo *philos)
 		return (1);
 	if (pthread_join(philos->data.monitor_thread, NULL) != 0)
 		return (1);
+	i = 0;
+	while (philos->philo_data.numb_of_philos > i)
+	{
+		if (pthread_join(philos[i].philo_thread, NULL) != 0)
+			return (1);
+		i++;
+	}
 	return (0);
 }
 
-int	main(int ac, char **av)
+int main(int ac, char **av)
 {
-	t_philo	*philos;
-	int		numbofphilos;
+	t_philo *philos;
+	int numbofphilos;
 
 	if (ac != 5 && ac != 6)
 		return (return_error(ARG_FAILS));

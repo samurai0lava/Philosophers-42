@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/19 11:56:49 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:59:32 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,27 +78,35 @@ void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
 //     pthread_mutex_unlock(&philo->data.forks[first_fork]);
 // }
 
-void	eat(t_philo *philo)
+void eat(t_philo *philo)
 {
-	int	first_fork;
-	int	second_fork;
+    int first_fork;
+    int second_fork;
 
-	acquire_forks(philo, &first_fork, &second_fork);
-	if (pthread_mutex_lock(&philo->data.state_mutex) != 0)
-		return ;
-	philo->last_meal_time = get_time();
-	if (pthread_mutex_unlock(&philo->data.state_mutex))
-		return ;
-	pthread_mutex_lock(&philo->data.eats);
-	philo->eat_count++;
-	if (pthread_mutex_unlock(&philo->data.eats) != 0)
-		return ;
-	printf_state(philo, PHILO_EAT);
-	precise_usleep(philo->philo_data.time_to_eat);
-	if (pthread_mutex_unlock(&philo->data.forks[second_fork]) != 0)
-		return ;
-	if (pthread_mutex_unlock(&philo->data.forks[first_fork]) != 0)
-		return ;
+    acquire_forks(philo, &first_fork, &second_fork);
+    
+    pthread_mutex_lock(&philo->data.dead);
+    if (philo->data.is_dead)
+    {
+        pthread_mutex_unlock(&philo->data.dead);
+        pthread_mutex_unlock(&philo->data.forks[second_fork]);
+        pthread_mutex_unlock(&philo->data.forks[first_fork]);
+        return;
+    }
+    pthread_mutex_unlock(&philo->data.dead);
+    pthread_mutex_lock(&philo->data.state_mutex);
+    philo->last_meal_time = get_time();
+    pthread_mutex_unlock(&philo->data.state_mutex);
+    
+    pthread_mutex_lock(&philo->data.eats);
+    philo->eat_count++;
+    pthread_mutex_unlock(&philo->data.eats);
+    
+    printf_state(philo, PHILO_EAT);
+    precise_usleep(philo->philo_data.time_to_eat);
+    
+    pthread_mutex_unlock(&philo->data.forks[second_fork]);
+    pthread_mutex_unlock(&philo->data.forks[first_fork]);
 }
 
 void *routine(void *arg)
@@ -108,27 +116,50 @@ void *routine(void *arg)
     philo = (t_philo *)arg;
     if (philo->id % 2 == 0)
         precise_usleep(philo->philo_data.time_to_eat / 2);
+
     while (1)
     {
         pthread_mutex_lock(&philo->data.dead);
         if (philo->data.is_dead)
         {
             pthread_mutex_unlock(&philo->data.dead);
-			printf(RED "DEAD : %d\n" RESET, philo->data.is_dead);
             return (NULL);
         }
         pthread_mutex_unlock(&philo->data.dead);
-        
         eat(philo);
+        pthread_mutex_lock(&philo->data.dead);
+        if (philo->data.is_dead)
+        {
+            pthread_mutex_unlock(&philo->data.dead);
+            return NULL;
+        }
+        pthread_mutex_unlock(&philo->data.dead);
         sleep_and_think(philo);
     }
     return (NULL);
 }
 
-void	sleep_and_think(t_philo *philo)
+void sleep_and_think(t_philo *philo)
 {
+    pthread_mutex_lock(&philo->data.dead);
+    if (philo->data.is_dead)
+    {
+        pthread_mutex_unlock(&philo->data.dead);
+        return;
+    }
+    pthread_mutex_unlock(&philo->data.dead);
+
     printf_state(philo, PHILO_SLEEP);
     precise_usleep(philo->philo_data.time_to_sleep);
+
+    pthread_mutex_lock(&philo->data.dead);
+    if (philo->data.is_dead)
+    {
+        pthread_mutex_unlock(&philo->data.dead);
+        return;
+    }
+    pthread_mutex_unlock(&philo->data.dead);
+
     printf_state(philo, PHILO_THINK);
 }
 
