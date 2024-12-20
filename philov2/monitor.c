@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/20 11:54:56 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:15:11 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,7 @@ static int check_philo_death(t_philo *philo, long long current_time)
     pthread_mutex_lock(&philo->data.state_mutex);
     if (current_time - philo->last_meal_time > philo->philo_data.time_to_die)
     {
-        pthread_mutex_lock(&philo->data.dead);
-        if (!philo->data.is_dead)
-        {
-            philo->data.is_dead = 1;
-            printf_state(philo, PHILO_DEAD);
-        }
-        pthread_mutex_unlock(&philo->data.dead);
+        printf_state(philo, PHILO_DEAD);
         pthread_mutex_unlock(&philo->data.state_mutex);
         return 1;
     }
@@ -34,7 +28,7 @@ static int check_philo_death(t_philo *philo, long long current_time)
 void *monitor(void *arg)
 {
     t_philo *philos;
-    int i;
+    int      i;
     long long current_time;
 
     philos = (t_philo *)arg;
@@ -47,7 +41,7 @@ void *monitor(void *arg)
             if (check_philo_death(&philos[i], current_time) || check_if_all_ate(philos))
             {
                 pthread_mutex_lock(&philos->data.dead);
-                philos->data.is_dead = 1;
+                philos[i].data.is_dead = 1;
                 pthread_mutex_unlock(&philos->data.dead);
                 return (NULL);
             }

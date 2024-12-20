@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/20 12:59:32 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:09:01 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,35 +48,6 @@ void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
         return ;
     printf_state(philo, PHILO_FORK);
 }
-// void update_last_meal(t_philo *philo)
-// {
-// 	if(pthread_mutex_lock(&philo->data.state_mutex) != 0)
-// 		return ;
-// 	philo->last_meal_time = get_time();
-// 	if (pthread_mutex_unlock(&philo->data.state_mutex) != 0)
-//     	return ;
-// }
-
-// void eat(t_philo *philo)
-// {
-//     int first_fork;
-//     int second_fork;
-
-//     acquire_forks(philo, &first_fork, &second_fork);
-    
-//     pthread_mutex_lock(&philo->data.state_mutex);
-//     philo->data.is_eating = 1;
-//     pthread_mutex_lock(&philo->data.eats);
-//     philo->eat_count++;
-//     pthread_mutex_unlock(&philo->data.eats);
-//     printf_state(philo, PHILO_EAT);
-//     philo->data.is_eating = 0;
-//     pthread_mutex_unlock(&philo->data.state_mutex);
-    
-//     precise_usleep(philo->philo_data.time_to_eat);
-//     pthread_mutex_unlock(&philo->data.forks[second_fork]);
-//     pthread_mutex_unlock(&philo->data.forks[first_fork]);
-// }
 
 void eat(t_philo *philo)
 {

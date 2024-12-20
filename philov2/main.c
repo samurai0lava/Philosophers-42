@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/20 10:19:18 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:14:12 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,13 @@ void handle_one_philo(t_philo *philos)
 
 int start_simulation(t_philo *philos)
 {
-	long long	start_time;
 	int			i;
-	start_time = get_time();
-	philos->last_meal_time = start_time;
+
+	philos->data.start_time = get_time();
 
 	if (create_thread_monitor(philos) != 0)
 		return (1);
 	if (creath_thread(philos) != 0)
-		return (1);
-	if (pthread_join(philos->data.monitor_thread, NULL) != 0)
 		return (1);
 	i = 0;
 	while (philos->philo_data.numb_of_philos > i)
@@ -84,6 +81,8 @@ int start_simulation(t_philo *philos)
 			return (1);
 		i++;
 	}
+	if (pthread_join(philos->data.monitor_thread, NULL) != 0)
+		return (1);
 	return (0);
 }
 
