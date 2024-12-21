@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/20 18:09:01 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/21 10:38:57 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,23 +88,9 @@ void *routine(void *arg)
     if (philo->id % 2 == 0)
         precise_usleep(philo->philo_data.time_to_eat / 2);
 
-    while (1)
+    while (dead_philo(philo) == 0)
     {
-        pthread_mutex_lock(&philo->data.dead);
-        if (philo->data.is_dead)
-        {
-            pthread_mutex_unlock(&philo->data.dead);
-            return (NULL);
-        }
-        pthread_mutex_unlock(&philo->data.dead);
         eat(philo);
-        pthread_mutex_lock(&philo->data.dead);
-        if (philo->data.is_dead)
-        {
-            pthread_mutex_unlock(&philo->data.dead);
-            return NULL;
-        }
-        pthread_mutex_unlock(&philo->data.dead);
         sleep_and_think(philo);
     }
     return (NULL);

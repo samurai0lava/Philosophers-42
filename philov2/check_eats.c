@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_eats.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/20 10:25:57 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/21 10:39:10 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,14 @@ void	init_philo_parsing(t_philo *philo, char **av)
 		philo->philo_data.number_of_eats = -1;
 }
 
-// int dead_philo(t_philo *philo)
-// {
-// 	int is_dead;
-// 	pthread_mutex_lock(&philo->data.state_mutex);
-// 	is_dead = philo->data.is_dead;
-// 	pthread_mutex_unlock(&philo->data.state_mutex);
-// 	return (is_dead);
-// }
+int dead_philo(t_philo *philo)
+{
+	int is_dead;
+	pthread_mutex_lock(&philo->data.state_mutex);
+	is_dead = philo->data.is_dead;
+	pthread_mutex_unlock(&philo->data.state_mutex);
+	return (is_dead);
+}
 
 void	printf_state(t_philo *philo, char *state)
 {
