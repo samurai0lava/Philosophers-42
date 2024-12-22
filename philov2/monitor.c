@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/21 10:35:44 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/21 18:30:08 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,16 @@ static int check_philo_death(t_philo *philo, long long current_time)
 {
     pthread_mutex_lock(&philo->data.state_mutex);
     if (current_time - philo->last_meal_time > philo->philo_data.time_to_die && philo->data.is_eating == 0)
-    {
-        
+    {        
         pthread_mutex_lock(&philo->data.dead);
         philo->data.is_dead = 1;
         pthread_mutex_unlock(&philo->data.dead);
         printf_state(philo, PHILO_DEAD);
         pthread_mutex_unlock(&philo->data.state_mutex);
-        return 1;
+        return (1);
     }
     pthread_mutex_unlock(&philo->data.state_mutex);
-    return 0;
+    return (0);
 }
 
 
@@ -44,10 +43,9 @@ void *monitor(void *arg)
         {
             current_time = get_time();
             if (check_philo_death(&philos[i], current_time) || check_if_all_ate(philos))
-                break ;
+                return(NULL) ;
             i++;
-        }   
-        usleep(100);
+        }
     }
     return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/20 10:19:13 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:27:42 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,11 @@ void	cleanup(t_philo *philos)
 
 int create_thread_monitor(t_philo *philos)
 {
-    if (pthread_create(&philos->data.monitor_thread, NULL, &monitor, philos) != 0)
+    if (pthread_create(&philos->data.monitor_thread, NULL, monitor, philos) != 0)
+	{
+		printf("failed to create thread\n");
         return (1);
+	}
     return (0);
 }
 
@@ -51,9 +54,22 @@ int	creath_thread(t_philo *philos)
 	i = 0;
 	while (philos->philo_data.numb_of_philos > i)
 	{
-		if (pthread_create(&philos[i].philo_thread, NULL, &routine,
+		if (pthread_create(&philos[i].philo_thread, NULL, routine,
 			&philos[i]) != 0)
+		{
+			printf("failed to create thread\n");
 			return (1);
+		}
+		i++;
+	}
+	i = 0;	
+	while (philos->philo_data.numb_of_philos > i)
+	{
+		if (pthread_join(philos[i].philo_thread, NULL) != 0)
+		{
+			printf("failed to join thread\n");
+			return (1);
+		}
 		i++;
 	}
 	return (0);
