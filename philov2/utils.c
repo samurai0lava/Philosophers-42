@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/22 14:27:42 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/22 15:01:56 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,15 @@ int	creath_thread(t_philo *philos)
 		}
 		i++;
 	}
-	i = 0;	
-	while (philos->philo_data.numb_of_philos > i)
-	{
-		if (pthread_join(philos[i].philo_thread, NULL) != 0)
-		{
-			printf("failed to join thread\n");
-			return (1);
-		}
-		i++;
-	}
+	// i = 0;	
+	// while (philos->philo_data.numb_of_philos > i)
+	// {
+	// 	if (pthread_join(philos[i].philo_thread, NULL) != 0)
+	// 	{
+	// 		printf("failed to join thread\n");
+	// 		return (1);
+	// 	}
+	// 	i++;
+	// }
 	return (0);
 }

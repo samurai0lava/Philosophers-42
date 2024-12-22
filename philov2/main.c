@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/22 14:26:47 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/22 15:01:35 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,24 +66,24 @@ void handle_one_philo(t_philo *philos)
 
 int start_simulation(t_philo *philos)
 {
-	// int i;
+	int i;
 
 	philos->data.start_time = get_time();
 	if (create_thread_monitor(philos) != 0)
 		return (1);
 	if (creath_thread(philos) != 0)
 		return (1);
-	// i = 0;	
-	// while (philos->philo_data.numb_of_philos > i)
-	// {
-	// 	if (pthread_join(philos[i].philo_thread, NULL) != 0)
-	// 	{
-	// 		printf("failed to join thread\n");
-	// 		return (1);
-	// 	}
-	// 	printf("thread joined %d\n", i);
-	// 	i++;
-	// }
+	i = 0;	
+	while (philos->philo_data.numb_of_philos > i)
+	{
+		if (pthread_join(philos[i].philo_thread, NULL) != 0)
+		{
+			printf("failed to join thread\n");
+			return (1);
+		}
+		printf("thread joined %d\n", i);
+		i++;
+	}
 	if (pthread_join(philos->data.monitor_thread, NULL) != 0)
 	{
 		printf("failed to join thread\n");
