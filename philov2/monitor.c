@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/22 15:20:41 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/23 20:35:32 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int check_philo_death(t_philo *philo, long long current_time)
+
+int check_philo_death(t_philo *philo, long long current_time)
 {
     pthread_mutex_lock(&philo->data.state_mutex);
     if (current_time - philo->last_meal_time > philo->philo_data.time_to_die && philo->data.is_eating == 0)
@@ -35,26 +36,18 @@ void *monitor(void *arg)
     int      i;
     long long current_time;
 
-
     philos = (t_philo *)arg;
     while (1)
     {
-        // pthread_mutex_lock(&philos->data.state_mutex);
         i = 0;
         while (i < philos[0].philo_data.numb_of_philos)
         {
-            // pthread_mutex_lock(&philos->data.state_mutex);
             current_time = get_time();
-            // pthread_mutex_unlock(&philos->data.state_mutex);
             if (check_philo_death(&philos[i], current_time) == 1 || check_if_all_ate(philos))
-            {
-                // pthread_mutex_unlock(&philos->data.state_mutex);
                 return(NULL) ;
-            }
             i++;
         }
-        // pthread_mutex_unlock(&philos->data.state_mutex);
-        // precise_usleep(1000); 
+        usleep(1000);
     }
     return (NULL);
 }

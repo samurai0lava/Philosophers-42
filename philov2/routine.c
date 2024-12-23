@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/22 14:25:21 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:07:25 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,7 @@ void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
     printf_state(philo, PHILO_FORK);
 }
 
-
-void eat(t_philo *philo)
+void    eat(t_philo *philo)
 {
     int first_fork;
     int second_fork;
@@ -75,7 +74,7 @@ void *routine(void *arg)
     philo = (t_philo *)arg;
     if (philo->id % 2 == 0)
         precise_usleep(philo->philo_data.time_to_eat / 2);
-    while (dead_philo(philo) == 0)
+    while (check_is_dead(philo) == 0)
     {
         eat(philo);
         sleep_and_think(philo);

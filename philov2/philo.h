@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/21 18:42:19 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:05:21 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,5 @@ int					pthread_mutex_philo(t_philo *philos);
 void				init_philo_parsing(t_philo *philo, char **av);
 void				acquire_forks(t_philo *philo, int *first_fork,
 						int *second_fork);
-
+int					check_philo_death(t_philo *philo, long long current_time);
 #endif
