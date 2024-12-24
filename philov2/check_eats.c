@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_eats.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/24 10:07:55 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/24 10:30:34 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,11 @@ int dead_philo(t_philo *philo)
 
 void printf_state(t_philo *philo, char *state)
 {
+	
 	if (pthread_mutex_lock(&philo->data.print) != 0)
 		return;
-	printf("%lld %d %s", get_time() - philo->data.start_time, philo->id, state);
+	if(ft_strncmp(state, PHILO_DEAD, sizeof(PHILO_DEAD)) == 0 || check_is_dead(philo) == 0)
+		printf("%lld %d %s", get_time() - philo->data.start_time, philo->id, state);
 	if (pthread_mutex_unlock(&philo->data.print) != 0)
 		return;
 }

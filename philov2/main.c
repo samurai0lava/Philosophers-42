@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/24 10:14:47 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/24 10:30:59 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,41 @@
 
 int init_mutexes(t_philo *philo)
 {
-	int i;
-
-	philo->data.forks = malloc(sizeof(pthread_mutex_t) * philo->philo_data.numb_of_philos);
-	if (!philo->data.forks)
-		return (1);
-	i = 0;
-	while (i < philo->philo_data.numb_of_philos)
-	{
-		if (pthread_mutex_init(&philo->data.forks[i], NULL) != 0)
-		{
-			free(philo->data.forks);
-			return (1);
-		}
-		i++;
-	}
-	if (pthread_mutex_init(&philo->data.print, NULL) != 0 || pthread_mutex_init(&philo->data.dead, NULL) != 0 || pthread_mutex_init(&philo->data.state_mutex, NULL) != 0 || pthread_mutex_init(&philo->data.eats, NULL) != 0)
-	{
-		free(philo->data.forks);
-		return (1);
-	}
-	return (0);
+    int i;
+    
+    philo->data.forks = malloc(sizeof(pthread_mutex_t) * philo->philo_data.numb_of_philos);
+    if (!philo->data.forks)
+        return (1);
+    // Allocate memory for is_dead flag
+    philo->data.is_dead = malloc(sizeof(int));
+    if (!philo->data.is_dead)
+    {
+        free(philo->data.forks);
+        return (1);
+    }
+    *philo->data.is_dead = 0;  // Initialize to 0 (not dead)
+    
+    i = 0;
+    while (i < philo->philo_data.numb_of_philos)
+    {
+        if (pthread_mutex_init(&philo->data.forks[i], NULL) != 0)
+        {
+            free(philo->data.forks);
+            free(philo->data.is_dead);
+            return (1);
+        }
+        i++;
+    }
+    if (pthread_mutex_init(&philo->data.print, NULL) != 0 || 
+        pthread_mutex_init(&philo->data.dead, NULL) != 0 || 
+        pthread_mutex_init(&philo->data.state_mutex, NULL) != 0 || 
+        pthread_mutex_init(&philo->data.eats, NULL) != 0)
+    {
+        free(philo->data.forks);
+        free(philo->data.is_dead);
+        return (1);
+    }
+    return (0);
 }
 
 void init_philosophers(t_philo *philos)
@@ -80,7 +94,6 @@ int start_simulation(t_philo *philos)
 			printf("failed to join thread\n");
 			return (1);
 		}
-		printf("thread joined %d\n", i);
 		i++;
 	}
 	if (pthread_join(philos->data.monitor_thread, NULL) != 0)
