@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_eats.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/21 18:43:05 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/24 10:07:55 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	check_and_update_dead_state(t_philo *philos, int finished_eating)
 	if (philos->philo_data.numb_of_philos == finished_eating)
 	{
 		pthread_mutex_lock(&philos->data.dead);
-		philos->data.is_dead = 1;
+		*philos->data.is_dead = 1;
 		pthread_mutex_unlock(&philos->data.dead);
 		pthread_mutex_unlock(&philos->data.state_mutex);
 		return (1);
@@ -72,11 +72,15 @@ int check_if_all_ate(t_philo *philos)
 
 int dead_philo(t_philo *philo)
 {
-	int is_dead;
+
 	pthread_mutex_lock(&philo->data.state_mutex);
-	is_dead = philo->data.is_dead;
+	if(*philo->data.is_dead == 1)
+	{
+		pthread_mutex_unlock(&philo->data.state_mutex);
+		return (1);
+	}
 	pthread_mutex_unlock(&philo->data.state_mutex);
-	return (is_dead);
+	return (0);
 }
 
 void printf_state(t_philo *philo, char *state)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/23 20:35:32 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/24 10:13:23 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int check_philo_death(t_philo *philo, long long current_time)
     if (current_time - philo->last_meal_time > philo->philo_data.time_to_die && philo->data.is_eating == 0)
     {        
         pthread_mutex_lock(&philo->data.dead);
-        philo->data.is_dead = 1;
+        *philo->data.is_dead = 1;
         pthread_mutex_unlock(&philo->data.dead);
         printf_state(philo, PHILO_DEAD);
         pthread_mutex_unlock(&philo->data.state_mutex);
@@ -49,17 +49,19 @@ void *monitor(void *arg)
         }
         usleep(1000);
     }
-    return (NULL);
+    return (arg);
 }
 
 int check_is_dead(t_philo *philos)
 {
-    int is_dead;
-
     pthread_mutex_lock(&philos->data.dead);
-    is_dead = philos->data.is_dead;
+    if(*philos->data.is_dead == 1)
+    {
+        pthread_mutex_unlock(&philos->data.dead);
+        return (1);
+    }
     pthread_mutex_unlock(&philos->data.dead);
-    return (is_dead);
+    return (0);
 }
 
 int pthread_mutex_philo(t_philo *philos)
