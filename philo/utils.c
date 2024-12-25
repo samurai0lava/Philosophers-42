@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/25 15:10:10 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/25 19:43:30 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,7 @@ int	create_thread_monitor(t_philo *philos)
 {
 	if (pthread_create(&philos->data.monitor_thread, NULL, monitor,
 			philos) != 0)
-	{
-		printf("failed to create thread\n");
 		return (1);
-	}
 	return (0);
 }
 
@@ -51,10 +48,7 @@ int	creath_thread(t_philo *philos)
 	{
 		if (pthread_create(&philos[i].philo_thread, NULL, routine,
 				&philos[i]) != 0)
-		{
-			printf("failed to create thread\n");
 			return (1);
-		}
 		i++;
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/25 14:31:51 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/25 19:52:11 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,17 +78,11 @@ int	start_simulation(t_philo *philos)
 	while (philos->philo_data.numb_of_philos > i)
 	{
 		if (pthread_join(philos[i].philo_thread, NULL) != 0)
-		{
-			printf("failed to join thread\n");
 			return (1);
-		}
 		i++;
 	}
 	if (pthread_join(philos->data.monitor_thread, NULL) != 0)
-	{
-		printf("failed to join thread\n");
 		return (1);
-	}
 	return (0);
 }
 
