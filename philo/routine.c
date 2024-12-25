@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/23 22:26:23 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/25 15:09:52 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,52 +40,51 @@ static void	forks_change(t_philo *philo, int *first_fork, int *second_fork)
 
 void	acquire_forks(t_philo *philo, int *first_fork, int *second_fork)
 {
-    forks_change(philo, first_fork, second_fork);
-    if (pthread_mutex_lock(&philo->data.forks[*first_fork]) != 0)
-        return ;
-    printf_state(philo, PHILO_FORK);
-    if (pthread_mutex_lock(&philo->data.forks[*second_fork]) != 0)
-        return ;
-    printf_state(philo, PHILO_FORK);
+	forks_change(philo, first_fork, second_fork);
+	if (pthread_mutex_lock(&philo->data.forks[*first_fork]) != 0)
+		return ;
+	printf_state(philo, PHILO_FORK);
+	if (pthread_mutex_lock(&philo->data.forks[*second_fork]) != 0)
+		return ;
+	printf_state(philo, PHILO_FORK);
 }
 
-void    eat(t_philo *philo)
+void	eat(t_philo *philo)
 {
-    int first_fork;
-    int second_fork;
+	int	first_fork;
+	int	second_fork;
 
-    acquire_forks(philo, &first_fork, &second_fork);
-    pthread_mutex_lock(&philo->data.state_mutex);
-    philo->last_meal_time = get_time();
-    pthread_mutex_unlock(&philo->data.state_mutex);
-    pthread_mutex_lock(&philo->data.eats);
-    philo->eat_count++;
-    pthread_mutex_unlock(&philo->data.eats);
-    printf_state(philo, PHILO_EAT);
-    precise_usleep(philo->philo_data.time_to_eat);
-    pthread_mutex_unlock(&philo->data.forks[first_fork]);
-    pthread_mutex_unlock(&philo->data.forks[second_fork]);
+	acquire_forks(philo, &first_fork, &second_fork);
+	pthread_mutex_lock(&philo->data.state_mutex);
+	philo->last_meal_time = get_time();
+	pthread_mutex_unlock(&philo->data.state_mutex);
+	pthread_mutex_lock(&philo->data.eats);
+	philo->eat_count++;
+	pthread_mutex_unlock(&philo->data.eats);
+	printf_state(philo, PHILO_EAT);
+	precise_usleep(philo->philo_data.time_to_eat);
+	pthread_mutex_unlock(&philo->data.forks[first_fork]);
+	pthread_mutex_unlock(&philo->data.forks[second_fork]);
 }
 
-void *routine(void *arg)
+void	*routine(void *arg)
 {
-    t_philo *philo;
+	t_philo	*philo;
 
-    philo = (t_philo *)arg;
-    if (philo->id % 2 == 0)
-        precise_usleep(philo->philo_data.time_to_eat / 2);
-    while (check_is_dead(philo) == 0)
-    {
-        eat(philo);
-        sleep_and_think(philo);
-    }
-    return (arg);
+	philo = (t_philo *)arg;
+	if (philo->id % 2 == 0)
+		precise_usleep(philo->philo_data.time_to_eat / 2);
+	while (check_is_dead(philo) == 0)
+	{
+		eat(philo);
+		sleep_and_think(philo);
+	}
+	return (arg);
 }
 
-void sleep_and_think(t_philo *philo)
+void	sleep_and_think(t_philo *philo)
 {
-    printf_state(philo, PHILO_SLEEP);
-    precise_usleep(philo->philo_data.time_to_sleep);
-    printf_state(philo, PHILO_THINK);
+	printf_state(philo, PHILO_SLEEP);
+	precise_usleep(philo->philo_data.time_to_sleep);
+	printf_state(philo, PHILO_THINK);
 }
-

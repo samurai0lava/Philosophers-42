@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/24 10:30:13 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/25 15:09:49 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include <string.h>
 
 // PHILO MESSAGES
 # define PHILO_EAT "is eating\n"

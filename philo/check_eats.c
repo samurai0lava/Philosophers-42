@@ -6,82 +6,81 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/24 20:12:41 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/25 15:10:56 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int check_individual_eats(t_philo *philos)
+static int	check_individual_eats(t_philo *philos)
 {
-    int i;
-    int finished_eating;
-    int current_eat_count;
+	int	i;
+	int	finished_eating;
+	int	current_eat_count;
 
-    i = 0;
-    finished_eating = 0;
-    pthread_mutex_lock(&philos[0].data.state_mutex);  // Lock for entire check
-    while (i < philos[0].philo_data.numb_of_philos)
-    {
-        pthread_mutex_lock(&philos[0].data.eats);
-        current_eat_count = philos[i].eat_count;
-        pthread_mutex_unlock(&philos[0].data.eats);
-        
-        if (current_eat_count >= philos[0].philo_data.number_of_eats)
-            finished_eating++;
-        i++;
-    }
-    pthread_mutex_unlock(&philos[0].data.state_mutex);
-    return (finished_eating);
+	i = 0;
+	finished_eating = 0;
+	pthread_mutex_lock(&philos[0].data.state_mutex);
+	while (i < philos[0].philo_data.numb_of_philos)
+	{
+		pthread_mutex_lock(&philos[0].data.eats);
+		current_eat_count = philos[i].eat_count;
+		pthread_mutex_unlock(&philos[0].data.eats);
+		if (current_eat_count >= philos[0].philo_data.number_of_eats)
+			finished_eating++;
+		i++;
+	}
+	pthread_mutex_unlock(&philos[0].data.state_mutex);
+	return (finished_eating);
 }
 
-static int check_and_update_dead_state(t_philo *philos, int finished_eating)
+static int	check_and_update_dead_state(t_philo *philos, int finished_eating)
 {
-    int should_die;
+	int	should_die;
 
-    should_die = 0;
-    pthread_mutex_lock(&philos[0].data.state_mutex);
-    pthread_mutex_lock(&philos[0].data.dead);
-    if (finished_eating >= philos[0].philo_data.numb_of_philos)
-    {
-        *philos[0].data.is_dead = 1;
-        should_die = 1;
-    }
-    pthread_mutex_unlock(&philos[0].data.dead);
-    pthread_mutex_unlock(&philos[0].data.state_mutex);
-    return (should_die);
+	should_die = 0;
+	pthread_mutex_lock(&philos[0].data.state_mutex);
+	pthread_mutex_lock(&philos[0].data.dead);
+	if (finished_eating >= philos[0].philo_data.numb_of_philos)
+	{
+		*philos[0].data.is_dead = 1;
+		should_die = 1;
+	}
+	pthread_mutex_unlock(&philos[0].data.dead);
+	pthread_mutex_unlock(&philos[0].data.state_mutex);
+	return (should_die);
 }
 
-int check_if_all_ate(t_philo *philos)
+int	check_if_all_ate(t_philo *philos)
 {
-    int finished_eating;
+	int	finished_eating;
 
-    pthread_mutex_lock(&philos[0].data.state_mutex);
-    if (philos[0].philo_data.number_of_eats == -1)
-    {
-        pthread_mutex_unlock(&philos[0].data.state_mutex);
-        return (0);
-    }
-    pthread_mutex_unlock(&philos[0].data.state_mutex);
-
-    finished_eating = check_individual_eats(philos);
-    return (check_and_update_dead_state(philos, finished_eating));
+	pthread_mutex_lock(&philos[0].data.state_mutex);
+	if (philos[0].philo_data.number_of_eats == -1)
+	{
+		pthread_mutex_unlock(&philos[0].data.state_mutex);
+		return (0);
+	}
+	pthread_mutex_unlock(&philos[0].data.state_mutex);
+	finished_eating = check_individual_eats(philos);
+	return (check_and_update_dead_state(philos, finished_eating));
 }
 
-void printf_state(t_philo *philo, char *state)
+void	printf_state(t_philo *philo, char *state)
 {
-    int is_dead;
-    
-    pthread_mutex_lock(&philo->data.dead);
-    is_dead = *philo->data.is_dead;
-    pthread_mutex_unlock(&philo->data.dead);
-    
-    pthread_mutex_lock(&philo->data.print);
-    if (ft_strncmp(state, PHILO_DEAD, sizeof(PHILO_DEAD)) == 0 || !is_dead)
-        printf("%lld %d %s", get_time() - philo->data.start_time, philo->id, state);
-    pthread_mutex_unlock(&philo->data.print);
+	int	is_dead;
+
+	pthread_mutex_lock(&philo->data.dead);
+	is_dead = *philo->data.is_dead;
+	pthread_mutex_unlock(&philo->data.dead);
+	pthread_mutex_lock(&philo->data.print);
+	if (ft_strncmp(state, PHILO_DEAD, sizeof(PHILO_DEAD)) == 0 || !is_dead)
+		printf("%lld %d %s", get_time() - philo->data.start_time, philo->id,
+			state);
+	pthread_mutex_unlock(&philo->data.print);
 }
-void init_philo_parsing(t_philo *philo, char **av)
+
+void	init_philo_parsing(t_philo *philo, char **av)
 {
 	philo->philo_data.numb_of_philos = ft_atoi(av[1]);
 	philo->philo_data.time_to_die = ft_atoi(av[2]);
