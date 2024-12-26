@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/25 15:10:56 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/26 11:38:45 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,9 @@ int	check_if_all_ate(t_philo *philos)
 
 void	printf_state(t_philo *philo, char *state)
 {
-	int	is_dead;
-
-	pthread_mutex_lock(&philo->data.dead);
-	is_dead = *philo->data.is_dead;
-	pthread_mutex_unlock(&philo->data.dead);
 	pthread_mutex_lock(&philo->data.print);
-	if (ft_strncmp(state, PHILO_DEAD, sizeof(PHILO_DEAD)) == 0 || !is_dead)
+	if (ft_strncmp(state, PHILO_DEAD, sizeof(PHILO_DEAD)) == 0
+		|| !check_is_dead(philo))
 		printf("%lld %d %s", get_time() - philo->data.start_time, philo->id,
 			state);
 	pthread_mutex_unlock(&philo->data.print);
