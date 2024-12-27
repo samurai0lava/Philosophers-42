@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/25 15:09:49 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/27 13:40:44 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,6 @@ void				acquire_forks(t_philo *philo, int *first_fork,
 						int *second_fork);
 int					check_philo_death(t_philo *philo, long long current_time);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
+void				death_occured(t_philo *philo);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/26 11:38:45 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/27 13:50:44 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int	check_and_update_dead_state(t_philo *philos, int finished_eating)
 	pthread_mutex_lock(&philos[0].data.dead);
 	if (finished_eating >= philos[0].philo_data.numb_of_philos)
 	{
-		*philos[0].data.is_dead = 1;
+		death_occured(philos);
 		should_die = 1;
 	}
 	pthread_mutex_unlock(&philos[0].data.dead);
