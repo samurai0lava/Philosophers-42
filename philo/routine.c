@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/27 14:04:36 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/27 17:11:55 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,20 @@ void	eat(t_philo *philo)
 	int	second_fork;
 
 	acquire_forks(philo, &first_fork, &second_fork);
-	pthread_mutex_lock(&philo->data.state_mutex);
+	if (pthread_mutex_lock(&philo->data.state_mutex) != 0)
+	{
+		pthread_mutex_unlock(&philo->data.forks[first_fork]);
+		pthread_mutex_unlock(&philo->data.forks[second_fork]);
+		return ;
+	}
 	philo->last_meal_time = get_time();
 	pthread_mutex_unlock(&philo->data.state_mutex);
-	pthread_mutex_lock(&philo->data.eats);
+	if (pthread_mutex_lock(&philo->data.eats) != 0)
+	{
+		pthread_mutex_unlock(&philo->data.forks[first_fork]);
+		pthread_mutex_unlock(&philo->data.forks[second_fork]);
+		return ;
+	}
 	philo->eat_count++;
 	pthread_mutex_unlock(&philo->data.eats);
 	printf_state(philo, PHILO_EAT);

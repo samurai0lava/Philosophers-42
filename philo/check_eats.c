@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/27 14:17:41 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/27 16:52:21 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ static int	check_and_update_dead_state(t_philo *philos, int finished_eating)
 	pthread_mutex_lock(&philos[0].data.dead);
 	if (finished_eating >= philos[0].philo_data.numb_of_philos)
 	{
-		death_occured(philos);
 		should_die = 1;
 	}
 	pthread_mutex_unlock(&philos[0].data.dead);
@@ -76,12 +75,14 @@ int	check_if_all_ate(t_philo *philos)
 
 void	printf_state(t_philo *philo, char *state)
 {
-	pthread_mutex_lock(&philo->data.print);
+	if(pthread_mutex_lock(&philo->data.print))
+		return ;
 	if (ft_strncmp(state, PHILO_DEAD, sizeof(PHILO_DEAD)) == 0
 		|| !check_is_dead(philo))
 		printf("%lld %d %s", get_time() - philo->data.start_time, philo->id,
 			state);
-	pthread_mutex_unlock(&philo->data.print);
+	if(pthread_mutex_unlock(&philo->data.print))
+		return ;
 }
 
 void	init_philo_parsing(t_philo *philo, char **av)
