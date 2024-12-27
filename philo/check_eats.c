@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/27 13:50:44 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/27 14:17:41 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,23 @@ int	check_if_all_ate(t_philo *philos)
 {
 	int	finished_eating;
 
-	pthread_mutex_lock(&philos[0].data.state_mutex);
+	if (!philos)
+		return (-1);
+	if (pthread_mutex_lock(&philos[0].data.state_mutex) != 0)
+		return (-1);
 	if (philos[0].philo_data.number_of_eats == -1)
 	{
-		pthread_mutex_unlock(&philos[0].data.state_mutex);
+		if (pthread_mutex_unlock(&philos[0].data.state_mutex) != 0)
+			return (-1);
 		return (0);
 	}
-	pthread_mutex_unlock(&philos[0].data.state_mutex);
-	finished_eating = check_individual_eats(philos);
-	return (check_and_update_dead_state(philos, finished_eating));
+	else
+	{
+		if (pthread_mutex_unlock(&philos[0].data.state_mutex) != 0)
+			return (-1);
+		finished_eating = check_individual_eats(philos);
+		return (check_and_update_dead_state(philos, finished_eating));
+	}
 }
 
 void	printf_state(t_philo *philo, char *state)
