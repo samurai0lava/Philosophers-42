@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/27 17:21:05 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/28 11:12:42 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 int	death_occured(t_philo *philo)
 {
 	if (pthread_mutex_lock(&philo->data.dead) != 0)
-		return (1);
-	(*philo->data.is_dead) = 1;
+		return (-1);
+	(*philo->data.is_dead) = 1; //<--- DATA RACE HERE
 	if (pthread_mutex_unlock(&philo->data.dead) != 0)
-		return (1);
+		return (-1);
 	return (0);
 }
 
@@ -54,7 +54,8 @@ void *monitor(void *arg)
             if (check_philo_death(&philos[i], current_time) == 1)
             {
                 printf_state(&philos[i], PHILO_DEAD);
-                death_occured(&philos[i]);
+                if(death_occured(&philos[i]) != 0)
+					return(NULL);
                 return (NULL);
             }
             if (check_if_all_ate(philos))
