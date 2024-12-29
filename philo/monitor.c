@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/29 13:25:58 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/29 14:47:14 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	death_occured(t_philo *philo)
 {
 	if (pthread_mutex_lock(&philo->data.dead) != 0)
 		return (-1);
-	(*philo->data.is_dead) = 1; //<--- DATA RACE HERE
+	(*philo->data.is_dead) = 1; //<--- DATA RACE HERE write to is_dead
 	if (pthread_mutex_unlock(&philo->data.dead) != 0)
 		return (-1);
 	return (0);
@@ -83,15 +83,13 @@ void *monitor(void *arg)
 
 int	check_is_dead(t_philo *philos)
 {
-	int	status;
-
 	if (pthread_mutex_lock(&philos->data.dead) != 0)
 		return (-1);
-	status = (*philos->data.is_dead);
+	if((*philos->data.is_dead) == 1) //<--- DATA RACE HERE read is_dead
+		return(pthread_mutex_unlock(&philos->data.dead), 1);
 	if (pthread_mutex_unlock(&philos->data.dead) != 0)
 		return (-1);
-
-	return (status);
+	return (0);
 }
 
 int	pthread_mutex_philo(t_philo *philos)
