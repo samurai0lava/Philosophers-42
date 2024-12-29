@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/25 19:43:30 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/29 20:13:35 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,21 @@ void	cleanup(t_philo *philos)
 	i = 0;
 	while (i < philos[0].philo_data.numb_of_philos)
 	{
-		pthread_mutex_destroy(&philos->data.forks[i]);
+		pthread_mutex_destroy(&philos[0].data.forks[i]);
 		i++;
 	}
-	pthread_mutex_destroy(&philos->data.print);
-	pthread_mutex_destroy(&philos->data.dead);
-	pthread_mutex_destroy(&philos->data.state_mutex);
-	pthread_mutex_destroy(&philos->data.eats);
-	free(philos->data.forks);
-	free(philos->data.is_dead);
+	pthread_mutex_destroy(&philos[0].data.print);
+	pthread_mutex_destroy(&philos[0].data.dead);
+	pthread_mutex_destroy(&philos[0].data.state_mutex);
+	pthread_mutex_destroy(&philos[0].data.eats);
+	free(philos[0].data.forks);
+	free(philos[0].data.is_dead);
 	free(philos);
 }
 
 int	create_thread_monitor(t_philo *philos)
 {
-	if (pthread_create(&philos->data.monitor_thread, NULL, monitor,
+	if (pthread_create(&philos[0].data.monitor_thread, NULL, monitor,
 			philos) != 0)
 		return (1);
 	return (0);

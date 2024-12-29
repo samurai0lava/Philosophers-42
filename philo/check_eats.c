@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_eats.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/29 14:31:13 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/29 20:47:54 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	check_individual_eats(t_philo *philos)
 	while (i < philos[0].philo_data.numb_of_philos)
 	{
 		pthread_mutex_lock(&philos[0].data.eats);
-		current_eat_count = philos[i].eat_count;
+		current_eat_count = philos->eat_count;
 		pthread_mutex_unlock(&philos[0].data.eats);
 		if (current_eat_count >= philos[0].philo_data.number_of_eats)
 			finished_eating++;
@@ -40,12 +40,8 @@ static int	check_and_update_dead_state(t_philo *philos, int finished_eating)
 
 	should_die = 0;
 	pthread_mutex_lock(&philos[0].data.state_mutex);
-	pthread_mutex_lock(&philos[0].data.dead);
 	if (finished_eating >= philos[0].philo_data.numb_of_philos)
-	{
 		should_die = 1;
-	}
-	pthread_mutex_unlock(&philos[0].data.dead);
 	pthread_mutex_unlock(&philos[0].data.state_mutex);
 	return (should_die);
 }
@@ -75,19 +71,19 @@ int	check_if_all_ate(t_philo *philos)
 
 void	printf_state(t_philo *philo, char *state)
 {
-	if(pthread_mutex_lock(&philo->data.state_mutex))
+	if(pthread_mutex_lock(&philo[0].data.state_mutex))
 		return ;
 	if (ft_strncmp(state, PHILO_DEAD, sizeof(PHILO_DEAD)) == 0
 		|| !check_is_dead(philo))
 	{
-		if(pthread_mutex_lock(&philo->data.print))
+		if(pthread_mutex_lock(&philo[0].data.print))
 			return ;
 		printf("%lld %d %s", get_time() - philo->data.start_time, philo->id,
 			state);
-		if(pthread_mutex_unlock(&philo->data.print))
+		if(pthread_mutex_unlock(&philo[0].data.print))
 			return ;
 	}
-	if(pthread_mutex_unlock(&philo->data.state_mutex))
+	if(pthread_mutex_unlock(&philo[0].data.state_mutex))
 		return ;
 }
 
