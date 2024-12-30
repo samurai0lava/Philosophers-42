@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 17:23:07 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/30 17:27:20 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	cleanup(t_philo *philos)
 	pthread_mutex_destroy(&philos[0].data.eats);
 	free(philos[0].data.forks);
 	free(philos[0].data.is_dead);
+	free(philos[0].data.dead);
 	free(philos);
 }
 
