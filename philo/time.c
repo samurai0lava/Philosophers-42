@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:25:33 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/06 11:26:59 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 20:53:40 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,29 @@ int	return_error(char *str)
 {
 	printf(MAGENTA "%s" RESET, str);
 	return (-1);
+}
+
+int	allocate_what_i_need(t_philo *philo)
+{
+	philo[0].data.forks = malloc(sizeof(pthread_mutex_t)
+			* philo->philo_data.numb_of_philos);
+	if (!philo[0].data.forks)
+		return (1);
+	philo[0].data.is_dead = malloc(sizeof(int));
+	if (!philo[0].data.is_dead)
+		return (free(philo[0].data.forks), 1);
+	philo[0].data.dead = malloc(sizeof(pthread_mutex_t));
+	if (!philo[0].data.dead)
+		return (free(philo[0].data.is_dead), free(philo[0].data.forks), 1);
+	philo[0].data.eats = malloc(sizeof(pthread_mutex_t));
+	if (!philo[0].data.eats)
+		return (free(philo[0].data.is_dead), free(philo[0].data.forks),
+			free(philo[0].data.dead), 1);
+	philo[0].data.print = malloc(sizeof(pthread_mutex_t));
+	if (!philo[0].data.print)
+	{
+		return (free(philo[0].data.is_dead), free(philo[0].data.forks),
+			free(philo[0].data.dead), free(philo[0].data.print), 1);
+	}
+	return (0);
 }

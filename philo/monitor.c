@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 20:05:56 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/30 20:35:12 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,60 +38,56 @@ int	check_philo_death(t_philo *philo, long long current_time)
 	return (0);
 }
 
-static int check_philosopher_status(t_philo *philo)
+static int	check_philosopher_status(t_philo *philo)
 {
-    long long current_time;
+	long long	current_time;
 
-    current_time = get_time();
-    if (check_philo_death(philo, current_time) == 1)
-    {
-        printf_state(philo, PHILO_DEAD);
-        if (death_occured(philo) != 0)
+	current_time = get_time();
+	if (check_philo_death(philo, current_time) == 1)
+	{
+		printf_state(philo, PHILO_DEAD);
+		if (death_occured(philo) != 0)
 			return (-1);
-        return (1);
-    }
-
-    return (0);
+		return (1);
+	}
+	return (0);
 }
 
-void *monitor(void *arg)
+void	*monitor(void *arg)
 {
-    t_philo *philos;
-    int     i;
-    int     status;
+	t_philo	*philos;
+	int		i;
+	int		status;
 
-    philos = (t_philo *)arg;
-    while (1)
-    {
-        i = 0;
-        while (i < philos[0].philo_data.numb_of_philos)
-        {
-            status = check_philosopher_status(&philos[i]);
-            if (status != 0)
-                return (NULL);
-            i++;
-        }
+	philos = (t_philo *)arg;
+	while (1)
+	{
+		i = 0;
+		while (i < philos[0].philo_data.numb_of_philos)
+		{
+			status = check_philosopher_status(&philos[i]);
+			if (status != 0)
+				return (NULL);
+			i++;
+		}
 		if (check_if_all_ate(philos) != 0)
-    	{
-        	if (death_occured(philos) != 0)
-			{
-           		return (NULL);
-			}
-			break;
-    	}
-        usleep(1000);
-    }
-    return (NULL);
+		{
+			if (death_occured(philos) != 0)
+				return (NULL);
+			break ;
+		}
+		usleep(1000);
+	}
+	return (NULL);
 }
 
 int	check_is_dead(t_philo *philos)
 {
 	if (pthread_mutex_lock(philos[0].data.dead) != 0)
 		return (-1);
-	if((*philos[0].data.is_dead) == 1)
-		return(pthread_mutex_unlock(philos[0].data.dead), 1);
+	if ((*philos[0].data.is_dead) == 1)
+		return (pthread_mutex_unlock(philos[0].data.dead), 1);
 	if (pthread_mutex_unlock(philos[0].data.dead) != 0)
 		return (-1);
 	return (0);
 }
-

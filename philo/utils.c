@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 20:24:08 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/30 20:54:13 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,15 @@ void	cleanup(t_philo *philos)
 		pthread_mutex_destroy(&philos[0].data.forks[i]);
 		i++;
 	}
-	pthread_mutex_destroy(&philos[0].data.print);
+	pthread_mutex_destroy(philos[0].data.print);
 	pthread_mutex_destroy(philos[0].data.dead);
 	pthread_mutex_destroy(&philos[0].data.state_mutex);
 	pthread_mutex_destroy(philos[0].data.eats);
 	free(philos[0].data.forks);
 	free(philos[0].data.is_dead);
 	free(philos[0].data.dead);
+	free(philos[0].data.eats);
+	free(philos[0].data.print);
 	free(philos);
 }
 
@@ -66,5 +68,15 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 		i++;
 	}
+	return (0);
+}
+
+int	init_other_mutex(t_philo *philo)
+{
+	if (pthread_mutex_init(philo[0].data.print, NULL) != 0
+		|| pthread_mutex_init(philo[0].data.dead, NULL) != 0
+		|| pthread_mutex_init(&philo[0].data.state_mutex, NULL) != 0
+		|| pthread_mutex_init(philo[0].data.eats, NULL) != 0)
+		return (1);
 	return (0);
 }

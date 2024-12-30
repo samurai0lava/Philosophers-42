@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 20:21:02 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 20:52:52 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_data
 typedef struct s_shared_data
 {
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	print;
+	pthread_mutex_t	*print;
 	pthread_mutex_t	*dead;
 	pthread_mutex_t	state_mutex;
 	pthread_mutex_t	*eats;
@@ -100,5 +100,7 @@ void				acquire_forks(t_philo *philo, int *first_fork,
 int					check_philo_death(t_philo *philo, long long current_time);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 int					death_occured(t_philo *philo);
+int					init_other_mutex(t_philo *philo);
+int					allocate_what_i_need(t_philo *philo);
 
 #endif

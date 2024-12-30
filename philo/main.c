@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 20:24:25 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/30 20:46:28 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,8 @@ int	init_mutexes(t_philo *philo)
 {
 	int	i;
 
-	philo[0].data.forks = malloc(sizeof(pthread_mutex_t)
-			* philo->philo_data.numb_of_philos);
-	if (!philo[0].data.forks)
+	if (allocate_what_i_need(philo) != 0)
 		return (1);
-	philo[0].data.is_dead = malloc(sizeof(int));
-	if (!philo[0].data.is_dead)
-		return (free(philo[0].data.forks), 1);
-	philo[0].data.dead = malloc(sizeof(pthread_mutex_t));
-	if (!philo[0].data.dead)
-		return (free(philo[0].data.is_dead), free(philo[0].data.forks), 1);
-	philo[0].data.eats = malloc(sizeof(pthread_mutex_t));
-	if (!philo[0].data.eats)
-		return (free(philo[0].data.is_dead), free(philo[0].data.forks),
-			free(philo[0].data.dead), 1);
-	*philo[0].data.is_dead = 0;
 	i = 0;
 	while (i < philo->philo_data.numb_of_philos)
 	{
@@ -38,11 +25,9 @@ int	init_mutexes(t_philo *philo)
 			return (free(philo[0].data.is_dead), free(philo[0].data.forks), 1);
 		i++;
 	}
-	if (pthread_mutex_init(&philo[0].data.print, NULL) != 0
-		|| pthread_mutex_init(philo[0].data.dead, NULL) != 0
-		|| pthread_mutex_init(&philo[0].data.state_mutex, NULL) != 0
-		|| pthread_mutex_init(philo[0].data.eats, NULL) != 0)
-		return (free(philo[0].data.is_dead), free(philo[0].data.forks), 1);
+	if (init_other_mutex(philo) == 1)
+		return (free(philo[0].data.is_dead), free(philo[0].data.forks),
+			free(philo[0].data.dead), 1);
 	return (0);
 }
 
@@ -53,6 +38,7 @@ void	init_philosophers(t_philo *philos)
 	i = 0;
 	while (i < philos->philo_data.numb_of_philos)
 	{
+		*philos[0].data.is_dead = 0;
 		philos[i].id = i + 1;
 		philos[i].eat_count = 0;
 		philos[i].last_meal_time = get_time();
