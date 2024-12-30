@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/29 20:29:20 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 17:24:23 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 int	death_occured(t_philo *philo)
 {
-	if (pthread_mutex_lock(&philo[0].data.dead) != 0)
+	if (pthread_mutex_lock(philo[0].data.dead) != 0)
 		return (-1);
 	(*philo[0].data.is_dead) = 1; //<--- DATA RACE HERE write to is_dead
-	if (pthread_mutex_unlock(&philo[0].data.dead) != 0)
+	if (pthread_mutex_unlock(philo[0].data.dead) != 0)
 		return (-1);
 	return (0);
 }
@@ -83,38 +83,12 @@ void *monitor(void *arg)
 
 int	check_is_dead(t_philo *philos)
 {
-	if (pthread_mutex_lock(&philos[0].data.dead) != 0)
+	if (pthread_mutex_lock(philos[0].data.dead) != 0)
 		return (-1);
 	if((*philos[0].data.is_dead) == 1) //<--- DATA RACE HERE read is_dead
-		return(pthread_mutex_unlock(&philos[0].data.dead), 1);
-	if (pthread_mutex_unlock(&philos[0].data.dead) != 0)
+		return(pthread_mutex_unlock(	philos[0].data.dead), 1);
+	if (pthread_mutex_unlock(philos[0].data.dead) != 0)
 		return (-1);
 	return (0);
 }
 
-int	pthread_mutex_philo(t_philo *philos)
-{
-	int	i;
-
-	if (pthread_mutex_init(&philos->data.print, NULL) != 0
-		|| pthread_mutex_init(&philos->data.dead, NULL) != 0
-		|| pthread_mutex_init(&philos->data.state_mutex, NULL) != 0
-		|| pthread_mutex_init(&philos->data.eats, NULL) != 0)
-		return (1);
-	i = 0;
-	while (i < philos[0].philo_data.numb_of_philos)
-	{
-		if (pthread_mutex_init(&philos[0].data.forks[i], NULL) != 0)
-		{
-			while (--i >= 0)
-				pthread_mutex_destroy(&philos[0].data.forks[i]);
-			pthread_mutex_destroy(&philos->data.print);
-			pthread_mutex_destroy(&philos->data.dead);
-			pthread_mutex_destroy(&philos->data.state_mutex);
-			pthread_mutex_destroy(&philos->data.eats);
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:36:16 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/29 20:13:35 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 17:23:07 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	cleanup(t_philo *philos)
 		i++;
 	}
 	pthread_mutex_destroy(&philos[0].data.print);
-	pthread_mutex_destroy(&philos[0].data.dead);
+	pthread_mutex_destroy(philos[0].data.dead);
 	pthread_mutex_destroy(&philos[0].data.state_mutex);
 	pthread_mutex_destroy(&philos[0].data.eats);
 	free(philos[0].data.forks);

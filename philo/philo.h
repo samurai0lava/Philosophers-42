@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/29 19:58:18 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 17:05:28 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef struct s_shared_data
 {
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
-	pthread_mutex_t	dead;
+	pthread_mutex_t	*dead;
 	pthread_mutex_t	state_mutex;
 	pthread_mutex_t	eats;
 	long long		start_time;
@@ -94,12 +94,11 @@ int					dead_philo(t_philo *philo);
 int					check_if_all_ate(t_philo *philos);
 int					check_is_dead(t_philo *philos);
 void				printf_state(t_philo *philo, char *state);
-int					pthread_mutex_philo(t_philo *philos);
 void				init_philo_parsing(t_philo *philo, char **av);
 void				acquire_forks(t_philo *philo, int *first_fork,
 						int *second_fork);
 int					check_philo_death(t_philo *philo, long long current_time);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
-int				death_occured(t_philo *philo);
+int					death_occured(t_philo *philo);
 
 #endif
