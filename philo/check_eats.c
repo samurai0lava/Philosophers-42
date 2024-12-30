@@ -3,35 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   check_eats.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 18:06:11 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 20:00:24 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	check_individual_eats(t_philo *philos)
+static int check_individual_eats(t_philo *philos)
 {
-	int	i;
-	int	finished_eating;
-	int	current_eat_count;
-
-	i = 0;
-	finished_eating = 0;
-	pthread_mutex_lock(&philos[0].data.state_mutex);
-	while (i < philos[0].philo_data.numb_of_philos)
-	{
-		pthread_mutex_lock(&philos[0].data.eats);
-		current_eat_count = philos->eat_count;
-		pthread_mutex_unlock(&philos[0].data.eats);
-		if (current_eat_count >= philos[0].philo_data.number_of_eats)
-			finished_eating++;
-		i++;
-	}
-	pthread_mutex_unlock(&philos[0].data.state_mutex);
-	return (finished_eating);
+    int finished_eating = 0;
+    int i = 0;
+    
+    while (i < philos[0].philo_data.numb_of_philos)
+    {
+        pthread_mutex_lock(&philos[0].data.state_mutex);
+        pthread_mutex_lock(&philos[0].data.eats);
+        if (philos[i].eat_count >= philos[0].philo_data.number_of_eats)
+            finished_eating++;
+        pthread_mutex_unlock(&philos[0].data.eats);
+        pthread_mutex_unlock(&philos[0].data.state_mutex);
+        i++;
+    }
+    return (finished_eating);
 }
 
 static int	check_and_update_dead_state(t_philo *philos, int finished_eating)

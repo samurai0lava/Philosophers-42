@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:57:24 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 17:45:50 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 20:05:56 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,10 @@ static int check_philosopher_status(t_philo *philo)
     {
         printf_state(philo, PHILO_DEAD);
         if (death_occured(philo) != 0)
-            return (-1);
+			return (-1);
         return (1);
     }
-    if (check_if_all_ate(philo) != 0)
-    {
-        if (death_occured(philo) != 0)
-            return (-1);
-        return (1);
-    }
+
     return (0);
 }
 
@@ -76,6 +71,14 @@ void *monitor(void *arg)
                 return (NULL);
             i++;
         }
+		if (check_if_all_ate(philos) != 0)
+    	{
+        	if (death_occured(philos) != 0)
+			{
+           		return (NULL);
+			}
+			break;
+    	}
         usleep(1000);
     }
     return (NULL);
