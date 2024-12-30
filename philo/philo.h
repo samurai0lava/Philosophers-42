@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:37:10 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 17:05:28 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/30 20:21:02 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ typedef struct s_shared_data
 	pthread_mutex_t	print;
 	pthread_mutex_t	*dead;
 	pthread_mutex_t	state_mutex;
-	pthread_mutex_t	eats;
+	pthread_mutex_t	*eats;
 	long long		start_time;
 	int				*is_dead;
 	int				is_eating;
