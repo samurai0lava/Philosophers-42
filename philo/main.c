@@ -6,7 +6,7 @@
 /*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 17:10:43 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2024/12/30 20:24:25 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ int	init_mutexes(t_philo *philo)
 	philo[0].data.dead = malloc(sizeof(pthread_mutex_t));
 	if (!philo[0].data.dead)
 		return (free(philo[0].data.is_dead), free(philo[0].data.forks), 1);
+	philo[0].data.eats = malloc(sizeof(pthread_mutex_t));
+	if (!philo[0].data.eats)
+		return (free(philo[0].data.is_dead), free(philo[0].data.forks),
+			free(philo[0].data.dead), 1);
 	*philo[0].data.is_dead = 0;
 	i = 0;
 	while (i < philo->philo_data.numb_of_philos)
@@ -37,7 +41,7 @@ int	init_mutexes(t_philo *philo)
 	if (pthread_mutex_init(&philo[0].data.print, NULL) != 0
 		|| pthread_mutex_init(philo[0].data.dead, NULL) != 0
 		|| pthread_mutex_init(&philo[0].data.state_mutex, NULL) != 0
-		|| pthread_mutex_init(&philo[0].data.eats, NULL) != 0)
+		|| pthread_mutex_init(philo[0].data.eats, NULL) != 0)
 		return (free(philo[0].data.is_dead), free(philo[0].data.forks), 1);
 	return (0);
 }

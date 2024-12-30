@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_eats.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 13:00:57 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 20:16:37 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 20:23:53 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ static int check_individual_eats(t_philo *philos)
     while (i < philos[0].philo_data.numb_of_philos)
     {
         pthread_mutex_lock(&philos[0].data.state_mutex);
-        pthread_mutex_lock(&philos[0].data.eats);
+        pthread_mutex_lock(philos[0].data.eats);
         if (philos[i].eat_count >= philos[0].philo_data.number_of_eats)
             finished_eating++;
-        pthread_mutex_unlock(&philos[0].data.eats);
+        pthread_mutex_unlock(philos[0].data.eats);
         pthread_mutex_unlock(&philos[0].data.state_mutex);
         i++;
     }

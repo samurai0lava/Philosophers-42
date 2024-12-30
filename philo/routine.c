@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/29 20:06:31 by iouhssei         ###   ########.fr       */
+/*   Updated: 2024/12/30 20:24:01 by samurai0lav      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,14 @@ void	eat(t_philo *philo)
 	}
 	philo->last_meal_time = get_time();
 	pthread_mutex_unlock(&philo[0].data.state_mutex);
-	if (pthread_mutex_lock(&philo[0].data.eats) != 0)
+	if (pthread_mutex_lock(philo[0].data.eats) != 0)
 	{
 		pthread_mutex_unlock(&philo[0].data.forks[first_fork]);
 		pthread_mutex_unlock(&philo[0].data.forks[second_fork]);
 		return ;
 	}
 	philo->eat_count++;
-	pthread_mutex_unlock(&philo[0].data.eats);
+	pthread_mutex_unlock(philo[0].data.eats);
 	printf_state(philo, PHILO_EAT);
 	precise_usleep(philo->philo_data.time_to_eat);
 	pthread_mutex_unlock(&philo[0].data.forks[first_fork]);
