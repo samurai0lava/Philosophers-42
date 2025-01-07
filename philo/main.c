@@ -6,7 +6,7 @@
 /*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:28 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 20:46:28 by iouhssei         ###   ########.fr       */
+/*   Updated: 2025/01/07 16:26:50 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	init_philosophers(t_philo *philos)
 
 void	handle_one_philo(t_philo *philos)
 {
+	printf("%lld %d " PHILO_FORK, get_time() - philos->data.start_time, philos->id);
 	precise_usleep(philos->philo_data.time_to_die);
 	printf("%lld %d died\n", get_time() - philos->data.start_time, philos->id);
 }
