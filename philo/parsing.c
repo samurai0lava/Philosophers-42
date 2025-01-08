@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:40:00 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/10 10:12:39 by codespace        ###   ########.fr       */
+/*   Updated: 2025/01/08 18:37:13 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,14 @@ int	ft_atoi(const char *str)
 	}
 	while (*str >= '0' && *str <= '9')
 	{
-		return_value = return_value * 10 + (*str - 48) * sign;
+		if ((return_value * 10 + (*str - '0')) > INT_MAX)
+			return (-1);
+		if ((return_value * 10 + (*str - '0')) * sign < INT_MIN)
+			return (-1);
+		return_value = return_value * 10 + (*str - '0');
 		str++;
 	}
-	return (return_value);
+	return (return_value * sign);
 }
 
 int	ft_isdigit(int c)
@@ -69,10 +73,10 @@ int	parse_input(t_philo *philo, int ac, char **av)
 {
 	if (ac == 5 || ac == 6)
 	{
+		if (check_num(av) == 0)
+			return (return_error(ARG_FAILS));
 		if (ft_atoi(av[1]) < 1 || ft_atoi(av[2]) < 1 || ft_atoi(av[3]) < 1
 			|| ft_atoi(av[4]) < 1 || (ac == 6 && ft_atoi(av[5]) < 1))
-			return (return_error(ARG_FAILS));
-		if (check_num(av) == 0)
 			return (return_error(ARG_FAILS));
 		init_philo_parsing(philo, av);
 		if (philo->philo_data.numb_of_philos == 0)
