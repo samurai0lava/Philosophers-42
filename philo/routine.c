@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samurai0lava <samurai0lava@student.42.f    +#+  +:+       +#+        */
+/*   By: iouhssei <iouhssei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:40:29 by iouhssei          #+#    #+#             */
-/*   Updated: 2024/12/30 20:24:01 by samurai0lav      ###   ########.fr       */
+/*   Updated: 2025/01/08 15:17:40 by iouhssei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static void	forks_change(t_philo *philo, int *first_fork, int *second_fork)
 {
 	int	left_fork;
 	int	right_fork;
-	int	tmp;
 
 	left_fork = philo->left_fork;
 	right_fork = philo->right_fork;
@@ -29,12 +28,6 @@ static void	forks_change(t_philo *philo, int *first_fork, int *second_fork)
 	{
 		*first_fork = left_fork;
 		*second_fork = right_fork;
-	}
-	if (*first_fork > *second_fork)
-	{
-		tmp = *first_fork;
-		*first_fork = *second_fork;
-		*second_fork = tmp;
 	}
 }
 
